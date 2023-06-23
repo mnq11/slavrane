@@ -1,26 +1,32 @@
+// App.tsx
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import NavigationBar from './components/NavigationBar';
+import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
+import { NextUIProvider } from '@nextui-org/react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+    return (
+        <NextUIProvider>
+            <Router>
+                <ToastContainer />
+                <NavigationBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+                {isLoggedIn && <Sidebar />}
+                <Routes>
+                    <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/" element={<Dashboard />} />
+                </Routes>
+            </Router>
+        </NextUIProvider>
+    );
 }
 
 export default App;
