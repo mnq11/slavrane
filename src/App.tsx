@@ -34,14 +34,16 @@ function App() {
                 <Router>
                     <NavigationBar darkMode={darkMode} setDarkMode={setDarkMode}/>
                     <ToastContainer/>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Routes>
-                            <Route path="/login" element={<Login/>}/>
-                            <Route path="/register" element={<Register/>}/>
-                            <Route path="/dashboard" element={<Dashboard/>}/>
-                            <Route path="/" element={<Home/>}/>
-                        </Routes>
-                    </Suspense>
+                    <div style={{ width: '100%', height: '100%' }}> {/* Add this line */}
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Routes>
+                                <Route path="/login" element={<Login/>}/>
+                                <Route path="/register" element={<Register/>}/>
+                                <Route path="/dashboard" element={<Dashboard/>}/>
+                                <Route path="/" element={<Home/>}/>
+                            </Routes>
+                        </Suspense>
+                    </div> {/* Add this line */}
                 </Router>
             </AppStateProvider>
         </ThemeProvider>

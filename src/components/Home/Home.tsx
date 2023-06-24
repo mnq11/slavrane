@@ -13,12 +13,16 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '20px',
+        width: '100%', // Add this line
+        margin: 0, // Add this line
+        boxSizing: 'border-box', // Add this line
     },
 }));
 
 const Home: React.FC = () => {
     const classes = useStyles();
+
+    // You can now use darkMode and setDarkMode in this component
 
     return (
         <div className={classes.container}>

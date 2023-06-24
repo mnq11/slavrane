@@ -1,34 +1,45 @@
 // components/WelcomeCard.tsx
 import React from 'react';
-import { Card, Text, Button } from '@nextui-org/react';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-    card: {
-        width: '100%',
-        maxWidth: '800px',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-        padding: '20px',
+    root: {
+        height: '100vh',
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.background.default,
+    },
+    paper: {
+        padding: theme.spacing(4),
         textAlign: 'center',
+        color: theme.palette.text.primary,
     },
     button: {
-        marginTop: '20px',
+        marginTop: theme.spacing(2),
     },
 }));
 
 const WelcomeCard: React.FC = () => {
     const classes = useStyles();
 
+
     return (
-        <Card className={classes.card}>
-            <Text h2>Welcome to Our Platform</Text>
-            <Text >
-                We provide the best services for you. Explore our platform and discover all the features we have to offer.
-            </Text>
-            <Button color="primary" auto className={classes.button}>
-                Explore Now
-            </Button>
-        </Card>
+        <Grid container justify="center" alignItems="center" className={classes.root}>
+            <Grid item xs={12} sm={8} md={6}>
+                <Paper className={classes.paper}>
+                    <Typography variant="h2" gutterBottom>Welcome to Our Platform</Typography>
+                    <Typography variant="h5" gutterBottom>
+                        We provide the best services for you. Explore our platform and discover all the features we have to offer.
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        Our platform offers a wide range of features designed to help you manage your tasks efficiently. With our user-friendly interface, you can easily navigate through the platform and find what you need. We are committed to providing you with the best experience possible.
+                    </Typography>
+                    <Button variant="contained" color="primary" className={classes.button}>
+                        Explore Now
+                    </Button>
+                </Paper>
+            </Grid>
+        </Grid>
     );
 };
 
