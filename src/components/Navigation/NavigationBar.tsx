@@ -78,6 +78,8 @@ const NavigationBar: React.FC<NavigationBarProps> = ({darkMode, setDarkMode}) =>
 
     const handleLogout = useCallback(() => {
         dispatch({type: 'LOGOUT'});
+        localStorage.removeItem('user'); // remove user from local storage
+
     }, [dispatch]);
 
     const handleThemeChange = useCallback(() => {

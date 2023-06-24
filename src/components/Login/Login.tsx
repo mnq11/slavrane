@@ -77,11 +77,7 @@ const Login: React.FC = () => {
     const [user, setUser] = useUser();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (user) {
-            navigate('/dashboard');
-        }
-    }, [user, navigate]);
+
     const context = useContext(AppStateContext);
     if (!context) {
         throw new Error('Login must be used within AppStateProvider');
@@ -104,12 +100,12 @@ const Login: React.FC = () => {
     const handleLogin = async (values: { email: string; password: string; }, {setSubmitting, setErrors}: any) => {
         try {
             const {token, user} = await loginUser(values.email, values.password);
-            const userx = user;
             if (token) {
-                setUser(userx); // set user state
+                setUser(user); // set user state
                 dispatch({type: 'LOGIN', payload: user});
                 toast.success("Logged in successfully!");
-                console.log('userx in the login page after login : ', userx);
+                navigate('/dashboard');
+                console.log('userx in the login page after login : ', user);
             } else {
                 toast.error('Invalid login credentials');
             }
