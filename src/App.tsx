@@ -1,20 +1,21 @@
 // App.tsx
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import NavigationBar from './components/NavigationBar';
-import Home from './components/Home/Home';
-import Dashboard from './components/Dashboard/Dashboard';
-import Login from './components/Login/Login';
-import Register from './components/Register/Register';
-import {createTheme, ThemeProvider} from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { AppStateProvider } from './AppStateContext';
+import NavigationBar from "./components/Navigation/NavigationBar";
+import { useDarkMode } from './hooks/useDarkMode';
+
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
+const Login = lazy(() => import('./components/Login/Login'));
+const Register = lazy(() => import('./components/Register/Register'));
+const Home = lazy(() => import('./components/Home/Home'));
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [user, setUser] = React.useState(null); // Add this
-    const [darkMode, setDarkMode] = React.useState(false);
+    const [darkMode, setDarkMode] = useDarkMode();
 
     const theme = React.useMemo(
         () =>
@@ -29,16 +30,20 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <Router>
-                <ToastContainer />
-                <NavigationBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} darkMode={darkMode} setDarkMode={setDarkMode} />
-                <Routes>
-                    <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUser={setUser} />} /> {/* Pass setUser to Login */}
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/dashboard" element={<Dashboard isLoggedIn={isLoggedIn} user={user} setUser={setUser} />} />
-                    <Route path="/" element={<Home />} />
-                </Routes>
-            </Router>
+            <AppStateProvider>
+                <Router>
+                    <NavigationBar darkMode={darkMode} setDarkMode={setDarkMode}/>
+                    <ToastContainer/>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Routes>
+                            <Route path="/login" element={<Login/>}/>
+                            <Route path="/register" element={<Register/>}/>
+                            <Route path="/dashboard" element={<Dashboard/>}/>
+                            <Route path="/" element={<Home/>}/>
+                        </Routes>
+                    </Suspense>
+                </Router>
+            </AppStateProvider>
         </ThemeProvider>
     );
 }
