@@ -34,7 +34,7 @@ function App() {
                 <Router>
                     <NavigationBar darkMode={darkMode} setDarkMode={setDarkMode}/>
                     <ToastContainer/>
-                    <div style={{ width: '100%', height: '100%' }}> {/* Add this line */}
+                    <div style={{ width: '100%', height: '100%', paddingTop: '64px' }}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Routes>
                                 <Route path="/login" element={<Login/>}/>
@@ -43,7 +43,7 @@ function App() {
                                 <Route path="/" element={<Home/>}/>
                             </Routes>
                         </Suspense>
-                    </div> {/* Add this line */}
+                    </div>
                 </Router>
             </AppStateProvider>
         </ThemeProvider>

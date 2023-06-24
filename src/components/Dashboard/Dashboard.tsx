@@ -1,9 +1,9 @@
 // Dashboard.tsx
-import React, {useContext} from 'react';
-import { Grid, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect} from 'react';
+import {Grid, Paper} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import Sidebar from "./Sidebar";
-import { AppStateContext } from '../../AppStateContext';
+import {useUser} from '../../hooks/useUser'; // import useUser hook
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -22,20 +22,19 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard: React.FC = () => {
     const classes = useStyles();
     const [open, setOpen] = React.useState(true);
-    const context = useContext(AppStateContext);
-
-    if (!context) {
-        throw new Error('Dashboard must be used within an AppStateProvider');
+    const [user] = useUser(); // use the useUser hook
+    useEffect(() => {
+        setOpen(true);
+        console.log('user in the dashboard : ',user);
+    }, [user]);
+    if (!user) {
+        return null;
     }
-
-    const { state } = context;
-    const { user } = state;
-
     return (
-        <main className={classes.main} style={{ marginLeft: open ? 240 : 0 }}>
+        <main className={classes.main} style={{marginLeft: open ? 240 : 0}}>
             <Grid container>
                 {open && (
-                    <Sidebar open={open} setOpen={setOpen} />
+                    <Sidebar open={open} setOpen={setOpen}/>
                 )}
                 <Grid item xs={open ? 9 : 12}>
                     <Paper className={classes.paper}>

@@ -1,13 +1,10 @@
-// useDarkMode.ts
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from "react";
 
 export const useDarkMode = () => {
-    const [darkMode, setDarkMode] = useState(false);
-
-    useEffect(() => {
-        const localDarkMode = window.localStorage.getItem('darkMode') === 'true';
-        setDarkMode(localDarkMode);
-    }, []);
+    const [darkMode, setDarkMode] = useState(() => {
+        const localDarkMode = window.localStorage.getItem('darkMode');
+        return localDarkMode !== null ? localDarkMode === 'true' : true; // true is the default value
+    });
 
     useEffect(() => {
         window.localStorage.setItem('darkMode', darkMode.toString());
