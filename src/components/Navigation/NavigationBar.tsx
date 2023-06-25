@@ -78,14 +78,13 @@ const NavigationBar: React.FC<NavigationBarProps> = ({darkMode, setDarkMode}) =>
 
     const handleLogout = useCallback(() => {
         dispatch({type: 'LOGOUT'});
-        localStorage.removeItem('user'); // remove user from local storage
-
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
     }, [dispatch]);
 
     const handleThemeChange = useCallback(() => {
         setDarkMode(prevDarkMode => !prevDarkMode);
     }, [setDarkMode]);
-
     useCallback((path: string, label: string) => (
         <Button color="inherit" aria-label={label}>
             <RouterLink to={path} className={classes.link}>{label}</RouterLink>

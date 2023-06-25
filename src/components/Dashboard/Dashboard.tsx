@@ -1,50 +1,85 @@
-// Dashboard.tsx
 import React, {useEffect} from 'react';
-import {Grid, Paper} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
-import Sidebar from "./Sidebar";
-import {useUser} from '../../hooks/useUser'; // import useUser hook
-
-const useStyles = makeStyles((theme) => ({
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-    main: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-        marginTop: 64, // height of AppBar
-        width: '100vw', // Set width to 100% of viewport width
-    },
-}));
+import {Grid, Paper, CircularProgress, Typography, useMediaQuery, useTheme, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
+import {useNavigate} from 'react-router-dom';
+import {useUser} from '../../hooks/useUser';
+import UserGreeting from './UserGreeting';
+import {useDashboardStyles, useSidebarStyles} from "./Dashboard.styles";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import clsx from "clsx";
 
 const Dashboard: React.FC = () => {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
-    const [user] = useUser(); // use the useUser hook
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [open, setOpen] = React.useState(!isMobile);
+    const [user] = useUser();
+    const navigate = useNavigate();
+    const classes = useDashboardStyles({open});
+    const sidebarClasses = useSidebarStyles();
     useEffect(() => {
-        setOpen(true);
-        console.log('user in the dashboard : ',user);
-    }, [user]);
+        if (!user) {
+            const timer = setTimeout(() => navigate('/login'), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [user, navigate]);
+
+    useEffect(() => {
+        setOpen(!isMobile);
+    }, [isMobile]);
+
     if (!user) {
-        return null;
+        return (
+            <div className={classes.loadingContainer}>
+                <CircularProgress />
+                <Typography variant="h6">Loading your data...</Typography>
+            </div>
+        );
     }
+
     return (
-        <main className={classes.main} style={{marginLeft: open ? 240 : 0}}>
+        <main className={classes.main}>
+            <Drawer
+                className={sidebarClasses.drawer}
+                variant="persistent"
+                anchor="left"
+                open={open}
+                classes={{
+                    paper: sidebarClasses.drawerPaper,
+                }}
+            >
+                <div className={sidebarClasses.drawerHeader}>
+                    <IconButton onClick={() => setOpen(!open)}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </div>
+                <List>
+                    {/* Add your sidebar items here */}
+                    <ListItem button>
+                        <ListItemIcon>
+                            {/* Your icon */}
+                        </ListItemIcon>
+                        <ListItemText primary={"Your text"} />
+                    </ListItem>
+                </List>
+            </Drawer>
+            <IconButton
+                onClick={() => setOpen(!open)}
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                className={clsx(classes.sidebarControl, open && classes.rotate)} // Apply the rotate class when open is true
+            >
+                <ChevronLeftIcon />
+            </IconButton>
             <Grid container>
-                {open && (
-                    <Sidebar open={open} setOpen={setOpen}/>
-                )}
-                <Grid item xs={open ? 9 : 12}>
+                <Grid item xs={12} md={open ? 9 : 12}>
                     <Paper className={classes.paper}>
-                        <h3>Welcome, {user?.name}</h3>
-                        <p>Your email is {user?.email}</p>
+                        <UserGreeting name={user.name} email={user.email} />
                     </Paper>
                 </Grid>
             </Grid>
         </main>
     );
+
 };
 
 export default Dashboard;

@@ -1,10 +1,10 @@
 // hooks/useUser.ts
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
 interface User {
+    id: number;
     name: string;
     email: string;
-    // add other properties as needed
 }
 
 export const useUser = () => {
@@ -13,8 +13,11 @@ export const useUser = () => {
     const [user, setUser] = useState<User | null>(initialUser);
 
     useEffect(() => {
-        window.localStorage.setItem('user', JSON.stringify(user));
-    }, [user]);
+        const userFromStorage = window.localStorage.getItem('user');
+        if (userFromStorage) {
+            setUser(JSON.parse(userFromStorage));
+        }
+    }, []);
 
     return [user, setUser] as const;
 };
