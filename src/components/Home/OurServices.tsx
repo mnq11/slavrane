@@ -1,6 +1,6 @@
 // components/OurServices.tsx
 import React from 'react';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
