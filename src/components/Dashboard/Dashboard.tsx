@@ -1,85 +1,65 @@
-import React, {useEffect} from 'react';
-import {Grid, Paper, CircularProgress, Typography, useMediaQuery, useTheme, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
+// Dashboard.tsx
+import React, {useEffect, useState} from 'react';
+import {useMediaQuery, useTheme, IconButton, Typography} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
 import {useUser} from '../../hooks/useUser';
-import UserGreeting from './UserGreeting';
-import {useDashboardStyles, useSidebarStyles} from "./Dashboard.styles";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import {useDashboardStyles} from "./DashboardStyleing/Dashboard.styles";
+import MenuIcon from '@material-ui/icons/Menu';
 import clsx from "clsx";
+import Sidebar from './Sidebar';
+import Loading from '../ErrorHandling/Loading';
 
 const Dashboard: React.FC = () => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const [open, setOpen] = React.useState(!isMobile);
+    useMediaQuery(theme.breakpoints.down('sm'));
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const [user] = useUser();
     const navigate = useNavigate();
-    const classes = useDashboardStyles({open});
-    const sidebarClasses = useSidebarStyles();
+    const classes = useDashboardStyles();
+
     useEffect(() => {
         if (!user) {
-            const timer = setTimeout(() => navigate('/login'), 2000);
+            const timer = setTimeout(() => {
+                navigate('/login');
+                setError(true);
+            }, 2000);
             return () => clearTimeout(timer);
+        } else {
+            setLoading(false);
         }
     }, [user, navigate]);
 
-    useEffect(() => {
-        setOpen(!isMobile);
-    }, [isMobile]);
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
 
-    if (!user) {
-        return (
-            <div className={classes.loadingContainer}>
-                <CircularProgress />
-                <Typography variant="h6">Loading your data...</Typography>
-            </div>
-        );
-    }
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
 
     return (
-        <main className={classes.main}>
-            <Drawer
-                className={sidebarClasses.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                    paper: sidebarClasses.drawerPaper,
-                }}
-            >
-                <div className={sidebarClasses.drawerHeader}>
-                    <IconButton onClick={() => setOpen(!open)}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <List>
-                    {/* Add your sidebar items here */}
-                    <ListItem button>
-                        <ListItemIcon>
-                            {/* Your icon */}
-                        </ListItemIcon>
-                        <ListItemText primary={"Your text"} />
-                    </ListItem>
-                </List>
-            </Drawer>
+        <div className={classes.root}>
             <IconButton
-                onClick={() => setOpen(!open)}
-                edge="start"
                 color="inherit"
-                aria-label="menu"
-                className={clsx(classes.sidebarControl, open && classes.rotate)} // Apply the rotate class when open is true
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
             >
-                <ChevronLeftIcon />
+                <MenuIcon />
             </IconButton>
-            <Grid container>
-                <Grid item xs={12} md={open ? 9 : 12}>
-                    <Paper className={classes.paper}>
-                        <UserGreeting name={user.name} email={user.email} />
-                    </Paper>
-                </Grid>
-            </Grid>
-        </main>
+            <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
+            <main className={clsx(classes.content, {
+                [classes.contentShift]: open,
+            })}>
+                <div className={classes.toolbar} />
+                {/* Add your main content here */}
+                <Typography variant="h6">Main Content</Typography>
+            </main>
+            <Loading loading={loading} error={error} />
+        </div>
     );
-
 };
 
 export default Dashboard;

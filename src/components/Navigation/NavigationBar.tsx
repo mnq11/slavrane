@@ -45,19 +45,22 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     toolbar: {
+        ...theme.mixins.toolbar, // Add this line
         padding: theme.spacing(0, 2), // padding on left and right
         backgroundColor: theme.palette.type === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
     },
 
     appBar: {
         boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)', // added boxShadow
+        zIndex: theme.zIndex.drawer + 1,
+
     },
     themeIcon: {
         color: theme.palette.type === 'dark' ? theme.palette.text.primary : theme.palette.text.primary,
         marginRight: theme.spacing(2), // added margin
         transition: 'transform 0.3s ease, color 0.3s ease', // added transition
         '&:hover': {
-            transform: 'scale(1.2)', // added scale
+            transform: 'scale(1.2)',
             color: theme.palette.type === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark, // change color on hover
         },
     },
