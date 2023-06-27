@@ -71,6 +71,8 @@ export const useSidebarStyles = makeStyles((theme) => ({
         },
     },
     closeButton: {
+        marginTop: theme.spacing(8), // Add this line
+
         color: theme.palette.type === 'dark' ? theme.palette.grey[50] : theme.palette.grey[900],
     },
 }));
