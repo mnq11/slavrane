@@ -60,8 +60,7 @@ const Dashboard: React.FC = () => {
             <main className={clsx(classes.content, {
                 [classes.contentShift]: open,
             })}>
-                <div className={classes.toolbar} />
-                {content}
+                {content} {/* Removed the div with classes.toolbar */}
             </main>
             <Loading loading={loading} error={error} />
         </div>
