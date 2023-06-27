@@ -1,9 +1,14 @@
-//Welcome.tsx
-import React from 'react';
 
-const Welcome: React.FC = () => (
+// Welcome.tsx
+import {User} from "../../hooks/useUser";
+
+interface WelcomeProps {
+    user: User | { name: string };
+}
+
+const Welcome: React.FC<WelcomeProps> = ({ user }) => (
     <div>
-        <h1>Welcome to the app!</h1>
+        <h1>Welcome to the app, {user.name}!</h1>
     </div>
 );
 

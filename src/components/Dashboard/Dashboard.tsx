@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
     const [user] = useUser();
     const navigate = useNavigate();
     const classes = useDashboardStyles();
-    const [content, setContent] = useState<JSX.Element | null>(<Welcome />); // Set default content to Welcome
+    const [content, setContent] = useState<JSX.Element | null>(user ? <Welcome user={user} /> : <Welcome user={{ name: 'Guest' }} />);
 
     const handleContentChange = (newContent: JSX.Element) => {
         setContent(newContent);
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
             >
                 <MenuIcon fontSize="large" />
             </IconButton>
-            <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} />
+            <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} user={user} />
             <main className={clsx(classes.content, {
                 [classes.contentShift]: open,
             })}>
