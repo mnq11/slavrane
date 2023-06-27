@@ -8,6 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import clsx from "clsx";
 import Sidebar from './Sidebar';
 import Loading from '../ErrorHandling/Loading';
+import Welcome from "./Welcome";
 
 const Dashboard: React.FC = () => {
     const theme = useTheme();
@@ -18,7 +19,11 @@ const Dashboard: React.FC = () => {
     const [user] = useUser();
     const navigate = useNavigate();
     const classes = useDashboardStyles();
+    const [content, setContent] = useState<JSX.Element | null>(<Welcome />); // Set default content to Welcome
 
+    const handleContentChange = (newContent: JSX.Element) => {
+        setContent(newContent);
+    };
     useEffect(() => {
         if (!user) {
             const timer = setTimeout(() => {
@@ -39,6 +44,7 @@ const Dashboard: React.FC = () => {
         setOpen(false);
     };
 
+
     return (
         <div className={classes.root}>
             <IconButton
@@ -49,13 +55,12 @@ const Dashboard: React.FC = () => {
             >
                 <MenuIcon />
             </IconButton>
-            <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
+            <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} />
             <main className={clsx(classes.content, {
                 [classes.contentShift]: open,
             })}>
                 <div className={classes.toolbar} />
-                {/* Add your main content here */}
-                <Typography variant="h6">Main Content</Typography>
+                {content}
             </main>
             <Loading loading={loading} error={error} />
         </div>
