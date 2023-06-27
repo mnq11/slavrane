@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 export const drawerWidth = 240;
 
@@ -30,28 +30,47 @@ export const useDashboardStyles = makeStyles((theme) => ({
         marginLeft: 0,
     },
     toolbar: {
-        ...theme.mixins.toolbar, // Add this line
-        padding: theme.spacing(0, 2), // padding on left and right
-        backgroundColor: theme.palette.type === 'dark' ? theme.palette.background.paper : theme.palette.background.paper,
-    },backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+        ...theme.mixins.toolbar,
+        padding: theme.spacing(0, 2),
+        backgroundColor: theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[200],
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+        color: theme.palette.type === 'dark' ? theme.palette.grey[50] : theme.palette.grey[900],
     },
 }));
+
 export const useSidebarStyles = makeStyles((theme) => ({
+
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
     },
     drawerPaper: {
         width: drawerWidth,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
     },
     drawerHeader: {
         display: 'flex',
         alignItems: 'center',
         padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
         ...theme.mixins.toolbar,
         justifyContent: 'flex-end',
+        backgroundColor: theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[200],
+    },
+    listItem: {
+        "&:hover": {
+            backgroundColor: theme.palette.type === 'dark' ? theme.palette.grey[700] : theme.palette.grey[100],
+        },
+    },
+    closeButton: {
+        color: theme.palette.type === 'dark' ? theme.palette.grey[50] : theme.palette.grey[900],
     },
 }));

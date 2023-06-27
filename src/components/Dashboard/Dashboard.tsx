@@ -1,6 +1,6 @@
 // Dashboard.tsx
 import React, {useEffect, useState} from 'react';
-import {useMediaQuery, useTheme, IconButton, Typography} from '@material-ui/core';
+import {useMediaQuery, useTheme, IconButton} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
 import {useUser} from '../../hooks/useUser';
 import {useDashboardStyles} from "./DashboardStyleing/Dashboard.styles";
@@ -49,11 +49,12 @@ const Dashboard: React.FC = () => {
         <div className={classes.root}>
             <IconButton
                 color="inherit"
-                aria-label="open drawer"
+                aria-label="Open drawer"
                 onClick={handleDrawerOpen}
                 edge="start"
+                className={classes.menuButton}
             >
-                <MenuIcon />
+                <MenuIcon fontSize="large" />
             </IconButton>
             <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} />
             <main className={clsx(classes.content, {

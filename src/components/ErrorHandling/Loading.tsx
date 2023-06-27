@@ -1,7 +1,7 @@
 // Loading.tsx
 import React from 'react';
 import {CircularProgress, Backdrop, Snackbar} from '@material-ui/core';
-import {useDashboardStyles} from "../Dashboard/DashboardStyleing/Dashboard.styles";
+import {useLoadingStyles} from "./Loading.styles";
 
 interface LoadingProps {
     loading: boolean;
@@ -9,7 +9,7 @@ interface LoadingProps {
 }
 
 const Loading: React.FC<LoadingProps> = ({loading, error}) => {
-    const classes = useDashboardStyles();
+    const classes = useLoadingStyles();
 
     return (
         <>

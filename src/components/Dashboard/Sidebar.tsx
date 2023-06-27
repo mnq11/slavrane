@@ -21,7 +21,6 @@ const menuItems = [
 
 const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChange}) => {
     const sidebarClasses = useSidebarStyles();
-
     return (
         <Drawer
             className={sidebarClasses.drawer}
@@ -34,13 +33,13 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
             onClose={handleDrawerClose}
         >
             <div className={sidebarClasses.drawerHeader}>
-                <IconButton onClick={handleDrawerClose}>
-                    <ChevronLeftIcon />
+                <IconButton onClick={handleDrawerClose} className={sidebarClasses.closeButton}>
+                    <ChevronLeftIcon fontSize="large" />
                 </IconButton>
             </div>
             <List>
                 {menuItems.map((item, index) => (
-                    <ListItem button key={index} onClick={() => onContentChange(item.content)}>
+                    <ListItem button key={index} onClick={() => onContentChange(item.content)} className={sidebarClasses.listItem}>
                         <ListItemText primary={item.label} />
                     </ListItem>
                 ))}
