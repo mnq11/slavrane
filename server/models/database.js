@@ -1,6 +1,8 @@
-const { Sequelize } = require('sequelize');
-const mysql = require('mysql2/promise');
+// models/database.js
+const Sequelize = require('sequelize');
 require('dotenv').config();
+const mysql = require('mysql2/promise');
+
 
 const createDatabaseIfNotExists = async () => {
     const connection = await mysql.createConnection({
@@ -10,9 +12,7 @@ const createDatabaseIfNotExists = async () => {
     });
 
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
-    connection.close();
 }
-
 const initDatabase = async () => {
     await createDatabaseIfNotExists();
 
@@ -22,31 +22,62 @@ const initDatabase = async () => {
         logging: false  // disable logging
     });
 
-    const defineUser = require('./user');
-    const defineService = require('./service');
-    const defineBill = require('./bill');
-    const defineReceipt = require('./receipt');
 
-    const User = defineUser(sequelize, Sequelize.DataTypes);
-    const Service = defineService(sequelize, Sequelize.DataTypes);
-    const Bill = defineBill(sequelize, Sequelize.DataTypes);
-    const Receipt = defineReceipt(sequelize, Sequelize.DataTypes);
+    const defineMember = require('./member');
+    const defineFamily = require('./family');
+    const defineRole = require('./role');
+    const defineTask = require('./task');
+    const defineResource = require('./resource');
+    const defineSkill = require('./skill');
+
+    const Member = defineMember(sequelize, Sequelize.DataTypes);
+    const Family = defineFamily(sequelize, Sequelize.DataTypes);
+    const Role = defineRole(sequelize, Sequelize.DataTypes);
+    const Task = defineTask(sequelize, Sequelize.DataTypes);
+    const Resource = defineResource(sequelize, Sequelize.DataTypes);
+    const Skill = defineSkill(sequelize, Sequelize.DataTypes);
 
     // Define relationships
-    User.hasMany(Service, { foreignKey: 'userId' });
-    Service.belongsTo(User, { foreignKey: 'userId' });
+    Family.hasMany(Member, { foreignKey: 'FamilyID' });
+    Member.belongsTo(Family, { foreignKey: 'FamilyID' });
 
-    Service.hasMany(Receipt, { foreignKey: 'serviceId' });
-    Receipt.belongsTo(Service, { foreignKey: 'serviceId' });
+    Role.hasMany(Member, { foreignKey: 'RoleID' });
+    Member.belongsTo(Role, { foreignKey: 'RoleID' });
 
-    Bill.belongsTo(User, { foreignKey: 'userId' });
-    Bill.belongsTo(Service, { foreignKey: 'serviceId' });
-    User.hasMany(Bill, { foreignKey: 'userId' });
-    Service.hasMany(Bill, { foreignKey: 'serviceId' });
+    Role.hasMany(Task, { foreignKey: 'RoleID' });
+    Task.belongsTo(Role, { foreignKey: 'RoleID' });
 
-    await sequelize.sync();
+    Member.hasMany(Resource, { foreignKey: 'MemberID' });
+    Resource.belongsTo(Member, { foreignKey: 'MemberID' });
 
-    return { sequelize, User, Service, Bill, Receipt };  // return User model here
+    Member.hasMany(Skill, { foreignKey: 'MemberID' });
+    Skill.belongsTo(Member, { foreignKey: 'MemberID' });
+
+    await sequelize.sync({ force: true });  // Use force: true to drop existing tables and create new ones
+
+    // Create dummy data
+    const dummyFamily = await Family.bulkCreate([
+        { FamilyName: 'Smith', Address: '123 Main St' },
+        { FamilyName: 'Johnson', Address: '456 Oak Ave' },
+        // Add more families as needed
+    ]);
+    const dummyRole = await Role.bulkCreate([
+        { RoleName: 'Parent' },
+        { RoleName: 'Child' },
+        // Add more roles as needed
+    ]);
+    const dummyMember = await Member.bulkCreate([
+        { FamilyID: 1, RoleID: 1, FullName: 'John Smith', DateOfBirth: new Date(1980, 1, 1), Email: 'johnsmith@example.com', PhoneNumber: '123-456-7890', Password: 'password' },
+        { FamilyID: 1, RoleID: 2, FullName: 'Jane Smith', DateOfBirth: new Date(1982, 2, 2), Email: 'janesmith@example.com', PhoneNumber: '234-567-8901', Password: 'password' },
+        // Add more members as needed
+    ]);
+    const dummyTask = await Task.bulkCreate([
+        { RoleID: 1, Description: 'Buy groceries', DueDate: new Date(2023, 6, 30), Status: 'Pending' },
+        { RoleID: 2, Description: 'Do homework', DueDate: new Date(2023, 6, 30), Status: 'Pending' },
+        // Add more tasks as needed
+    ]);
+
+    return { sequelize, Member, Family, Role, Task, Resource, Skill };
 }
 
-module.exports = initDatabase();
+module.exports = initDatabase;
