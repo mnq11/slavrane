@@ -1,6 +1,6 @@
 
 // controllers/incomeController.js
-const { Income } = require('../models/database');
+const { Income } = require('../DB/databaseSetup');
 
 exports.getAllIncomes = async (req, res) => {
     const incomes = await Income.findAll();

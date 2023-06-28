@@ -1,7 +1,7 @@
 // controllers/memberController.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const initDatabase = require('../models/database');
+const initDatabase = require('../DB/databaseSetup');
 
 let Member;
 
@@ -61,8 +61,7 @@ exports.updateMember = async (req, res) => {
 
     const { Password, ...otherFields } = req.body;
     if (Password) {
-        const hashedPassword = await bcrypt.hash(Password, 10);
-        member.Password = hashedPassword;
+        member.Password = await bcrypt.hash(Password, 10);
     }
     Object.assign(member, otherFields);
     await member.save();

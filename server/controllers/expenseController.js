@@ -1,6 +1,6 @@
 
 // controllers/expenseController.js
-const { Expense } = require('../models/database');
+const { Expense } = require('../DB/databaseSetup');
 
 exports.getAllExpenses = async (req, res) => {
     const expenses = await Expense.findAll();

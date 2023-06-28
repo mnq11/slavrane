@@ -1,5 +1,5 @@
 // controllers/taskController.js
-const { Task } = require('../models/database');
+const { Task } = require('../DB/databaseSetup');
 
 exports.getAllTasks = async (req, res) => {
     const tasks = await Task.findAll();

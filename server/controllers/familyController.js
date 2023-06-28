@@ -1,6 +1,6 @@
 
 // controllers/familyController.js
-const { Family } = require('../models/database');
+const { Family } = require('../DB/databaseSetup');
 
 exports.getAllFamilies = async (req, res) => {
     const families = await Family.findAll();
