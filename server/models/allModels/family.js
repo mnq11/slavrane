@@ -6,9 +6,5 @@ module.exports = function(sequelize, DataTypes) {
         Address: DataTypes.STRING,
     });
 
-    Family.associate = function(models) {
-        Family.belongsToMany(models.Member, { through: models.FamilyMemberRole, foreignKey: 'FamilyID' });
-    };
-
     return Family;
 };

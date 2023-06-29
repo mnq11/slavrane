@@ -9,11 +9,5 @@ module.exports = function(sequelize, DataTypes) {
         Password: DataTypes.STRING,
     });
 
-    Member.associate = function(models) {
-        Member.belongsToMany(models.Family, { through: models.FamilyMemberRole, foreignKey: 'MemberID' });
-        Member.hasMany(models.Resource, { foreignKey: 'MemberID' });
-        Member.hasMany(models.Skill, { foreignKey: 'MemberID' });
-    };
-
     return Member;
 };

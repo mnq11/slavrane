@@ -1,20 +1,26 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const memberRoutes = require('./routes/members');
-const initDatabase = require("./DB/databaseSetup");
+const { sequelize, models } = require("./DB/databaseSetup");
 const createDummyData = require("./DB/dummyData");  // Ensure this path is correct
 
 const app = express();
-const port = process.env.SERVERPORT || 3001;
+const port = process.env.SERVER_PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-
-// Use morgan to log HTTP requests
 app.use(morgan('combined'));
+app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 app.use('/members', memberRoutes);
 
@@ -23,8 +29,7 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-
-initDatabase().then(async ({ sequelize, models }) => {
+sequelize.sync().then(async () => {
     // Now you can use the models
 
     // Create dummy data
@@ -34,4 +39,6 @@ initDatabase().then(async ({ sequelize, models }) => {
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
     });
+}).catch(err => {
+    console.error('Error during database initialization', err);
 });

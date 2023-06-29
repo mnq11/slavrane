@@ -1,13 +1,13 @@
-// controllers/memberController.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const initDatabase = require('../DB/databaseSetup');
+const { models } = require('../DB/databaseSetup');  // Import the models object
 
-let Member;
+let Member = models.Member;  // Access the Member model directly
 
-initDatabase().then(models => {  // Call initDatabase() to get a Promise
-    Member = models.Member;
-});
+exports.getAllMembers = async (req, res) => {
+    const members = await Member.findAll();
+    res.json(members);
+};
 
 exports.getAllMembers = async (req, res) => {
     const members = await Member.findAll();
