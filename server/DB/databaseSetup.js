@@ -1,10 +1,10 @@
+// databaseSetup.js
 const Sequelize = require('sequelize');
 const dbConfig = require('./dbConfig');
-const defineModels = require('../models/Models');  // Import your models
-const defineRelationships = require('../models/relationships');  // Import your relationships
+const defineModels = require('../models/Models');
+const defineRelationships = require('../models/relationships');
 
-const sequelize = new Sequelize({
-    database: dbConfig.database,
+const sequelizeWithoutDB = new Sequelize({
     username: dbConfig.user,
     password: dbConfig.password,
     host: dbConfig.host,
@@ -12,7 +12,35 @@ const sequelize = new Sequelize({
     logging: false
 });
 
-const models = defineModels(sequelize, Sequelize.DataTypes);
-defineRelationships(models);
+async function initializeDatabase() {
+    try {
+        // Create database if it doesn't exist
+        await sequelizeWithoutDB.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database};`);
+        console.log('Database created');
 
-module.exports = { sequelize, models };
+        // Close the connection to prevent potential connection leaks
+        await sequelizeWithoutDB.close();
+
+        // Connect to the newly created database
+        const sequelize = new Sequelize({
+            database: dbConfig.database,
+            username: dbConfig.user,
+            password: dbConfig.password,
+            host: dbConfig.host,
+            dialect: 'mysql',
+            logging: false
+        });
+
+        // Define models and relationships
+        const models = defineModels(sequelize, Sequelize.DataTypes);
+        defineRelationships(models);
+
+        // Return sequelize instance and models
+        return { sequelize, models };
+    } catch (err) {
+        console.error('Failed to create database', err);
+        throw new Error('Database initialization failed');
+    }
+}
+
+module.exports = initializeDatabase;

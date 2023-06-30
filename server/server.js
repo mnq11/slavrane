@@ -1,15 +1,27 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const memberRoutes = require('./routes/members');
-const { sequelize, models } = require("./DB/databaseSetup");
-const createDummyData = require("./DB/dummyData");  // Ensure this path is correct
+const createDummyData = require("./DB/dummyData");
+const winston = require('winston');
+const initializeDatabase = require("./DB/databaseSetup");
 
 const app = express();
 const port = process.env.SERVER_PORT || 3001;
+
+// create a logger
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'combined.log' }),
+    ],
+});
 
 app.use(cors());
 app.use(express.json());
@@ -22,23 +34,29 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use('/members', memberRoutes);
-
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+    logger.error(err.stack);
+    res.status(500).json({ message: 'Something broke!' }); // Send JSON response
 });
 
-sequelize.sync().then(async () => {
-    // Now you can use the models
+initializeDatabase().then(async (db) => {
+    const { sequelize, models } = db;
 
     // Create dummy data
-    await createDummyData();
+    try {
+        await createDummyData(sequelize, models);
+    } catch (err) {
+        logger.error('Error during dummy data creation', err);
+    }
+
+    // Define routes after database initialization
+    const memberRoutes = require('./routes/members');
+    app.get('/members', (req, res) => memberController.getAllMembers(req, res, models));
 
     // Start your server here
     app.listen(port, () => {
-        console.log(`Server is running at http://localhost:${port}`);
+        logger.info(`Server is running at http://localhost:${port}`);
     });
 }).catch(err => {
-    console.error('Error during database initialization', err);
+    logger.error('Error during database initialization', err);
 });
