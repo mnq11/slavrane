@@ -1,6 +1,6 @@
 
 // Welcome.tsx
-import {Member} from "../../hooks/useMember";
+import {Member} from "../../../hooks/useMember";
 
 interface WelcomeProps {
     member: Member | { FullName: string }; // Changed from 'name' to 'FullName'

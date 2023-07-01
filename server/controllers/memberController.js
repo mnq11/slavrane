@@ -60,7 +60,7 @@ module.exports = (models) => {
         }
     }
 
-    // This function handles the login process
+// This function handles the login process
     async function loginMember(req, res, next) {
         console.log('loginMember function called.', req.body);
         const { error, value } = loginSchema.validate(req.body);
@@ -69,14 +69,27 @@ module.exports = (models) => {
         const { email, password } = value;
 
         try {
-            const member = await Member.findOne({ where: { Email: email } }); // Adjusted to match case
+            const member = await Member.findOne({
+                where: { Email: email },
+                include: [
+                    { model: models.Family },
+                    { model: models.Role },
+                    { model: models.Task },
+                    { model: models.Resource },
+                    { model: models.Skill },
+                    { model: models.Income },
+                    { model: models.Expense },
+                    { model: models.Savings }
+                    // Include other related models as needed
+                ]
+            });
             if (!member) return res.status(400).json({ message: 'Invalid email or password.' });
 
             const validPassword = await bcrypt.compare(password, member.Password); // Adjusted to match case
             if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
 
             const token = jwt.sign({ id: member.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.json({ token, member: member }); // Changed to member: member
+            res.json({ token, member: member.get({ plain: true }) }); // Changed to member: member.get({ plain: true })
         } catch (error) {
             console.error('Error in loginMember function:', error);
             res.status(500).json({ message: 'An error occurred while logging in.' });
@@ -86,6 +99,6 @@ module.exports = (models) => {
     return {
         getAllMembers,
         createMember,
-        loginMember,  // Don't forget to export the function
+        loginMember,
     };
 };
