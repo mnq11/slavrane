@@ -1,14 +1,14 @@
 
 // Welcome.tsx
-import {User} from "../../hooks/useUser";
+import {Member} from "../../hooks/useMember";
 
 interface WelcomeProps {
-    user: User | { name: string };
+    member: Member | { FullName: string }; // Changed from 'name' to 'FullName'
 }
 
-const Welcome: React.FC<WelcomeProps> = ({ user }) => (
+const Welcome: React.FC<WelcomeProps> = ({ member }) => (
     <div>
-        <h1>Welcome to the app, {user.name}!</h1>
+        <h1>Welcome to the app, {member.FullName}!</h1>
     </div>
 );
 

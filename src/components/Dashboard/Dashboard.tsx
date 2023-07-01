@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {useMediaQuery, useTheme, IconButton} from '@material-ui/core';
 import {useNavigate} from 'react-router-dom';
-import {useUser} from '../../hooks/useUser';
+import {useMember} from '../../hooks/useMember';
 import {useDashboardStyles} from "./DashboardStyleing/Dashboard.styles";
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from "clsx";
@@ -16,10 +16,10 @@ const Dashboard: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [user] = useUser();
+    const [user] = useMember();
     const navigate = useNavigate();
     const classes = useDashboardStyles();
-    const [content, setContent] = useState<JSX.Element | null>(user ? <Welcome user={user} /> : <Welcome user={{ name: 'Guest' }} />);
+    const [content, setContent] = useState<JSX.Element | null>(user ? <Welcome member={user} /> : <Welcome member={{ FullName: 'Guest' }} />);
 
     const handleContentChange = (newContent: JSX.Element) => {
         setContent(newContent);
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
             >
                 <MenuIcon fontSize="large" />
             </IconButton>
-            <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} user={user} />
+            <Sidebar open={open} handleDrawerClose={handleDrawerClose} onContentChange={handleContentChange} member={user} />
             <main className={clsx(classes.content, {
                 [classes.contentShift]: open,
             })}>

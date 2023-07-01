@@ -1,20 +1,20 @@
-// hooks/useUser.ts
+// hooks/useMember.ts
 import {useEffect, useState} from 'react';
 
-export interface User {
+export interface Member {
     id: number;
-    name: string;
+    FullName: string;
     email: string;
 }
 
-export const useUser = () => {
-    const userFromStorage = window.localStorage.getItem('user');
+export const useMember = () => {
+    const userFromStorage = window.localStorage.getItem('member');
     const initialUser = userFromStorage ? JSON.parse(userFromStorage) : null;
-    const [user, setUser] = useState<User | null>(initialUser);
+    const [user, setUser] = useState<Member | null>(initialUser);
 
     useEffect(() => {
         const handleStorageChange = () => {
-            const userFromStorage = window.localStorage.getItem('user');
+            const userFromStorage = window.localStorage.getItem('member');
             if (userFromStorage) {
                 setUser(JSON.parse(userFromStorage));
             } else {

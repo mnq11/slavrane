@@ -31,10 +31,11 @@ api.interceptors.response.use((response) => {
     }
 });
 
-export async function loginUser(email, password) {
-    const response = await api.post('/login', { email, password });
+export async function loginMember(email, password) {
+    const response = await api.post('/members/login', { email, password });
     return response.data;
 }
+
 
 export async function registerMember(values) {
     const response = await api.post('/members/register', values);

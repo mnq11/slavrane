@@ -6,7 +6,7 @@ import {Typography, Paper} from '@material-ui/core';
 
 import {useNavigate} from 'react-router-dom';
 
-import {loginUser} from "../../API/api";
+import {loginMember} from "../../API/api";
 import {AppStateContext} from '../../AppStateContext';
 
 import useStyles from './Login.styles';
@@ -25,16 +25,17 @@ const Login: React.FC = () => {
 
     const handleLogin = async (values: LoginFormValues, {setSubmitting, setErrors}: FormikHelpers<LoginFormValues>) => {
         try {
-            const {token, user} = await loginUser(values.email, values.password);
+            const {token, member} = await loginMember(values.email, values.password);
             if (token) {
                 window.localStorage.setItem('token', token);
-                window.localStorage.setItem('user', JSON.stringify(user));
-                dispatch({type: 'LOGIN', payload: user});
+                window.localStorage.setItem('member', JSON.stringify(member)); // Changed 'user' to 'member'
+                dispatch({type: 'LOGIN', payload: member});
                 toast.success("Logged in successfully!");
                 navigate('/dashboard');
             } else {
                 handleLoginError('Invalid login credentials', setErrors);
             }
+
         } catch (error) {
             handleLoginError(error, setErrors);
             setSubmitting(false);

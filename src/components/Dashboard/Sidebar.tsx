@@ -3,8 +3,7 @@ import React from 'react';
 import {Drawer, List, ListItem, ListItemText, IconButton} from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {useSidebarStyles} from "./DashboardStyleing/Dashboard.styles";
-import {User} from "../../hooks/useUser"; // Import the User interface
-
+import {Member} from "../../hooks/useMember"; // Import the User interface
 import Welcome from './Welcome';
 import UserSettings from './UserSettings';
 
@@ -12,18 +11,18 @@ interface SidebarProps {
     open: boolean;
     handleDrawerClose: () => void;
     onContentChange: (newContent: JSX.Element) => void;
-    user: User | null;
+    member: Member | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChange, user}) => {
+const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChange, member}) => {
     const sidebarClasses = useSidebarStyles();
 
-    const menuItems = user ? [
-        {label: 'Welcome', content: <Welcome user={user} />},
-        {label: 'User Settings', content: <UserSettings />},
+    const menuItems = member ? [
+        {label: 'Welcome', content: <Welcome member={member} />},
+        {label: 'Member Settings', content: <UserSettings />},
         // Add more items here
     ] : [
-        {label: 'Welcome', content: <Welcome user={{ name: 'Guest' }} />},
+        {label: 'Welcome', content: <Welcome member={{ FullName: 'Guest' }} />},
         // Add more items here
     ];
     return (

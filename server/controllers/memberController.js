@@ -15,6 +15,12 @@ const createMemberSchema = Joi.object({
     // Add validation for other fields as needed
 });
 
+// Login validation schema
+const loginSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+});
+
 
 module.exports = (models) => {
     const { Member, Family } = models;
@@ -24,7 +30,6 @@ module.exports = (models) => {
         res.json(members);
     }
 
-    // This function handles the registration of a new member
 // This function handles the registration of a new member
     async function createMember(req, res, next) {
         console.log('createMember function called.', req.body);
@@ -55,8 +60,32 @@ module.exports = (models) => {
         }
     }
 
+    // This function handles the login process
+    async function loginMember(req, res, next) {
+        console.log('loginMember function called.', req.body);
+        const { error, value } = loginSchema.validate(req.body);
+        if (error) return res.status(400).json({ message: error.details[0].message });
+
+        const { email, password } = value;
+
+        try {
+            const member = await Member.findOne({ where: { Email: email } }); // Adjusted to match case
+            if (!member) return res.status(400).json({ message: 'Invalid email or password.' });
+
+            const validPassword = await bcrypt.compare(password, member.Password); // Adjusted to match case
+            if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
+
+            const token = jwt.sign({ id: member.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.json({ token, member: member }); // Changed to member: member
+        } catch (error) {
+            console.error('Error in loginMember function:', error);
+            res.status(500).json({ message: 'An error occurred while logging in.' });
+        }
+    }
+
     return {
         getAllMembers,
         createMember,
+        loginMember,  // Don't forget to export the function
     };
 };
