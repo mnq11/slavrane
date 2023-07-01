@@ -1,4 +1,3 @@
-
 // server.js
 require('dotenv').config();
 const express = require('express');
@@ -6,9 +5,10 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const createDummyData = require("./DB/dummyData");
 const winston = require('winston');
+const compression = require('compression');
 const initializeDatabase = require("./DB/databaseSetup");
+// const createDummyData = require("./DB/dummyData");
 
 const app = express();
 const port = process.env.SERVER_PORT || 3001;
@@ -28,6 +28,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(helmet());
+app.use(compression());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -35,34 +36,29 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Centralized error handling
 app.use((err, req, res, next) => {
     logger.error(err.stack);
-    res.status(500).json({ message: 'Something broke!' }); // Send JSON response
-});
-
-app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.path}`);
-    next();
+    res.status(err.status || 500).json({ message: err.message || 'Something broke!' });
 });
 
 initializeDatabase().then(async (db) => {
     const { sequelize, models } = db;
+    // await createDummyData(sequelize, models);
 
-    // Create dummy data
-    // try {
-    //     await createDummyData(sequelize, models);
-    // } catch (err) {
-    //     logger.error('Error during dummy data creation', err);
-    // }
+    app.use((req, res, next) => {
+        console.log(`Incoming request: ${req.method} ${req.path}`);
+        next();
+    });
 
-    // Define routes after database initialization
-    const memberRoutes = require('./routes/members')(models); // Pass models to routes
-    app.use('/members', memberRoutes); // Use memberRoutes for any requests that start with '/members'
+    // Pass models to routes
+    const memberRoutes = require('./routes/members')(models);
+    app.use('/members', memberRoutes); // API versioning
 
     // Start your server here
     app.listen(port, () => {
-        logger.info(`Server is running at http://localhost:${port}`);
+        console.log(`Server is running at http://localhost:${port}`);
     });
 }).catch(err => {
-    logger.error('Error during database initialization', err);
+    console.log('Error during database initialization', err);
 });

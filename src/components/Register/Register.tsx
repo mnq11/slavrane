@@ -13,7 +13,7 @@ const Register: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             FamilyID: '',
-            RoleID: '',
+            RoleID: '250',
             FullName: '',
             DateOfBirth: '',
             Email: '',
@@ -68,12 +68,7 @@ const Register: React.FC = () => {
                                onChange={formik.handleChange}
                                value={formik.values.FamilyID}
                                error={formik.touched.FamilyID && formik.errors.FamilyID ? formik.errors.FamilyID : undefined}/>
-                    <FormInput label="Role ID" id="RoleID" name="RoleID" type="text"
-                               onChange={formik.handleChange}
-                               value={formik.values.RoleID}
-                               error={formik.touched.RoleID && formik.errors.RoleID ? formik.errors.RoleID : undefined}/>
-
-                    <FormInput label="Full Name" id="FullName" name="FullName" type="text"
+                   <FormInput label="Full Name" id="FullName" name="FullName" type="text"
                                onChange={formik.handleChange}
                                value={formik.values.FullName}
                                error={formik.touched.FullName && formik.errors.FullName ? formik.errors.FullName : undefined}/>
