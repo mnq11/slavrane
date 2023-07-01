@@ -7,11 +7,14 @@ interface ExpenseProps {
 }
 
 const Expense: React.FC<ExpenseProps> = ({ member }) => {
-    // Assuming the member object has a 'expenses' property that is an array of expense objects
     const expenses = member.expenses;
 
+    if (expenses === undefined) {
+        return <div>Error: Expense information not available.</div>;
+    }
+
     if (!expenses || expenses.length === 0) {
-        return <div>No expense information available for this member.</div>;
+        return <div>This member does not have any expenses.</div>;
     }
 
     return (
@@ -20,7 +23,13 @@ const Expense: React.FC<ExpenseProps> = ({ member }) => {
             {expenses.map((expense) => (
                 <div key={expense.id}>
                     <p>Expense ID: {expense.id}</p>
+                    <p>Expense Category: {expense.Category}</p>
                     <p>Expense Amount: {expense.amount}</p>
+                    <p>Expense Frequency: {expense.Frequency}</p>
+                    <p>Expense Start Date: {expense.StartDate}</p>
+                    <p>Expense End Date: {expense.EndDate}</p>
+                    <p>Created At: {expense.createdAt}</p>
+                    <p>Updated At: {expense.updatedAt}</p>
                 </div>
             ))}
         </div>

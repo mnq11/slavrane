@@ -7,11 +7,14 @@ interface ResourceProps {
 }
 
 const Resource: React.FC<ResourceProps> = ({ member }) => {
-    // Assuming the member object has a 'resources' property that is an array of resource objects
     const resources = member.resources;
 
+    if (resources === undefined) {
+        return <div>Error: Resource information not available.</div>;
+    }
+
     if (!resources || resources.length === 0) {
-        return <div>No resource information available for this member.</div>;
+        return <div>This member does not have any resources.</div>;
     }
 
     return (
@@ -20,7 +23,10 @@ const Resource: React.FC<ResourceProps> = ({ member }) => {
             {resources.map((resource) => (
                 <div key={resource.id}>
                     <p>Resource ID: {resource.id}</p>
-                    <p>Resource Name: {resource.name}</p>
+                    <p>Resource Type: {resource.ResourceType}</p>
+                    <p>Resource Name: {resource.ResourceName}</p>
+                    <p>Created At: {resource.createdAt}</p>
+                    <p>Updated At: {resource.updatedAt}</p>
                 </div>
             ))}
         </div>

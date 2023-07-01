@@ -7,7 +7,6 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({ member }) => {
-    // Assuming the member object has a 'tasks' property that is an array of task objects
     const tasks = member.tasks;
 
     if (!tasks || tasks.length === 0) {
@@ -20,7 +19,11 @@ const Task: React.FC<TaskProps> = ({ member }) => {
             {tasks.map((task) => (
                 <div key={task.id}>
                     <p>Task ID: {task.id}</p>
-                    <p>Task Name: {task.name}</p>
+                    <p>Task Description: {task.Description}</p>
+                    <p>Due Date: {task.DueDate}</p>
+                    <p>Status: {task.Status}</p>
+                    <p>Created At: {task.createdAt}</p>
+                    <p>Updated At: {task.updatedAt}</p>
                 </div>
             ))}
         </div>

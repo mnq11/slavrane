@@ -45,7 +45,7 @@ app.use((err, req, res, next) => {
 
 initializeDatabase().then(async (db) => {
     const { sequelize, models } = db;
-    await createDummyData(sequelize, models);
+    // await createDummyData(sequelize, models);
 
     app.use((req, res, next) => {
         console.log(`Incoming request: ${req.method} ${req.path}`);

@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
         {label: 'Member Settings', content: <UserSettings />},
         // Add more items here
     ] : [
-        {label: 'Welcome', content: <Welcome member={{ FullName: 'Guest' }} />},
+        {label: 'Welcome', content: <Welcome member={member} />},
         // Add more items here
     ];
 

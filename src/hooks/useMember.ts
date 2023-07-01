@@ -2,49 +2,75 @@
 import {useEffect, useState} from 'react';
 
 // Define interfaces for related models
-interface Task {
+export interface Task {
     id: number;
-    name: string;
+    Description: string;
+    DueDate: string;
+    Status: string;
+    createdAt: string;
+    updatedAt: string;
     // Include other task properties here
 }
 
-interface Resource {
+export interface Resource {
     id: number;
-    name: string;
+    ResourceType: string;
+    ResourceName: string;
+    createdAt: string;
+    updatedAt: string;
     // Include other resource properties here
 }
 
-interface Expense {
+export interface Expense {
     id: number;
+    Category: string;
     amount: number;
+    Frequency: string;
+    StartDate: string;
+    EndDate: string;
+    createdAt: string;
+    updatedAt: string;
     // Include other expense properties here
 }
 
-interface Family {
+export interface Family {
     id: number;
-    name: string;
+    FamilyName: string;
+    Address: string;
+    createdAt: string;
+    updatedAt: string;
     // Include other family properties here
 }
 
-interface Income {
+export interface Income {
     id: number;
+    Source: string;
     amount: number;
+    Frequency: string;
+    StartDate: string;
+    EndDate: string;
+    createdAt: string;
+    updatedAt: string;
+
     // Include other income properties here
 }
 
-interface Role {
+export interface Role {
     id: number;
-    name: string;
+    RoleName: string;
+    createdAt: string;
+    updatedAt: string;
     // Include other role properties here
 }
 
-interface Savings {
+export interface Savings {
     id: number;
     amount: number;
+
     // Include other savings properties here
 }
 
-interface Skill {
+export interface Skill {
     id: number;
     name: string;
     // Include other skill properties here

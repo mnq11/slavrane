@@ -89,13 +89,26 @@ module.exports = (models) => {
             if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
 
             const token = jwt.sign({ id: member.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.json({ token, member: member.get({ plain: true }) }); // Changed to member: member.get({ plain: true })
+            const memberPlain = member.get({
+                plain: true,
+                include: [
+                    { model: models.Family },
+                    { model: models.Role },
+                    { model: models.Task },
+                    { model: models.Resource },
+                    { model: models.Skill },
+                    { model: models.Income },
+                    { model: models.Expense },
+                    { model: models.Savings }
+                ]
+            });
+
+            res.json({ token, member: memberPlain });
         } catch (error) {
             console.error('Error in loginMember function:', error);
             res.status(500).json({ message: 'An error occurred while logging in.' });
         }
     }
-
     return {
         getAllMembers,
         createMember,

@@ -3,12 +3,13 @@
 import {Member} from "../../../hooks/useMember";
 
 interface WelcomeProps {
-    member: Member | { FullName: string }; // Changed from 'name' to 'FullName'
+    member: Member | null;
+
 }
 
 const Welcome: React.FC<WelcomeProps> = ({ member }) => (
     <div>
-        <h1>Welcome to the app, {member.FullName}!</h1>
+        <h1>Welcome to the app, {member?.FullName}!</h1>
     </div>
 );
 

@@ -1,4 +1,3 @@
-
 // components/Skill.tsx
 import React from 'react';
 import { Member } from '../../../hooks/useMember';
@@ -8,11 +7,14 @@ interface SkillProps {
 }
 
 const Skill: React.FC<SkillProps> = ({ member }) => {
-    // Assuming the member object has a 'skills' property that is an array of skill objects
     const skills = member.skills;
 
+    if (skills === undefined) {
+        return <div>Error: Skill information not available.</div>;
+    }
+
     if (!skills || skills.length === 0) {
-        return <div>No skill information available for this member.</div>;
+        return <div>This member does not have any skills.</div>;
     }
 
     return (
@@ -22,6 +24,9 @@ const Skill: React.FC<SkillProps> = ({ member }) => {
                 <div key={skill.id}>
                     <p>Skill ID: {skill.id}</p>
                     <p>Skill Name: {skill.name}</p>
+                    {/* Uncomment these lines if these properties exist in your Skill model */}
+                    {/* <p>Created At: {skill.createdAt}</p> */}
+                    {/* <p>Updated At: {skill.updatedAt}</p> */}
                 </div>
             ))}
         </div>

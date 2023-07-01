@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
     const [user] = useMember();
     const navigate = useNavigate();
     const classes = useDashboardStyles();
-    const [content, setContent] = useState<JSX.Element | null>(user ? <Welcome member={user} /> : <Welcome member={{ FullName: 'Guest' }} />);
+    const [content, setContent] = useState<JSX.Element | null>(user ? <Welcome member={user} /> : <Welcome member={null} />);
 
     const handleContentChange = (newContent: JSX.Element) => {
         setContent(newContent);

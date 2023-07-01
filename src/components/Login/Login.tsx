@@ -28,7 +28,8 @@ const Login: React.FC = () => {
             const {token, member} = await loginMember(values.email, values.password);
             if (token) {
                 window.localStorage.setItem('token', token);
-                window.localStorage.setItem('member', JSON.stringify(member)); // Changed 'user' to 'member'
+                window.localStorage.setItem('member', JSON.stringify(member));
+                console.log('member', member);
                 dispatch({type: 'LOGIN', payload: member});
                 toast.success("Logged in successfully!");
                 navigate('/dashboard');
