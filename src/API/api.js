@@ -6,7 +6,7 @@ export async function loginUser(email, password) {
     return response.data;
 }
 
-export async function registerUser(values) {
+export async function registerMember(values) {
     try {
         const response = await axios.post(process.env.REACT_APP_API_URL + '/members/register', values);
         return response.data;

@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import {toast} from 'react-toastify';
 import {Button, Container, Typography, CircularProgress} from '@material-ui/core';
 import FormInput from './FormInput';
-import {registerUser} from '../../API/api';
+import {registerMember} from '../../API/api';
 import useRegisterStyles from "./Register.styles";
 
 const Register: React.FC = () => {
@@ -22,6 +22,8 @@ const Register: React.FC = () => {
         },
         validationSchema: Yup.object({
             FamilyID: Yup.string()
+                .required('Required'),
+            RoleID: Yup.string()
                 .required('Required'),
             FullName: Yup.string()
                 .required('Required'),
@@ -41,7 +43,7 @@ const Register: React.FC = () => {
         onSubmit: async (values, {setSubmitting, setErrors}) => {
             try {
                 console.log('Submitting form with values:', values);
-                const response = await registerUser(values);
+                const response = await registerMember(values);
                 console.log(response);
                 toast.success("Registration successful!");
             } catch (error) {
@@ -66,7 +68,12 @@ const Register: React.FC = () => {
                                onChange={formik.handleChange}
                                value={formik.values.FamilyID}
                                error={formik.touched.FamilyID && formik.errors.FamilyID ? formik.errors.FamilyID : undefined}/>
-                   <FormInput label="Full Name" id="FullName" name="FullName" type="text"
+                    <FormInput label="Role ID" id="RoleID" name="RoleID" type="text"
+                               onChange={formik.handleChange}
+                               value={formik.values.RoleID}
+                               error={formik.touched.RoleID && formik.errors.RoleID ? formik.errors.RoleID : undefined}/>
+
+                    <FormInput label="Full Name" id="FullName" name="FullName" type="text"
                                onChange={formik.handleChange}
                                value={formik.values.FullName}
                                error={formik.touched.FullName && formik.errors.FullName ? formik.errors.FullName : undefined}/>

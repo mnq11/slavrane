@@ -2,41 +2,58 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.getAllMembers = async (req, res, models) => {
-    const { Member } = models;
-    const members = await Member.findAll();
-    res.json(members);
-};
-
-exports.createMember = async (req, res, models) => {
+module.exports = (models) => {
     const { Member, Family, Role } = models;
-    const { Password, FamilyID, RoleID, ...otherFields } = req.body;
 
-    if (!RoleID || isNaN(RoleID)) {
-        return res.status(400).json({message: 'Invalid RoleID.'});
+    async function getAllMembers(req, res) {
+        const members = await Member.findAll();
+        res.json(members);
     }
 
-    const family = await Family.findByPk(FamilyID);
-    if (!family) return res.status(404).json({message: 'Family not found.'});
+    // This function handles the registration of a new member
+    async function createMember(req, res) {
+        try {
+            // Log the incoming request body
+            console.log('createMember function called with req.body:', req.body);
 
-    const role = await Role.findByPk(RoleID);
-    if (!role) return res.status(404).json({message: 'Role not found.'});
+            // Destructure the request body
+            const { Password, FamilyID, RoleID, Email, ...otherFields } = req.body;
 
-    const hashedPassword = await bcrypt.hash(Password, 10);
-    const member = await Member.create({ Password: hashedPassword, FamilyID, RoleID, ...otherFields });
-    res.json(member);
-};
+            // Validate the RoleID
+            if (!RoleID || isNaN(RoleID)) {
+                return res.status(400).json({message: 'Invalid RoleID.'});
+            }
 
-exports.deleteMember = async (req, res, models) => {
+            const family = await Family.findByPk(FamilyID);
+            if (!family) return res.status(404).json({message: 'Family not found.'});
+
+            const role = await Role.findByPk(RoleID);
+            if (!role) return res.status(404).json({message: 'Role not found.'});
+
+            // Check if email already exists
+            const existingMember = await Member.findOne({ where: { Email } });
+            if (existingMember) return res.status(400).json({message: 'Email already in use.'});
+
+            const hashedPassword = await bcrypt.hash(Password, 10);
+            const member = await Member.create({ Password: hashedPassword, FamilyID, RoleID, Email, ...otherFields });
+            console.log('Member created:', member);
+            res.json(member);
+        } catch (error) {
+            console.error('Error in createMember function:', error);
+            res.status(500).json({message: 'An error occurred while creating the member.'});
+        }
+    }
+
+    async function deleteMember(req, res) {
         const { MemberID } = req.params;
         const member = await Member.findByPk(MemberID);
         if (!member) return res.status(404).json({message: 'Member not found.'});
 
         await member.destroy();
         res.json({message: 'Member deleted.'});
-    };
+    }
 
-    exports.loginMember = async (req, res, models) => {
+    async function loginMember(req, res) {
         const { Email, Password } = req.body;
         const member = await Member.findOne({ where: { Email } });
         if (!member) return res.status(404).json({message: 'Member not found.'});
@@ -46,9 +63,9 @@ exports.deleteMember = async (req, res, models) => {
 
         const token = jwt.sign({ MemberID: member.MemberID }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token, MemberID: member.MemberID, member });
-    };
+    }
 
-    exports.updateMember = async (req, res, models) => {
+    async function updateMember(req, res) {
         const { MemberID } = req.params;
         const member = await Member.findByPk(MemberID);
         if (!member) return res.status(404).json({message: 'Member not found.'});
@@ -60,4 +77,13 @@ exports.deleteMember = async (req, res, models) => {
         Object.assign(member, otherFields);
         await member.save();
         res.json(member);
+    }
+
+    return {
+        getAllMembers,
+        createMember,
+        deleteMember,
+        loginMember,
+        updateMember
     };
+};

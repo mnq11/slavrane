@@ -1,3 +1,4 @@
+
 // server.js
 require('dotenv').config();
 const express = require('express');
@@ -39,19 +40,24 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Something broke!' }); // Send JSON response
 });
 
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.path}`);
+    next();
+});
+
 initializeDatabase().then(async (db) => {
     const { sequelize, models } = db;
 
     // Create dummy data
-    try {
-        await createDummyData(sequelize, models);
-    } catch (err) {
-        logger.error('Error during dummy data creation', err);
-    }
+    // try {
+    //     await createDummyData(sequelize, models);
+    // } catch (err) {
+    //     logger.error('Error during dummy data creation', err);
+    // }
 
     // Define routes after database initialization
-    const memberRoutes = require('./routes/members');
-    app.get('/members', (req, res) => memberController.getAllMembers(req, res, models));
+    const memberRoutes = require('./routes/members')(models); // Pass models to routes
+    app.use('/members', memberRoutes); // Use memberRoutes for any requests that start with '/members'
 
     // Start your server here
     app.listen(port, () => {

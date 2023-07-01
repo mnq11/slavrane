@@ -16,7 +16,7 @@ async function initializeDatabase() {
     try {
         // Create database if it doesn't exist
         await sequelizeWithoutDB.query(`CREATE DATABASE IF NOT EXISTS ${dbConfig.database};`);
-        console.log('Database created');
+        console.log('Database available');
 
         // Close the connection to prevent potential connection leaks
         await sequelizeWithoutDB.close();
@@ -35,8 +35,12 @@ async function initializeDatabase() {
         const models = defineModels(sequelize, Sequelize.DataTypes);
         defineRelationships(models);
 
-        // Return sequelize instance and models
-        return { sequelize, models };
+        // Return sequelize instance, models, and getModels function
+        return {
+            sequelize,
+            models,
+            getModels: () => models
+        };
     } catch (err) {
         console.error('Failed to create database', err);
         throw new Error('Database initialization failed');
