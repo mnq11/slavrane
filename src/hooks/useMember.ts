@@ -2,94 +2,127 @@
 import {useEffect, useState} from 'react';
 
 // Define interfaces for related models
-export interface Task {
+export interface MemberTask {
     id: number;
+    MemberID: number;
+    TaskID: number;
+}
+
+export interface Task {
+    TaskID: number;
     Description: string;
     DueDate: string;
     Status: string;
     createdAt: string;
     updatedAt: string;
-    // Include other task properties here
+    MemberTask: MemberTask;
 }
 
-export interface Resource {
-    id: number;
-    ResourceType: string;
-    ResourceName: string;
-    createdAt: string;
-    updatedAt: string;
-    // Include other resource properties here
-}
 
 export interface Expense {
-    id: number;
+    ExpenseID: number;
     Category: string;
-    amount: number;
+    Amount: number;
     Frequency: string;
     StartDate: string;
     EndDate: string;
     createdAt: string;
     updatedAt: string;
-    // Include other expense properties here
+    MemberExpense: {
+        id: number;
+        MemberID: number;
+        ExpenseID: number;
+    }
 }
 
 export interface Family {
-    id: number;
+    FamilyID: number;
     FamilyName: string;
     Address: string;
     createdAt: string;
     updatedAt: string;
-    // Include other family properties here
 }
 
+
 export interface Income {
-    id: number;
+    IncomeID: number;
     Source: string;
-    amount: number;
+    Amount: string;
     Frequency: string;
     StartDate: string;
     EndDate: string;
     createdAt: string;
     updatedAt: string;
-
-    // Include other income properties here
+    MemberIncome: {
+        id: number;
+        MemberID: number;
+        IncomeID: number;
+    }
 }
 
-export interface Role {
-    id: number;
-    RoleName: string;
-    createdAt: string;
-    updatedAt: string;
-    // Include other role properties here
-}
 
 export interface Savings {
     id: number;
     amount: number;
-
-    // Include other savings properties here
+    memberId: number;
+    familyId: number;
+    date: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
-export interface Skill {
-    id: number;
-    name: string;
-    // Include other skill properties here
-}
+
 
 export interface Member {
-    id: number;
+    MemberID: number;
     FullName: string;
-    email: string;
-    tasks: Task[]; // Add a tasks property to the Member interface
-    resources: Resource[]; // Add a resources property to the Member interface
-    expenses: Expense[]; // Add an expenses property to the Member interface
-    family: Family; // Add a family property to the Member interface
-    incomes: Income[]; // Add an incomes property to the Member interface
-    roles: Role[]; // Add a roles property to the Member interface
-    savings: Savings[]; // Add a savings property to the Member interface
-    skills: Skill[]; // Add a skills property to the Member interface
+    Email: string;
+    PhoneNumber: number;
+    Tasks: Task[];
+    Resources: Resource[];
+    Expenses: Expense[];
+    Family: Family;
+    Incomes: Income[];
+    Roles: Role[];
+    Savings: Savings[];
+    Skills: Skill[];
+}
+export interface Resource {
+    ResourceID: number;
+    ResourceType: string;
+    ResourceName: string;
+    createdAt: string;
+    updatedAt: string;
+    MemberResource: {
+        id: number;
+        MemberID: number;
+        ResourceID: number;
+    }
 }
 
+export interface Role {
+    RoleID: number;
+    RoleName: string;
+    createdAt: string;
+    updatedAt: string;
+    MemberRole: {
+        id: number;
+        MemberID: number;
+        RoleID: number;
+    }
+}
+export interface Skill {
+    SkillID: number;
+    SkillName: string;
+    createdAt: string;
+    updatedAt: string;
+    MemberSkill: {
+        id: number;
+        MemberID: number;
+        SkillID: number;
+    }
+}
 export const useMember = () => {
     const userFromStorage = window.localStorage.getItem('member');
     const initialUser = userFromStorage ? JSON.parse(userFromStorage) : null;

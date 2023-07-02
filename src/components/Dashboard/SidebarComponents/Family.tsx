@@ -7,7 +7,7 @@ interface FamilyProps {
 }
 
 const Family: React.FC<FamilyProps> = ({ member }) => {
-    const family = member.family;
+    const family = member.Family;
 
     if (family === undefined) {
         return <div>Error: Family information not available.</div>;
@@ -20,11 +20,11 @@ const Family: React.FC<FamilyProps> = ({ member }) => {
     return (
         <div>
             <h1>{member.FullName}'s Family</h1>
-            <p>Family ID: {family.id}</p>
+            <p>Family ID: {family.FamilyID}</p>
             <p>Family Name: {family.FamilyName}</p>
             <p>Address: {family.Address}</p>
             <p>Created At: {family.createdAt}</p>
-            <p>Updated At: {family.updatedAt}</p>
+
         </div>
     );
 };

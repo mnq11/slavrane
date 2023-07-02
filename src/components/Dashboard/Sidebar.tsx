@@ -27,15 +27,15 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
 
     const menuItems = member ? [
         {label: 'Welcome', content: <Welcome member={member} />},
-        {label: 'Family', content: <Family member={member} />}, // Replace with your actual component
-        {label: 'Role', content: <Role member={member} />}, // Replace with your actual component
-        {label: 'Task', content: <Task member={member} />}, // Replace with your actual component
-        {label: 'Resource', content: <Resource member={member} />}, // Replace with your actual component
-        {label: 'Skill', content: <Skill member={member} />}, // Replace with your actual component
-        {label: 'Income', content: <Income member={member} />}, // Replace with your actual component
-        {label: 'Expense', content: <Expense member={member} />}, // Replace with your actual component
-        {label: 'Savings', content: <Savings member={member} />}, // Replace with your actual component
-        {label: 'Member Settings', content: <UserSettings />},
+        {label: 'Family', content: <Family member={member} />},
+        {label: 'Role', content: <Role member={member} />},
+        {label: 'Task', content: <Task member={member} />},
+        {label: 'Resource', content: <Resource member={member} />},
+        {label: 'Skill', content: <Skill member={member} />},
+        {label: 'Income', content: <Income member={member} />},
+        {label: 'Expense', content: <Expense member={member} />},
+        {label: 'Savings', content: <Savings member={member} />},
+        {label: 'Member Settings', content: <UserSettings member={member}/>},
         // Add more items here
     ] : [
         {label: 'Welcome', content: <Welcome member={member} />},

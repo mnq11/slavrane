@@ -7,7 +7,7 @@ interface IncomeProps {
 }
 
 const Income: React.FC<IncomeProps> = ({ member }) => {
-    const incomes = member.incomes;
+    const incomes = member.Incomes;
 
     if (incomes === undefined) {
         return <div>Error: Income information not available.</div>;
@@ -20,17 +20,16 @@ const Income: React.FC<IncomeProps> = ({ member }) => {
     return (
         <div>
             <h1>{member.FullName}'s Incomes</h1>
-            {incomes.map((income) => (
-                <div key={income.id}>
-                    <p>Income ID: {income.id}</p>
-                    <p>Income Source: {income.Source}</p>
-                    <p>Income Amount: {income.amount}</p>
-                    <p>Income Frequency: {income.Frequency}</p>
-                    <p>Income Start Date: {income.StartDate}</p>
-                    <p>Income End Date: {income.EndDate}</p>
-                    <p>Created At: {income.createdAt}</p>
-                    <p>Updated At: {income.updatedAt}</p>
+            {incomes.map((Income) => (
+                <div key={Income.IncomeID}>
+                    <p>Income ID: {Income.IncomeID}</p>
+                    <p>Income Source: {Income.Source}</p>
+                    <p>Income Amount: {Income.Amount}</p>
+                    <p>Income Frequency: {Income.Frequency}</p>
+                    <p>Income Start Date: {Income.StartDate}</p>
+                    <p>Income End Date: {Income.EndDate}</p>
                 </div>
+
             ))}
         </div>
     );

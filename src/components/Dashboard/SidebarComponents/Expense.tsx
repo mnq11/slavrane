@@ -7,7 +7,7 @@ interface ExpenseProps {
 }
 
 const Expense: React.FC<ExpenseProps> = ({ member }) => {
-    const expenses = member.expenses;
+    const expenses = member.Expenses;
 
     if (expenses === undefined) {
         return <div>Error: Expense information not available.</div>;
@@ -20,16 +20,14 @@ const Expense: React.FC<ExpenseProps> = ({ member }) => {
     return (
         <div>
             <h1>{member.FullName}'s Expenses</h1>
-            {expenses.map((expense) => (
-                <div key={expense.id}>
-                    <p>Expense ID: {expense.id}</p>
-                    <p>Expense Category: {expense.Category}</p>
-                    <p>Expense Amount: {expense.amount}</p>
-                    <p>Expense Frequency: {expense.Frequency}</p>
-                    <p>Expense Start Date: {expense.StartDate}</p>
-                    <p>Expense End Date: {expense.EndDate}</p>
-                    <p>Created At: {expense.createdAt}</p>
-                    <p>Updated At: {expense.updatedAt}</p>
+            {expenses.map((Expense) => (
+                <div key={Expense.ExpenseID}>
+                    <p>Expense ID: {Expense.ExpenseID}</p>
+                    <p>Expense Category: {Expense.Category}</p>
+                    <p>Expense Amount: {Expense.Amount}</p>
+                    <p>Expense Frequency: {Expense.Frequency}</p>
+                    <p>Expense Start Date: {Expense.StartDate}</p>
+                    <p>Expense End Date: {Expense.EndDate}</p>
                 </div>
             ))}
         </div>

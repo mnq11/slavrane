@@ -7,7 +7,7 @@ interface SavingsProps {
 }
 
 const Savings: React.FC<SavingsProps> = ({ member }) => {
-    const savings = member.savings;
+    const savings = member.Savings;
 
     if (savings === undefined) {
         return <div>Error: Savings information not available.</div>;
@@ -20,10 +20,10 @@ const Savings: React.FC<SavingsProps> = ({ member }) => {
     return (
         <div>
             <h1>{member.FullName}'s Savings</h1>
-            {savings.map((saving) => (
-                <div key={saving.id}>
-                    <p>Savings ID: {saving.id}</p>
-                    <p>Savings Amount: {saving.amount}</p>
+            {savings.map((Saving) => (
+                <div key={Saving.id}>
+                    <p>Savings ID: {Saving.id}</p>
+                    <p>Savings Amount: {Saving.amount}</p>
                     {/* Uncomment these lines if these properties exist in your Savings model */}
                     {/* <p>Created At: {saving.createdAt}</p> */}
                     {/* <p>Updated At: {saving.updatedAt}</p> */}

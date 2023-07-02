@@ -7,7 +7,7 @@ interface SkillProps {
 }
 
 const Skill: React.FC<SkillProps> = ({ member }) => {
-    const skills = member.skills;
+    const skills = member.Skills;
 
     if (skills === undefined) {
         return <div>Error: Skill information not available.</div>;
@@ -20,14 +20,12 @@ const Skill: React.FC<SkillProps> = ({ member }) => {
     return (
         <div>
             <h1>{member.FullName}'s Skills</h1>
-            {skills.map((skill) => (
-                <div key={skill.id}>
-                    <p>Skill ID: {skill.id}</p>
-                    <p>Skill Name: {skill.name}</p>
-                    {/* Uncomment these lines if these properties exist in your Skill model */}
-                    {/* <p>Created At: {skill.createdAt}</p> */}
-                    {/* <p>Updated At: {skill.updatedAt}</p> */}
+            {skills.map((Skill) => (
+                <div key={Skill.SkillID}>
+                    <p>Skill ID: {Skill.SkillID}</p>
+                    <p>Skill Name: {Skill.SkillName}</p>
                 </div>
+
             ))}
         </div>
     );
