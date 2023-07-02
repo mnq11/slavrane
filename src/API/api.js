@@ -41,3 +41,31 @@ export async function registerMember(values) {
     const response = await api.post('/members/register', values);
     return response.data;
 }
+
+export async function getAllFamilies() {
+    const response = await api.get('/members/families');
+    return response.data;
+}
+export async function getMembersByFamilyId(familyId) {
+    const response = await api.get(`/families/${familyId}/members`);
+    return response.data;
+}
+export async function getMemberById(id) {
+    const response = await api.get(`/members/${id}`);
+    return response.data;
+}
+
+export async function createMember(member) {
+    const response = await api.post('/members', member);
+    return response.data;
+}
+
+export async function updateMember(id, updates) {
+    const response = await api.put(`/members/${id}`, updates);
+    return response.data;
+}
+
+export async function deleteMember(id) {
+    const response = await api.delete(`/members/${id}`);
+    return response.data;
+}

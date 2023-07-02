@@ -14,6 +14,7 @@ import Skill from "./SidebarComponents/Skill";
 import Income from "./SidebarComponents/Income";
 import Expense from "./SidebarComponents/Expense";
 import Savings from "./SidebarComponents/Savings";
+import AdminPanel from "./SidebarComponents/Admin/AdminPanel";
 
 interface SidebarProps {
     open: boolean;
@@ -27,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
 
     const menuItems = member ? [
         {label: 'Welcome', content: <Welcome member={member} />},
+        ...(member.Role === 'admin' ? [{label: 'Admin Panel', content: <AdminPanel member={member} />}] : []),
         {label: 'Family', content: <Family member={member} />},
         {label: 'Role', content: <Role member={member} />},
         {label: 'Task', content: <Task member={member} />},

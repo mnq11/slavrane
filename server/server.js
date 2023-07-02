@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 const winston = require('winston');
 const compression = require('compression');
 const initializeDatabase = require("./DB/databaseSetup");
-const createDummyData = require("./DB/dummyData");
+// const createDummyData = require("./DB/dummyData");
 // const createDummyData = require("./DB/dummyData");
 
 const app = express();
@@ -54,7 +54,7 @@ initializeDatabase().then(async (db) => {
 
     // Pass models to routes
     const memberRoutes = require('./routes/members')(models);
-    app.use('/members', memberRoutes); // API versioning
+    app.use('/members', memberRoutes);
 
     // Start your server here
     app.listen(port, () => {

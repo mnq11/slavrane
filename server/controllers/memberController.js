@@ -25,9 +25,14 @@ const loginSchema = Joi.object({
 module.exports = (models) => {
     const { Member, Family } = models;
 
-    async function getAllMembers(req, res) {
-        const members = await Member.findAll();
-        res.json(members);
+    async function getAllFamilies(req, res) {
+        try {
+            const families = await models.Family.findAll();
+            res.json({ families });
+        } catch (error) {
+            console.error('Error in getAllFamilies function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
     }
 
 // This function handles the registration of a new member
@@ -110,8 +115,9 @@ module.exports = (models) => {
         }
     }
     return {
-        getAllMembers,
         createMember,
         loginMember,
+        getAllFamilies
     };
+
 };

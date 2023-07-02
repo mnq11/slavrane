@@ -10,7 +10,6 @@ const UserSettings: React.FC<UserSettingsProps> = ({ member }) => {
     if (!member) {
         return <Typography variant="h4">Loading...</Typography>;
     }
-    console.log('this is my Member object :',member);
 
     return (
         <div>

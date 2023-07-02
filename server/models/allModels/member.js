@@ -7,6 +7,11 @@ module.exports = function(sequelize, DataTypes) {
         Email: DataTypes.STRING,
         PhoneNumber: DataTypes.STRING,
         Password: DataTypes.STRING,
+        Role: {
+            type: DataTypes.ENUM,
+            values: ['normal', 'moderator', 'admin', 'analyst'],
+            defaultValue: 'normal'
+        }
     });
 
     return Member;
