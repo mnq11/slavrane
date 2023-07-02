@@ -1,6 +1,6 @@
 // components/Task.tsx
 import React from 'react';
-import { Member, Task as TaskType } from '../../../hooks/useMember';
+import { Member, Task as TaskType } from '../../../../hooks/useMember';
 
 interface TaskProps {
     member: Member;

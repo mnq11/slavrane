@@ -55,7 +55,8 @@ initializeDatabase().then(async (db) => {
     // Pass models to routes
     const memberRoutes = require('./routes/members')(models);
     app.use('/members', memberRoutes);
-
+    const taskRoutes = require('./routes/tasks')(models);
+    app.use('/tasks', taskRoutes);
     // Start your server here
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);

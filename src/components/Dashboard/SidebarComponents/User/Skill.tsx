@@ -1,6 +1,6 @@
 // components/Skill.tsx
 import React from 'react';
-import { Member } from '../../../hooks/useMember';
+import { Member } from '../../../../hooks/useMember';
 
 interface SkillProps {
     member: Member;

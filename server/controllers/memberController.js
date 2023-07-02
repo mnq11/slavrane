@@ -23,7 +23,7 @@ const loginSchema = Joi.object({
 
 
 module.exports = (models) => {
-    const { Member, Family } = models;
+    const { Member, Family ,} = models;
 
     async function getAllFamilies(req, res) {
         try {
@@ -44,7 +44,9 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while fetching data.' });
         }
     }
-// This function handles the registration of a new member
+
+// memberController.js
+
     async function createMember(req, res, next) {
         console.log('createMember function called.', req.body);
         try {
@@ -108,11 +110,11 @@ module.exports = (models) => {
                 include: [
                     { model: models.Family },
                     { model: models.Role },
-                    { model: models.Task },
-                    { model: models.Resource },
-                    { model: models.Skill },
-                    { model: models.Income },
-                    { model: models.Expense },
+                    { model: models.Tasks },
+                    { model: models.Resources },
+                    { model: models.Skills },
+                    { model: models.Incomes },
+                    { model: models.Expenses },
                     { model: models.Savings }
                 ]
             });
@@ -123,11 +125,114 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while logging in.' });
         }
     }
+    async function getMemberTasks(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const tasks = await member.getTasks();
+            res.json({ tasks });
+        } catch (error) {
+            console.error('Error in getMemberTasks function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberResources(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const resources = await member.getResources();
+            res.json({ resources });
+        } catch (error) {
+            console.error('Error in getMemberResources function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberIncomes(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const incomes = await member.getIncomes();
+            res.json({ incomes });
+        } catch (error) {
+            console.error('Error in getMemberIncomes function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+    async function getMemberExpenses(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const expenses = await member.getExpenses();
+            res.json({ expenses });
+        } catch (error) {
+            console.error('Error in getMemberExpenses function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberFamily(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const family = await member.getFamily();
+            res.json({ family });
+        } catch (error) {
+            console.error('Error in getMemberFamily function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberRoles(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const roles = await member.getRoles();
+            res.json({ roles });
+        } catch (error) {
+            console.error('Error in getMemberRoles function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberSavings(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const savings = await member.getSavings();
+            res.json({ savings });
+        } catch (error) {
+            console.error('Error in getMemberSavings function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
+    async function getMemberSkills(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            const skills = await member.getSkills();
+            res.json({ skills });
+        } catch (error) {
+            console.error('Error in getMemberSkills function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
+
     return {
         createMember,
         loginMember,
         getAllFamilies,
-        getMembersByFamilyId
+        getMembersByFamilyId,
+        getMemberTasks,
+        getMemberResources,
+        getMemberIncomes,
+        getMemberExpenses,
+        getMemberFamily,
+        getMemberRoles,
+        getMemberSavings,
+        getMemberSkills,
     };
 
 };

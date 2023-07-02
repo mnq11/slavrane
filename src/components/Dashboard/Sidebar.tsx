@@ -4,16 +4,16 @@ import {Drawer, List, ListItem, ListItemText, IconButton} from '@material-ui/cor
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {useSidebarStyles} from "./DashboardStyleing/Dashboard.styles";
 import {Member} from "../../hooks/useMember"; // Import the User interface
-import Welcome from './SidebarComponents/Welcome';
-import UserSettings from './SidebarComponents/UserSettings';
-import Role from "./SidebarComponents/Role";
-import Family from "./SidebarComponents/Family";
-import Task from "./SidebarComponents/Task";
-import Resource from "./SidebarComponents/Resource";
-import Skill from "./SidebarComponents/Skill";
-import Income from "./SidebarComponents/Income";
-import Expense from "./SidebarComponents/Expense";
-import Savings from "./SidebarComponents/Savings";
+import Welcome from './SidebarComponents/User/Welcome';
+import UserSettings from './SidebarComponents/User/UserSettings';
+import Role from "./SidebarComponents/User/Role";
+import Family from "./SidebarComponents/User/Family";
+import Task from "./SidebarComponents/User/Task";
+import Resource from "./SidebarComponents/User/Resource";
+import Skill from "./SidebarComponents/User/Skill";
+import Income from "./SidebarComponents/User/Income";
+import Expense from "./SidebarComponents/User/Expense";
+import Savings from "./SidebarComponents/User/Savings";
 import AdminPanel from "./SidebarComponents/Admin/AdminPanel";
 
 interface SidebarProps {

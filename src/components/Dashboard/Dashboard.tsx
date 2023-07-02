@@ -8,7 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import clsx from "clsx";
 import Sidebar from './Sidebar';
 import Loading from '../ErrorHandling/Loading';
-import Welcome from "./SidebarComponents/Welcome";
+import Welcome from "./SidebarComponents/User/Welcome";
 
 const Dashboard: React.FC = () => {
     const theme = useTheme();

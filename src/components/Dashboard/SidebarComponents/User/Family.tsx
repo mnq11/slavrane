@@ -1,6 +1,6 @@
 // components/Family.tsx
 import React from 'react';
-import { Member } from '../../../hooks/useMember';
+import { Member } from '../../../../hooks/useMember';
 
 interface FamilyProps {
     member: Member;

@@ -1,6 +1,6 @@
 // components/Expense.tsx
 import React from 'react';
-import { Member } from '../../../hooks/useMember';
+import { Member } from '../../../../hooks/useMember';
 
 interface ExpenseProps {
     member: Member;

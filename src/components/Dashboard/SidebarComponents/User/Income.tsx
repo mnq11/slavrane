@@ -1,6 +1,6 @@
 // components/Income.tsx
 import React from 'react';
-import { Member } from '../../../hooks/useMember';
+import { Member } from '../../../../hooks/useMember';
 
 interface IncomeProps {
     member: Member;

@@ -1,7 +1,7 @@
 // UserSettings.tsx
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import {Member, Task} from "../../../hooks/useMember";
+import {Member, Task} from "../../../../hooks/useMember";
 interface UserSettingsProps {
     member: Member | null;
 }

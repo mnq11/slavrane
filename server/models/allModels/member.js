@@ -12,6 +12,8 @@ module.exports = function(sequelize, DataTypes) {
             values: ['normal', 'moderator', 'admin', 'analyst'],
             defaultValue: 'normal'
         }
+
+
     });
 
     return Member;

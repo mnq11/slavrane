@@ -42,7 +42,6 @@ const Register: React.FC = () => {
         }),
         onSubmit: async (values, {setSubmitting, setErrors}) => {
             try {
-                console.log('Submitting form with values:', values);
                 const response = await registerMember(values);
                 console.log(response);
                 toast.success("Registration successful!");
