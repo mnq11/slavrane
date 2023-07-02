@@ -34,7 +34,16 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while fetching data.' });
         }
     }
-
+    async function getMembersByFamilyId(req, res) {
+        try {
+            const familyId = req.params.id;
+            const members = await models.Member.findAll({ where: { FamilyID: familyId } });
+            res.json({ members });
+        } catch (error) {
+            console.error('Error in getMembersByFamilyId function:', error);
+            res.status(500).json({ message: 'An error occurred while fetching data.' });
+        }
+    }
 // This function handles the registration of a new member
     async function createMember(req, res, next) {
         console.log('createMember function called.', req.body);
@@ -117,7 +126,8 @@ module.exports = (models) => {
     return {
         createMember,
         loginMember,
-        getAllFamilies
+        getAllFamilies,
+        getMembersByFamilyId
     };
 
 };

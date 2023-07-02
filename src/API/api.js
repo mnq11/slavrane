@@ -47,7 +47,7 @@ export async function getAllFamilies() {
     return response.data;
 }
 export async function getMembersByFamilyId(familyId) {
-    const response = await api.get(`/families/${familyId}/members`);
+    const response = await api.get(`/members/families/${familyId}`);
     return response.data;
 }
 export async function getMemberById(id) {

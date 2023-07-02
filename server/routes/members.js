@@ -1,6 +1,6 @@
 // routes/members.js
 const express = require('express');
-const {getAllFamilies} = require("../../src/API/api");
+const api = require("../../src/API/api");
 const router = express.Router();
 
 module.exports = (models) => {
@@ -8,8 +8,8 @@ module.exports = (models) => {
 
     router.post('/register', memberController.createMember);
     router.post('/login', memberController.loginMember);
-    router.get('/admin', memberController.getAllFamilies);
-
+    router.get('/families', memberController.getAllFamilies);
+    router.get('/families/:id', memberController.getMembersByFamilyId); // Add this line
 
     return router;
 };

@@ -1,4 +1,3 @@
-
 // FamilyTable.tsx
 import React from 'react';
 import Table from '@material-ui/core/Table';
@@ -9,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TablePagination from '@material-ui/core/TablePagination';
+import Button from '@material-ui/core/Button';
 import { useStyles } from './AdminPanel.Styles';
 
 interface FamilyTableProps {
@@ -17,9 +17,10 @@ interface FamilyTableProps {
     setPage: (page: number) => void;
     rowsPerPage: number;
     setRowsPerPage: (rowsPerPage: number) => void;
+    fetchFamilyMembers: (familyId: number) => void;
 }
 
-const FamilyTable: React.FC<FamilyTableProps> = ({ families, page, setPage, rowsPerPage, setRowsPerPage }) => {
+const FamilyTable: React.FC<FamilyTableProps> = ({ families, page, setPage, rowsPerPage, setRowsPerPage, fetchFamilyMembers }) => {
     const classes = useStyles();
 
     return (
@@ -30,6 +31,7 @@ const FamilyTable: React.FC<FamilyTableProps> = ({ families, page, setPage, rows
                         <TableCell>ID</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Address</TableCell>
+                        <TableCell>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -38,6 +40,11 @@ const FamilyTable: React.FC<FamilyTableProps> = ({ families, page, setPage, rows
                             <TableCell>{family.FamilyID}</TableCell>
                             <TableCell>{family.FamilyName}</TableCell>
                             <TableCell>{family.Address}</TableCell>
+                            <TableCell>
+                                <Button variant="contained" color="primary" onClick={() => fetchFamilyMembers(family.FamilyID)}>
+                                    Fetch Members
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
