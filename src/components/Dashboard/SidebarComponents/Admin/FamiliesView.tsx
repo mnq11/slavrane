@@ -47,6 +47,22 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     // Pagination state
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [localMembers, setLocalMembers] = useState<Member[]>([]);
+    const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+    const createMember = async (member: Member) => {
+        // Implement the function to create a member
+        return member; // placeholder
+    };
+
+    const deleteMember = async (memberId: number) => {
+        // Implement the function to delete a member
+    };
+
+    const updateMember = async (member: Member) => {
+        // Implement the function to update a member
+        return member; // placeholder
+    };
 
     const handleOpenDialog = (family: Family) => {
         setFamilyToUpdate(family);
@@ -82,7 +98,6 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     };
 
     // Pagination change handlers
-    // Pagination change handlers
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -92,7 +107,34 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setPage(0);
     };
 
+    const handleCreateMember = async (member: Member) => {
+        try {
+            const newMember = await createMember(member);
+            setLocalMembers(prevMembers => [...prevMembers, newMember]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
+    const handleDeleteMember = async (memberId: number) => {
+        try {
+            await deleteMember(memberId);
+            setLocalMembers(prevMembers => prevMembers.filter(member => member.MemberID !== memberId));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleUpdateMember = async (member: Member) => {
+        try {
+            const updatedMember = await updateMember(member);
+            setLocalMembers(prevMembers => prevMembers.map(m => m.MemberID === updatedMember.MemberID ? updatedMember : m));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleSelectMember = (member: Member) => {
+        setSelectedMember(member);
+    };
     return (
         <div className={classes.root}>
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
@@ -119,7 +161,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                         </AccordionSummary>
                         <AccordionDetails>
                             <MembersView family={family} onSelectMember={onSelectMember} members={members}
-                                         selectedMemberId={selectedMemberId}/>
+                                         selectedMemberId={selectedMemberId}
+                                         onUpdateMember={handleUpdateMember}
+                                         onDeleteMember={handleDeleteMember}
+                                         onCreateMember={handleCreateMember}/>
                         </AccordionDetails>
                     </Accordion>
                 ))
@@ -146,7 +191,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                         </AccordionSummary>
                         <AccordionDetails>
                             <MembersView family={family} onSelectMember={onSelectMember} members={members}
-                                         selectedMemberId={selectedMemberId}/>
+                                         selectedMemberId={selectedMemberId}
+                                         onUpdateMember={handleUpdateMember}
+                                         onDeleteMember={handleDeleteMember}
+                                         onCreateMember={handleCreateMember}/>
                         </AccordionDetails>
                     </Accordion>
                 ))
