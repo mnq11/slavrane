@@ -5,6 +5,7 @@ import {getAllFamilies, getMembersByFamilyId, getMemberTasks, getMemberResources
 import FamiliesView from './FamiliesView';
 import MembersView from './MembersView';
 import MemberDetailsView from './MemberDetailsView';
+import {CircularProgress, Container, Typography} from '@material-ui/core';
 
 
 interface AdminPanelProps {
@@ -24,14 +25,21 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
     const [roles, setRoles] = useState([]); // new state variable to hold roles
     const [savings, setSavings] = useState([]); // new state variable to hold savings
     const [skills, setSkills] = useState([]); // new state variable to hold skills
-
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<{ message: string } | null>(null);
     // Fetch all families when the component mounts
     useEffect(() => {
+        setLoading(true);
         getAllFamilies()
             .then((fetchedData) => {
                 setFamilies(fetchedData.families);
+                setLoading(false);
             })
-            .catch(console.error);
+            .catch((error) => {
+                console.error(error);
+                setError(error);
+                setLoading(false);
+            });
     }, []);
 
     // Fetch members when a family is selected
@@ -92,13 +100,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
         }
     }, [selectedMember]);
 
+    if (loading) {
+        return <CircularProgress />;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
     return (
-        <div>
-            <h1>Welcome, {member.FullName}</h1>
+        <Container>
+            <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
             <FamiliesView families={families} onSelectFamily={setSelectedFamily} />
             {selectedFamily && <MembersView family={selectedFamily} onSelectMember={setSelectedMember} members={members} />}
             {selectedMember && <MemberDetailsView member={selectedMember} tasks={tasks} resources={resources} incomes={incomes} expenses={expenses} family={family} roles={roles} savings={savings} skills={skills} />}
-        </div>
+        </Container>
     );
 };
 

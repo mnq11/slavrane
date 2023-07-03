@@ -1,7 +1,8 @@
-// MemberDetailsView.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import {Expense, Family, Income, Member, Resource, Role, Savings, Skill, Task} from "../../../../hooks/useMember";
-
+import {Typography, Card, CardContent, Switch, FormControlLabel, Button, CircularProgress} from '@material-ui/core';
+import DetailTable from './DetailTable';
+import { MemberDetailsViewStyles } from './AdminPanel.Styles';
 
 interface MemberDetailsViewProps {
     member: Member;
@@ -15,56 +16,114 @@ interface MemberDetailsViewProps {
     skills: Skill[];
 }
 
-
 const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, resources, incomes, expenses, family, roles, savings, skills }) => {
-    // Render the member details, tasks, resources, incomes, expenses, family, roles, savings, and skills here
-    return (
-        <div>
-            <h2>{member.FullName}</h2>
-            <h3>Family</h3>
-            {family ? <div>{family.FamilyName}</div> : <div>No family data available</div>}
-            <h3>Tasks</h3>
-            {
-                tasks.map(task => (
-                    <div key={task.TaskID}>{task.Description}</div>
-                ))
-            }
-            <h3>Resources</h3>
-            {
-                resources.map(resource => (
-                    <div key={resource.ResourceID}>{resource.ResourceType}</div>
-                ))
-            }
-            <h3>Incomes</h3>
-            {
-                incomes.map(income => (
-                    <div key={income.IncomeID}>{income.Amount}</div>
-                ))
-            }
-            <h3>Expenses</h3>
-            {
-                expenses.map(expense => (
-                    <div key={expense.ExpenseID}>{expense.Amount}</div>
-                ))
-            }
+    const classes = MemberDetailsViewStyles();
+    const [showAll, setShowAll] = useState(false);
+    const [showTables, setShowTables] = useState({
+        family: false,
+        tasks: false,
+        resources: false,
+        incomes: false,
+        expenses: false,
+        roles: false,
+        savings: false,
+        skills: false
+    });
 
-            <h3>Roles</h3>
-            {
-                roles.map(role => (
-                    <div key={role.RoleID}>{role.RoleName}</div>
-                ))
-            }
-            <h3>Savings</h3>
-            {
-                savings.map(saving => (
-                <div key={saving.id}>{saving.amount}</div>))
-            }
-            <h3>Skills</h3>
-            {
-                skills.map(skill => (
-                    <div key={skill.SkillID}>{skill.SkillName}</div>
-                ))
-            }
+    const toggleTable = (table: keyof typeof showTables) => {
+        setShowTables(prevState => ({...prevState, [table]: !prevState[table]}));
+    };
+
+    const toggleAll = () => {
+        const newState = !showAll;
+        setShowAll(newState);
+        setShowTables({
+            family: newState,
+            tasks: newState,
+            resources: newState,
+            incomes: newState,
+            expenses: newState,
+            roles: newState,
+            savings: newState,
+            skills: newState
+        });
+    };
+
+    if (!member) {
+        return <CircularProgress />;
+    }
+
+    return (
+        <div className={classes.root}>
+            <Typography variant="h4" component="h2" className={classes.title}>{member.FullName}</Typography>
+            <Card className={classes.toggleAllCard}>
+                <Button className={classes.toggleAllButton} onClick={toggleAll}>
+                    {showAll ? 'Hide All' : 'Show All'}
+                </Button>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.family} onChange={() => toggleTable('family')} />}
+                        label="Family"
+                    />
+                    {showTables.family && family && <DetailTable data={[family]} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.tasks} onChange={() => toggleTable('tasks')} />}
+                        label="Tasks"
+                    />
+                    {showTables.tasks && <DetailTable data={tasks} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.resources} onChange={() => toggleTable('resources')} />}
+                        label="Resources"
+                    />
+                    {showTables.resources && <DetailTable data={resources} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.incomes} onChange={() => toggleTable('incomes')} />}
+                        label="Incomes"
+                    />
+                    {showTables.incomes && <DetailTable data={incomes} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.expenses} onChange={() => toggleTable('expenses')} />}
+                        label="Expenses"
+                    />
+                    {showTables.expenses && <DetailTable data={expenses} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.roles} onChange={() => toggleTable('roles')} />}
+                        label="Roles"
+                    />
+                    {showTables.roles && <DetailTable data={roles} />}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardContent>
+                    <FormControlLabel
+                        control={<Switch checked={showTables.savings} onChange={() => toggleTable('savings')} />}
+                        label="Savings"
+                    />
+                    {showTables.savings && <DetailTable data={savings}/>}
+                </CardContent>
+            </Card>
         </div>
     );
 };
