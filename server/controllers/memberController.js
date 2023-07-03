@@ -23,17 +23,9 @@ const loginSchema = Joi.object({
 
 
 module.exports = (models) => {
-    const { Member, Family ,} = models;
+    const { Member, Family, Role, Task, Resource, Skill, Income, Expense, Saving } = models;
 
-    async function getAllFamilies(req, res) {
-        try {
-            const families = await models.Family.findAll();
-            res.json({ families });
-        } catch (error) {
-            console.error('Error in getAllFamilies function:', error);
-            res.status(500).json({ message: 'An error occurred while fetching data.' });
-        }
-    }
+
     async function getMembersByFamilyId(req, res) {
         try {
             const familyId = req.params.id;
@@ -45,7 +37,6 @@ module.exports = (models) => {
         }
     }
 
-// memberController.js
 
     async function createMember(req, res, next) {
         console.log('createMember function called.', req.body);
@@ -58,7 +49,7 @@ module.exports = (models) => {
             const { Password, FamilyID, RoleID, Email, ...otherFields } = value;
 
             const family = await Family.findByPk(FamilyID);
-            if (!family) return res.status(404).json({message: 'Family not found.'});
+            if (!family) return res.status(404).json({message: 'families not found.'});
 
             // Check if email already exists
             const existingMember = await Member.findOne({ where: { Email } });
@@ -68,7 +59,7 @@ module.exports = (models) => {
             const memberData = { Password: hashedPassword, FamilyID, Email, ...otherFields };
             if (RoleID) memberData.RoleID = RoleID; // Only include RoleID if it was provided
             const member = await Member.create(memberData);
-            console.log('Member created:', member);
+            console.log('members created:', member);
             res.json(member);
         } catch (error) {
             console.error('Error in createMember function:', error);
@@ -87,39 +78,26 @@ module.exports = (models) => {
         try {
             const member = await Member.findOne({
                 where: { Email: email },
-                include: [
-                    { model: models.Family },
-                    { model: models.Role },
-                    { model: models.Task },
-                    { model: models.Resource },
-                    { model: models.Skill },
-                    { model: models.Income },
-                    { model: models.Expense },
-                    { model: models.Savings }
-                    // Include other related models as needed
-                ]
+                include: Family // Include Family because it's a one-to-many relationship
             });
+
             if (!member) return res.status(400).json({ message: 'Invalid email or password.' });
 
             const validPassword = await bcrypt.compare(password, member.Password); // Adjusted to match case
             if (!validPassword) return res.status(400).json({ message: 'Invalid email or password.' });
 
-            const token = jwt.sign({ id: member.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            const memberPlain = member.get({
-                plain: true,
-                include: [
-                    { model: models.Family },
-                    { model: models.Role },
-                    { model: models.Tasks },
-                    { model: models.Resources },
-                    { model: models.Skills },
-                    { model: models.Incomes },
-                    { model: models.Expenses },
-                    { model: models.Savings }
-                ]
-            });
+            // Get associated models for many-to-many relationships
+            const roles = await member.getRoles();
+            const tasks = await member.getTasks();
+            const resources = await member.getResources();
+            const skills = await member.getSkills();
+            const incomes = await member.getIncomes();
+            const expenses = await member.getExpenses();
+            const savings = await member.getSavings();
 
-            res.json({ token, member: memberPlain });
+            const token = jwt.sign({ id: member.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            res.json({ token, member, roles, tasks, resources, skills, incomes, expenses, savings });
         } catch (error) {
             console.error('Error in loginMember function:', error);
             res.status(500).json({ message: 'An error occurred while logging in.' });
@@ -223,7 +201,6 @@ module.exports = (models) => {
     return {
         createMember,
         loginMember,
-        getAllFamilies,
         getMembersByFamilyId,
         getMemberTasks,
         getMemberResources,
@@ -233,6 +210,7 @@ module.exports = (models) => {
         getMemberRoles,
         getMemberSavings,
         getMemberSkills,
+
     };
 
 };

@@ -1,7 +1,7 @@
 // models/member.js
 module.exports = function(sequelize, DataTypes) {
-    const Member = sequelize.define('Member', {
-        MemberID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    return sequelize.define('Member', {
+        MemberID: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
         FullName: DataTypes.STRING,
         DateOfBirth: DataTypes.DATE,
         Email: DataTypes.STRING,
@@ -15,6 +15,4 @@ module.exports = function(sequelize, DataTypes) {
 
 
     });
-
-    return Member;
 };

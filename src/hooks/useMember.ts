@@ -38,6 +38,7 @@ export interface Expense {
 export interface Family {
     FamilyID: number;
     FamilyName: string;
+
     Address: string;
     createdAt: string;
     updatedAt: string;

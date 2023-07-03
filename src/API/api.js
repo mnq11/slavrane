@@ -42,10 +42,7 @@ export async function registerMember(values) {
     return response.data;
 }
 
-export async function getAllFamilies() {
-    const response = await api.get('/members/families');
-    return response.data;
-}
+
 export async function getMembersByFamilyId(familyId) {
     const response = await api.get(`/members/families/${familyId}`);
     return response.data;
@@ -88,5 +85,24 @@ export async function getMemberSavings(memberId) {
 
 export async function getMemberSkills(memberId) {
     const response = await api.get(`/members/${memberId}/skills`);
+    return response.data;
+}
+export async function getAllFamilies() {
+    const response = await api.get('/families');
+    return response.data;
+}
+
+export async function createFamily(family) {
+    const response = await api.post('/families', family);
+    return response.data;
+}
+
+export async function updateFamily(family) {
+    const response = await api.put(`/families/${family.FamilyID}`, family);
+    return response.data;
+}
+
+export async function deleteFamily(familyId) {
+    const response = await api.delete(`/families/${familyId}`);
     return response.data;
 }

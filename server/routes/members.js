@@ -7,7 +7,6 @@ module.exports = (models) => {
 
     router.post('/register', memberController.createMember);
     router.post('/login', memberController.loginMember);
-    router.get('/families', memberController.getAllFamilies);
     router.get('/families/:id', memberController.getMembersByFamilyId);
     router.get('/:id/tasks', memberController.getMemberTasks);
     router.get('/:id/resources', memberController.getMemberResources);

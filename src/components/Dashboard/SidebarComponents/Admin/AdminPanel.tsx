@@ -11,7 +11,10 @@ import {
     getMemberFamily,
     getMemberRoles,
     getMemberSavings,
-    getMemberSkills
+    getMemberSkills,
+    createFamily,
+    updateFamily,
+    deleteFamily
 } from "../../../../API/api";
 import FamiliesView from './FamiliesView';
 import MemberDetailsView from './MemberDetailsView';
@@ -37,7 +40,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     const [skills, setSkills] = useState([]); // new state variable to hold skills
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<{ message: string } | null>(null)
-    const [searchTerm, setSearchTerm] = useState(''); // new state variable to hold the search term
 
     // Fetch all families when the component mounts
     useEffect(() => {
@@ -133,7 +135,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
             setSelectedMember(member);
         }
     };
-
+    const handleCreateFamily = async (family: Family) => {
+        try {
+            const newFamily = await createFamily(family);
+            setFamilies(prevFamilies => [...prevFamilies, newFamily]);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleDeleteFamily = async (familyId: number) => {
+        try {
+            await deleteFamily(familyId);
+            setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleUpdateFamily = async (family: Family) => {
+        try {
+            const updatedFamily = await updateFamily(family);
+            setFamilies(prevFamilies => prevFamilies.map(f => f.FamilyID === updatedFamily.FamilyID ? updatedFamily : f));
+        } catch (error) {
+            console.error(error);
+        }
+    };
     if (loading) {
         return <CircularProgress/>;
     }
@@ -145,7 +170,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     return (
         <Container>
             <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
-            <FamiliesView families={families} onSelectFamily={handleSelectFamily} selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null} onSelectMember={handleSelectMember} members={members} selectedMemberId={selectedMember ? selectedMember.MemberID : null} />
+            <FamiliesView
+                families={families}
+                onSelectFamily={handleSelectFamily}
+                selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null}
+                onSelectMember={handleSelectMember}
+                members={members}
+                selectedMemberId={selectedMember ? selectedMember.MemberID : null}
+                onCreateFamily={handleCreateFamily}
+                onUpdateFamily={handleUpdateFamily}
+                onDeleteFamily={handleDeleteFamily} // pass the new function as a prop
+            />
             {selectedMember && <MemberDetailsView member={selectedMember} tasks={tasks} resources={resources} incomes={incomes} expenses={expenses} family={family} roles={roles} savings={savings} skills={skills} />}
         </Container>
     );
