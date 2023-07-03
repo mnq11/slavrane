@@ -96,32 +96,61 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     return (
         <div className={classes.root}>
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
-            {families.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map((family) => (
-                <Accordion key={family.FamilyID}
-                           expanded={selectedFamilyId === family.FamilyID}
-                           onChange={() => onSelectFamily(family)}><AccordionSummary expandIcon={<ExpandMoreIcon/>}
-                        className={classes.row}>
-                        <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
-                            <Typography>{family.FamilyID} - {family.FamilyName}</Typography>
-                            <div>
-                                <Button className={classes.updateButton} onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenDialog(family);
-                                }}>Update</Button>
-                                <Button className={classes.deleteButton} onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDeleteFamily(family.FamilyID);
-                                }}>Delete</Button>
+            {selectedFamilyId ? (
+                families.filter(family => family.FamilyID === selectedFamilyId).map((family) => (
+                    <Accordion key={family.FamilyID}
+                               expanded={selectedFamilyId === family.FamilyID}
+                               onChange={() => onSelectFamily(family)}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}
+                                          className={classes.row}>
+                            <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                                <Typography>{family.FamilyID} - {family.FamilyName}</Typography>
+                                <div>
+                                    <Button className={classes.updateButton} onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleOpenDialog(family);
+                                    }}>Update</Button>
+                                    <Button className={classes.deleteButton} onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDeleteFamily(family.FamilyID);
+                                    }}>Delete</Button>
+                                </div>
                             </div>
-                        </div>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <MembersView family={family} onSelectMember={onSelectMember} members={members}
-                                     selectedMemberId={selectedMemberId}/>
-                    </AccordionDetails>
-                </Accordion>
-            ))}
-
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MembersView family={family} onSelectMember={onSelectMember} members={members}
+                                         selectedMemberId={selectedMemberId}/>
+                        </AccordionDetails>
+                    </Accordion>
+                ))
+            ) : (
+                families.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map((family) => (
+                    <Accordion key={family.FamilyID}
+                               expanded={selectedFamilyId === family.FamilyID}
+                               onChange={() => onSelectFamily(family)}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}
+                                          className={classes.row}>
+                            <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+                                <Typography>{family.FamilyID} - {family.FamilyName}</Typography>
+                                <div>
+                                    <Button className={classes.updateButton} onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleOpenDialog(family);
+                                    }}>Update</Button>
+                                    <Button className={classes.deleteButton} onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDeleteFamily(family.FamilyID);
+                                    }}>Delete</Button>
+                                </div>
+                            </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MembersView family={family} onSelectMember={onSelectMember} members={members}
+                                         selectedMemberId={selectedMemberId}/>
+                        </AccordionDetails>
+                    </Accordion>
+                ))
+            )}
 
             <TablePagination
                 component="div"

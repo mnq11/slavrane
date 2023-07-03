@@ -80,6 +80,7 @@ export interface Member {
     FullName: string;
     Email: string;
     PhoneNumber: number;
+    FamilyID:number;
     Role: 'normal' | 'moderator' | 'admin' | 'analyst';
     Tasks: Task[];
     Resources: Resource[];
