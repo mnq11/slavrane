@@ -1,6 +1,7 @@
 // FamiliesView.tsx
 import React, {useState} from 'react';
-import { Family, Member } from "../../../../hooks/useMember";
+import {Family, Member} from "../../../../hooks/useMember";
+
 import {
     Accordion,
     AccordionSummary,
@@ -12,6 +13,7 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MembersView from './MembersView';
+import {FamiliesViewStyles} from "./AdminPanel.Styles";
 
 interface FamiliesViewProps {
     families: Family[];
@@ -25,7 +27,19 @@ interface FamiliesViewProps {
     onDeleteFamily: (familyId: number) => void;
 }
 
-const FamiliesView: React.FC<FamiliesViewProps> = ({ families, selectedFamilyId, onSelectFamily, onSelectMember, members, selectedMemberId, onCreateFamily, onUpdateFamily, onDeleteFamily }) => {
+const FamiliesView: React.FC<FamiliesViewProps> = ({
+                                                       families,
+                                                       selectedFamilyId,
+                                                       onSelectFamily,
+                                                       onSelectMember,
+                                                       members,
+                                                       selectedMemberId,
+                                                       onCreateFamily,
+                                                       onUpdateFamily,
+                                                       onDeleteFamily
+                                                   }) => {
+    const classes = FamiliesViewStyles(); // use the styles
+
     const [dialogOpen, setDialogOpen] = useState(false);
     const [familyToUpdate, setFamilyToUpdate] = useState<Family | null>(null);
     const [newFamilyName, setNewFamilyName] = useState('');
@@ -44,47 +58,63 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({ families, selectedFamilyId,
     };
 
     const handleCreateFamily = () => {
-        onCreateFamily({ FamilyID: Date.now(), FamilyName: newFamilyName, Address: newFamilyAddress, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+        const newFamily = {
+            FamilyID: Math.floor(Math.random() * 1000000), // generates a random number between 0 and 999999
+            FamilyName: newFamilyName,
+            Address: newFamilyAddress,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        onCreateFamily(newFamily);
         setNewFamilyName('');
         setNewFamilyAddress('');
     };
 
+
     const handleUpdateFamily = () => {
         if (familyToUpdate) {
-            onUpdateFamily({ ...familyToUpdate, FamilyName: newFamilyName, Address: newFamilyAddress });
+            onUpdateFamily({...familyToUpdate, FamilyName: newFamilyName, Address: newFamilyAddress});
         }
         handleCloseDialog();
     };
 
     return (
-        <div>
-            <Button onClick={handleCreateFamily}>Create New families</Button>
+        <div className={classes.root}>
+            <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
             {families.map((family) => (
-                <Accordion key={family.FamilyID} expanded={selectedFamilyId === family.FamilyID} onChange={() => onSelectFamily(family)}>
+                <Accordion key={family.FamilyID} expanded={selectedFamilyId === family.FamilyID}
+                           onChange={() => onSelectFamily(family)}>
                     <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
+                        expandIcon={<ExpandMoreIcon/>}
+                        className={classes.row} // apply the row style
                     >
-                        <Typography>{family.FamilyName}</Typography>
-                        {/*<Typography>{family.Address}</Typography>*/}
-                        <Button onClick={() => handleOpenDialog(family)}>Update</Button>
-                        <Button onClick={() => onDeleteFamily(family.FamilyID)}>Delete</Button> {/* Add a delete button for each family */}
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography>{family.FamilyID} - {family.FamilyName}</Typography>
+                            <div>
+                                <Button className={classes.updateButton} onClick={(e) => {e.stopPropagation(); handleOpenDialog(family);}}>Update</Button>
+                                <Button className={classes.deleteButton} onClick={(e) => {e.stopPropagation(); onDeleteFamily(family.FamilyID);}}>Delete</Button>
+                            </div>
+                        </div>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <MembersView family={family} onSelectMember={onSelectMember} members={members} selectedMemberId={selectedMemberId} />
+                        <MembersView family={family} onSelectMember={onSelectMember} members={members}
+                                     selectedMemberId={selectedMemberId}/>
                     </AccordionDetails>
                 </Accordion>
             ))}
-            <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-                <DialogTitle>{familyToUpdate ? 'Update families' : 'Create New families'}</DialogTitle>
-                <DialogContent>
+             <Dialog open={dialogOpen} onClose={handleCloseDialog} className={classes.dialog}>
+                <DialogTitle className={classes.dialogTitle}>{familyToUpdate ? 'Update Family' : 'Create New Family'}</DialogTitle>
+                <DialogContent className={classes.dialogContent}>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="families Name"
+                        label="Family Name"
                         value={newFamilyName}
                         onChange={(e) => setNewFamilyName(e.target.value)}
                         fullWidth
                     />
+
                     <TextField
                         margin="dense"
                         label="Address"
@@ -93,7 +123,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({ families, selectedFamilyId,
                         fullWidth
                     />
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes.dialogActions}>
                     <Button onClick={handleCloseDialog} color="primary">
                         Cancel
                     </Button>

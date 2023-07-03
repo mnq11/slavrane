@@ -36,13 +36,55 @@ export const MemberDetailsViewStyles = makeStyles((theme) => ({
     },
 }));
 
+
 export const FamiliesViewStyles = makeStyles({
+    root: {
+        padding: '20px',
+        backgroundColor: '#f5f5f5', // light grey background
+    },
     row: {
         cursor: 'pointer',
         '&:hover': {
+            backgroundColor: '#e0e0e0', // light grey background on hover
         },
     },
     table: {
         boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)', // shadow for depth
+    },
+    button: {
+        margin: '10px',
+        backgroundColor: '#3f51b5', // dark blue button
+        color: '#fff', // white text
+        '&:hover': {
+            backgroundColor: '#303f9f', // darker blue on hover
+        },
+    },updateButton: {
+        margin: '10px',
+        marginRight: '20px', // add some space to the right
+        backgroundColor: '#3f51b5', // dark blue button
+        color: '#fff', // white text
+        '&:hover': {
+            backgroundColor: '#303f9f', // darker blue on hover
+        },
+    },
+    deleteButton: {
+        margin: '10px',
+        backgroundColor: '#f44336', // red button
+        color: '#fff', // white text
+        '&:hover': {
+            backgroundColor: '#d32f2f', // darker red on hover
+        },
+    },
+    dialog: {
+        padding: '20px',
+    },
+    dialogTitle: {
+        color: '#3f51b5', // dark blue title
+    },
+    dialogContent: {
+        marginBottom: '20px',
+    },
+    dialogActions: {
+        justifyContent: 'space-between',
     },
 });
