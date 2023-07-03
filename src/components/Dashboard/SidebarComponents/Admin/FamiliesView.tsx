@@ -1,7 +1,6 @@
 // FamiliesView.tsx
 import React, {useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
-
 import {
     Accordion,
     AccordionSummary,
@@ -9,7 +8,7 @@ import {
     Typography,
     Button,
     Dialog,
-    DialogTitle, TextField, DialogContent, DialogActions
+    DialogTitle, TextField, DialogContent, DialogActions, TablePagination
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MembersView from './MembersView';
@@ -45,6 +44,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [newFamilyName, setNewFamilyName] = useState('');
     const [newFamilyAddress, setNewFamilyAddress] = useState('');
 
+    // Pagination state
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
     const handleOpenDialog = (family: Family) => {
         setFamilyToUpdate(family);
         setNewFamilyName(family.FamilyName);
@@ -71,7 +74,6 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setNewFamilyAddress('');
     };
 
-
     const handleUpdateFamily = () => {
         if (familyToUpdate) {
             onUpdateFamily({...familyToUpdate, FamilyName: newFamilyName, Address: newFamilyAddress});
@@ -79,21 +81,37 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         handleCloseDialog();
     };
 
+    // Pagination change handlers
+    // Pagination change handlers
+    const handlePageChange = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+
     return (
         <div className={classes.root}>
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
-            {families.map((family) => (
-                <Accordion key={family.FamilyID} expanded={selectedFamilyId === family.FamilyID}
-                           onChange={() => onSelectFamily(family)}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon/>}
-                        className={classes.row} // apply the row style
-                    >
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+            {families.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage).map((family) => (
+                <Accordion key={family.FamilyID}
+                           expanded={selectedFamilyId === family.FamilyID}
+                           onChange={() => onSelectFamily(family)}><AccordionSummary expandIcon={<ExpandMoreIcon/>}
+                        className={classes.row}>
+                        <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                             <Typography>{family.FamilyID} - {family.FamilyName}</Typography>
                             <div>
-                                <Button className={classes.updateButton} onClick={(e) => {e.stopPropagation(); handleOpenDialog(family);}}>Update</Button>
-                                <Button className={classes.deleteButton} onClick={(e) => {e.stopPropagation(); onDeleteFamily(family.FamilyID);}}>Delete</Button>
+                                <Button className={classes.updateButton} onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenDialog(family);
+                                }}>Update</Button>
+                                <Button className={classes.deleteButton} onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDeleteFamily(family.FamilyID);
+                                }}>Delete</Button>
                             </div>
                         </div>
                     </AccordionSummary>
@@ -103,7 +121,17 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                     </AccordionDetails>
                 </Accordion>
             ))}
-             <Dialog open={dialogOpen} onClose={handleCloseDialog} className={classes.dialog}>
+
+
+            <TablePagination
+                component="div"
+                count={families.length}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+            />
+            <Dialog open={dialogOpen} onClose={handleCloseDialog} className={classes.dialog}>
                 <DialogTitle className={classes.dialogTitle}>{familyToUpdate ? 'Update Family' : 'Create New Family'}</DialogTitle>
                 <DialogContent className={classes.dialogContent}>
                     <TextField
