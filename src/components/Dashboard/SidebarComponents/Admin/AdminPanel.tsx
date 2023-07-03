@@ -1,18 +1,29 @@
 // AdminPanel.tsx
 import React, {useEffect, useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
-import {getAllFamilies, getMembersByFamilyId, getMemberTasks, getMemberResources, getMemberIncomes,getMemberExpenses ,getMemberFamily,getMemberRoles ,getMemberSavings ,getMemberSkills} from "../../../../API/api";
+import {
+    getAllFamilies,
+    getMembersByFamilyId,
+    getMemberTasks,
+    getMemberResources,
+    getMemberIncomes,
+    getMemberExpenses,
+    getMemberFamily,
+    getMemberRoles,
+    getMemberSavings,
+    getMemberSkills
+} from "../../../../API/api";
 import FamiliesView from './FamiliesView';
 import MembersView from './MembersView';
 import MemberDetailsView from './MemberDetailsView';
-import {CircularProgress, Container, Typography} from '@material-ui/core';
+import {Button, CircularProgress, Container, Typography} from '@material-ui/core';
 
 
 interface AdminPanelProps {
     member: Member;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     const [families, setFamilies] = useState<Family[]>([]); // new state variable to hold families
     const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -26,7 +37,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
     const [savings, setSavings] = useState([]); // new state variable to hold savings
     const [skills, setSkills] = useState([]); // new state variable to hold skills
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<{ message: string } | null>(null);
+    const [error, setError] = useState<{ message: string } | null>(null)
+    const [showFamilyTable, setShowFamilyTable] = useState(true); // new state variable to control the visibility of the family table
+
     // Fetch all families when the component mounts
     useEffect(() => {
         setLoading(true);
@@ -100,21 +113,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
         }
     }, [selectedMember]);
 
+    const handleSelectFamily = (family: Family) => {
+        if (selectedFamily && family.FamilyID === selectedFamily.FamilyID) {
+            // If the clicked family is already the selected family, deselect it
+            setSelectedFamily(null);
+        } else {
+            // Otherwise, select the clicked family
+            setSelectedFamily(family);
+        }
+    };
+
+    const toggleFamilyTable = () => {
+        setShowFamilyTable(!showFamilyTable);
+    };
+
+
+
+
     if (loading) {
-        return <CircularProgress />;
+        return <CircularProgress/>;
     }
 
     if (error) {
         return <div>Error: {error.message}</div>;
     }
+
     return (
         <Container>
             <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
-            <FamiliesView families={families} onSelectFamily={setSelectedFamily} />
+            <Button id="toggleFamilyTableButton" onClick={toggleFamilyTable}>{showFamilyTable ? 'Hide' : 'Show'} Family Table</Button>
+            {showFamilyTable && <FamiliesView families={families} onSelectFamily={handleSelectFamily} selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null} />}
             {selectedFamily && <MembersView family={selectedFamily} onSelectMember={setSelectedMember} members={members} />}
             {selectedMember && <MemberDetailsView member={selectedMember} tasks={tasks} resources={resources} incomes={incomes} expenses={expenses} family={family} roles={roles} savings={savings} skills={skills} />}
         </Container>
     );
+
 };
 
 export default AdminPanel;
