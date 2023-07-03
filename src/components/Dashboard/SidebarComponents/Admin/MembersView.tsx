@@ -7,9 +7,10 @@ interface MembersViewProps {
     family: Family;
     onSelectMember: (member: Member) => void;
     members: Member[];
+    selectedMemberId: number | null;
 }
 
-const MembersView: React.FC<MembersViewProps> = ({ family, onSelectMember, members }) => {
+const MembersView: React.FC<MembersViewProps> = ({ family, onSelectMember, members, selectedMemberId }) => {
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -23,12 +24,14 @@ const MembersView: React.FC<MembersViewProps> = ({ family, onSelectMember, membe
                 </TableHead>
                 <TableBody>
                     {members.map((member) => (
-                        <TableRow key={member.MemberID} onClick={() => onSelectMember(member)}>
-                            <TableCell>{member.MemberID}</TableCell>
-                            <TableCell>{member.FullName}</TableCell>
-                            <TableCell>{member.Email}</TableCell>
-                            <TableCell>{member.Role}</TableCell>
-                        </TableRow>
+                        (!selectedMemberId || selectedMemberId === member.MemberID) && (
+                            <TableRow key={member.MemberID} onClick={() => onSelectMember(member)}>
+                                <TableCell>{member.MemberID}</TableCell>
+                                <TableCell>{member.FullName}</TableCell>
+                                <TableCell>{member.Email}</TableCell>
+                                <TableCell>{member.Role}</TableCell>
+                            </TableRow>
+                        )
                     ))}
                 </TableBody>
             </Table>

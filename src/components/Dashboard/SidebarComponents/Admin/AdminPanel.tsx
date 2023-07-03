@@ -14,9 +14,8 @@ import {
     getMemberSkills
 } from "../../../../API/api";
 import FamiliesView from './FamiliesView';
-import MembersView from './MembersView';
 import MemberDetailsView from './MemberDetailsView';
-import {Button, CircularProgress, Container, Typography} from '@material-ui/core';
+import {CircularProgress, Container, Typography} from '@material-ui/core';
 
 
 interface AdminPanelProps {
@@ -38,7 +37,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     const [skills, setSkills] = useState([]); // new state variable to hold skills
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<{ message: string } | null>(null)
-    const [showFamilyTable, setShowFamilyTable] = useState(true); // new state variable to control the visibility of the family table
+    const [searchTerm, setSearchTerm] = useState(''); // new state variable to hold the search term
 
     // Fetch all families when the component mounts
     useEffect(() => {
@@ -67,7 +66,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     }, [selectedFamily]);
 
     // Fetch member data when a member is selected
-// Fetch member data when a member is selected
     useEffect(() => {
         if (selectedMember) {
             getMemberTasks(selectedMember.MemberID)
@@ -113,22 +111,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         }
     }, [selectedMember]);
 
+
     const handleSelectFamily = (family: Family) => {
         if (selectedFamily && family.FamilyID === selectedFamily.FamilyID) {
             // If the clicked family is already the selected family, deselect it
             setSelectedFamily(null);
+            setSelectedMember(null); // Also deselect any selected member
         } else {
             // Otherwise, select the clicked family
             setSelectedFamily(family);
         }
     };
 
-    const toggleFamilyTable = () => {
-        setShowFamilyTable(!showFamilyTable);
+
+    const handleSelectMember = (member: Member) => {
+        if (selectedMember && member.MemberID === selectedMember.MemberID) {
+            // If the clicked member is already the selected member, deselect it
+            setSelectedMember(null);
+        } else {
+            // Otherwise, select the clicked member
+            setSelectedMember(member);
+        }
     };
-
-
-
 
     if (loading) {
         return <CircularProgress/>;
@@ -141,13 +145,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     return (
         <Container>
             <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
-            <Button id="toggleFamilyTableButton" onClick={toggleFamilyTable}>{showFamilyTable ? 'Hide' : 'Show'} Family Table</Button>
-            {showFamilyTable && <FamiliesView families={families} onSelectFamily={handleSelectFamily} selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null} />}
-            {selectedFamily && <MembersView family={selectedFamily} onSelectMember={setSelectedMember} members={members} />}
+            <FamiliesView families={families} onSelectFamily={handleSelectFamily} selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null} onSelectMember={handleSelectMember} members={members} selectedMemberId={selectedMember ? selectedMember.MemberID : null} />
             {selectedMember && <MemberDetailsView member={selectedMember} tasks={tasks} resources={resources} incomes={incomes} expenses={expenses} family={family} roles={roles} savings={savings} skills={skills} />}
         </Container>
     );
-
 };
 
 export default AdminPanel;

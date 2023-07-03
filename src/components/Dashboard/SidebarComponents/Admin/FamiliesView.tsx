@@ -1,49 +1,37 @@
+// FamiliesView.tsx
 import React from 'react';
-import { Family } from "../../../../hooks/useMember";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel, Box } from '@material-ui/core';
-import { FamiliesViewStyles } from './AdminPanel.Styles';
+import { Family, Member } from "../../../../hooks/useMember";
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Grow } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MembersView from './MembersView';
+
 interface FamiliesViewProps {
     families: Family[];
     selectedFamilyId: number | null;
     onSelectFamily: (family: Family) => void;
+    onSelectMember: (member: Member) => void;
+    members: Member[];
+    selectedMemberId: number | null;
 }
 
-const FamiliesView: React.FC<FamiliesViewProps> = ({ families, selectedFamilyId, onSelectFamily }) => {
-    const classes = FamiliesViewStyles();
-
+const FamiliesView: React.FC<FamiliesViewProps> = ({ families, selectedFamilyId, onSelectFamily, onSelectMember, members, selectedMemberId }) => {
     return (
-        <Box mt={2}>
-            <TableContainer component={Paper} className={classes.table}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <TableSortLabel>ID</TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel>Name</TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel>Address</TableSortLabel>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {families.map((family) => (
-                            (!selectedFamilyId || selectedFamilyId === family.FamilyID) && (
-                                <TableRow key={family.FamilyID} onClick={() => onSelectFamily(family)} className={classes.row}>
-                                    <TableCell>{family.FamilyID}</TableCell>
-                                    <TableCell>{family.FamilyName}</TableCell>
-                                    <TableCell>{family.Address}</TableCell>
-                                </TableRow>
-                            )
-                        ))}
+        <div>
+            {families.map((family) => (
+                <Accordion key={family.FamilyID} expanded={selectedFamilyId === family.FamilyID} onChange={() => onSelectFamily(family)} TransitionProps={{ unmountOnExit: true }}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                    >
+                        <Typography>{family.FamilyName}</Typography>
 
-
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Box>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <MembersView family={family} onSelectMember={onSelectMember} members={members} selectedMemberId={selectedMemberId} />
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        </div>
     );
 };
+
 export default FamiliesView;
