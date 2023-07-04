@@ -16,6 +16,8 @@ module.exports = (models) => {
     router.get('/:id/roles', memberController.getMemberRoles);
     router.get('/:id/savings', memberController.getMemberSavings);
     router.get('/:id/skills', memberController.getMemberSkills);
+    router.put('/:id', memberController.updateMember);
+    router.delete('/:id', memberController.deleteMember);
 
     return router;
 };

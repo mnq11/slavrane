@@ -2,6 +2,12 @@
 import React, {useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
+    createMember,
+    updateMember,
+    deleteMember,
+    // other imports...
+} from "../../../../API/api";
+import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
@@ -10,6 +16,7 @@ import {
     Dialog,
     DialogTitle, TextField, DialogContent, DialogActions, TablePagination
 } from '@material-ui/core';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MembersView from './MembersView';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
@@ -50,19 +57,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [localMembers, setLocalMembers] = useState<Member[]>([]);
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
-    const createMember = async (member: Member) => {
-        // Implement the function to create a member
-        return member; // placeholder
-    };
 
-    const deleteMember = async (memberId: number) => {
-        // Implement the function to delete a member
-    };
-
-    const updateMember = async (member: Member) => {
-        // Implement the function to update a member
-        return member; // placeholder
-    };
 
     const handleOpenDialog = (family: Family) => {
         setFamilyToUpdate(family);
@@ -107,31 +102,41 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setPage(0);
     };
 
-    const handleCreateMember = async (member: Member) => {
-        try {
-            const newMember = await createMember(member);
-            setLocalMembers(prevMembers => [...prevMembers, newMember]);
-        } catch (error) {
-            console.error(error);
-        }
+
+    const handleUpdateMember = (member: Member) => {
+        // Call the API to update the member
+        updateMember(member)
+            .then(() => {
+                // Handle successful update
+            })
+            .catch((error) => {
+                // Handle error
+            });
     };
 
-    const handleDeleteMember = async (memberId: number) => {
-        try {
-            await deleteMember(memberId);
-            setLocalMembers(prevMembers => prevMembers.filter(member => member.MemberID !== memberId));
-        } catch (error) {
-            console.error(error);
-        }
+    const handleDeleteMember = (memberId: number) => {
+        // Call the API to delete the member
+        deleteMember(memberId)
+            .then(() => {
+                // Handle successful deletion
+            })
+            .catch((error) => {
+                // Handle error
+            });
     };
-    const handleUpdateMember = async (member: Member) => {
-        try {
-            const updatedMember = await updateMember(member);
-            setLocalMembers(prevMembers => prevMembers.map(m => m.MemberID === updatedMember.MemberID ? updatedMember : m));
-        } catch (error) {
-            console.error(error);
-        }
+
+    const handleCreateMember = (member: Member) => {
+        // Call the API to create the member
+        createMember(member)
+            .then(() => {
+                // Handle successful creation
+            })
+            .catch((error) => {
+                // Handle error
+            });
     };
+
+
     const handleSelectMember = (member: Member) => {
         setSelectedMember(member);
     };

@@ -197,6 +197,33 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while fetching data.' });
         }
     }
+    async function updateMember(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            if (!member) return res.status(404).json({ message: 'Member not found.' });
+
+            const updatedMember = await member.update(req.body);
+            res.json(updatedMember);
+        } catch (error) {
+            console.error('Error in updateMember function:', error);
+            res.status(500).json({ message: 'An error occurred while updating the member.' });
+        }
+    }
+
+    async function deleteMember(req, res) {
+        try {
+            const memberId = req.params.id;
+            const member = await models.Member.findByPk(memberId);
+            if (!member) return res.status(404).json({ message: 'Member not found.' });
+
+            await member.destroy();
+            res.json({ message: 'Member deleted.' });
+        } catch (error) {
+            console.error('Error in deleteMember function:', error);
+            res.status(500).json({ message: 'An error occurred while deleting the member.' });
+        }
+    }
 
     return {
         createMember,
@@ -210,7 +237,7 @@ module.exports = (models) => {
         getMemberRoles,
         getMemberSavings,
         getMemberSkills,
-
+        updateMember, // Add this line
+        deleteMember, // Add this line
     };
-
 };

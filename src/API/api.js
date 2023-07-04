@@ -105,4 +105,17 @@ export async function updateFamily(family) {
 export async function deleteFamily(familyId) {
     const response = await api.delete(`/families/${familyId}`);
     return response.data;
+}export async function createMember(member) {
+    const response = await api.post('/members', member);
+    return response.data;
+}
+
+export async function updateMember(member) {
+    const response = await api.put(`/members/${member.MemberID}`, member);
+    return response.data;
+}
+
+export async function deleteMember(memberId) {
+    const response = await api.delete(`/members/${memberId}`);
+    return response.data;
 }

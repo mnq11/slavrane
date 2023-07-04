@@ -24,7 +24,6 @@ interface MembersViewProps {
     onUpdateMember: (member: Member) => void;
     onDeleteMember: (memberId: number) => void;
     onCreateMember: (member: Member) => void;
-
 }
 
 const MembersView: React.FC<MembersViewProps> = ({
@@ -38,6 +37,7 @@ const MembersView: React.FC<MembersViewProps> = ({
                                                  }) => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [memberToUpdate, setMemberToUpdate] = useState<Member | null>(null);
     const [newMember, setNewMember] = useState<Member>({
         Expenses: [],
         Incomes: [],
@@ -61,16 +61,23 @@ const MembersView: React.FC<MembersViewProps> = ({
         }
     });
 
-        const handleDialogOpen = () => {
+    const handleDialogOpen = (member: Member) => {
+        setMemberToUpdate(member);
+        setNewMember(member);
         setDialogOpen(true);
     };
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+        setMemberToUpdate(null);
     };
 
-    const handleCreateMember = () => {
-        onCreateMember(newMember);
+    const handleCreateOrUpdateMember = () => {
+        if (memberToUpdate) {
+            onUpdateMember(newMember);
+        } else {
+            onCreateMember(newMember);
+        }
         setDialogOpen(false);
     };
 
@@ -80,11 +87,12 @@ const MembersView: React.FC<MembersViewProps> = ({
             [event.target.name]: event.target.value
         });
     };
+
     return (
         <div>
-            <Button onClick={handleDialogOpen}>Create Member</Button>
+            <Button onClick={() => handleDialogOpen(newMember)}>Create Member</Button>
             <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Create New Member</DialogTitle>
+                <DialogTitle>{memberToUpdate ? 'Update Member' : 'Create New Member'}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -128,8 +136,8 @@ const MembersView: React.FC<MembersViewProps> = ({
                     <Button onClick={handleDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleCreateMember} color="primary">
-                        Create
+                    <Button onClick={handleCreateOrUpdateMember} color="primary">
+                        {memberToUpdate ? 'Update' : 'Create'}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -142,7 +150,6 @@ const MembersView: React.FC<MembersViewProps> = ({
                             <TableCell>Email</TableCell>
                             <TableCell>Role</TableCell>
                             <TableCell>Phone Number</TableCell>
-
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -154,15 +161,14 @@ const MembersView: React.FC<MembersViewProps> = ({
                                     <TableCell>{member.Email}</TableCell>
                                     <TableCell>{member.Role}</TableCell>
                                     <TableCell>{member.PhoneNumber}</TableCell>
-
                                     <TableCell>
                                         <Button onClick={(e) => {
                                             e.stopPropagation();
-                                            onUpdateMember(member); // Update this line
+                                            handleDialogOpen(member);
                                         }}>Update</Button>
                                         <Button onClick={(e) => {
                                             e.stopPropagation();
-                                            onDeleteMember(member.MemberID); // Update this line
+                                            onDeleteMember(member.MemberID);
                                         }}>Delete</Button>
                                     </TableCell>
                                 </TableRow>
@@ -172,7 +178,6 @@ const MembersView: React.FC<MembersViewProps> = ({
                 </Table>
             </TableContainer>
         </div>
-
     );
 };
 
