@@ -12,6 +12,8 @@ const createMemberSchema = Joi.object({
     FullName: Joi.string().required(),
     DateOfBirth: Joi.date().required(),
     PhoneNumber: Joi.string().required(),
+    Role: Joi.string().valid('normal', 'moderator', 'admin', 'analyst').required(), // Add this line
+
     // Add validation for other fields as needed
 });
 

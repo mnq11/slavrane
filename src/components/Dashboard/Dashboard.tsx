@@ -9,13 +9,11 @@ import clsx from "clsx";
 import Sidebar from './Sidebar';
 import Loading from '../ErrorHandling/Loading';
 import Welcome from "./SidebarComponents/User/Welcome";
-
 const Dashboard: React.FC = () => {
     const theme = useTheme();
     useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [user] = useMember();
     const navigate = useNavigate();
     const classes = useDashboardStyles();
@@ -24,13 +22,19 @@ const Dashboard: React.FC = () => {
     const handleContentChange = (newContent: JSX.Element) => {
         setContent(newContent);
     };
+
+    const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         if (!user) {
             const timer = setTimeout(() => {
                 navigate('/login');
-                setError(true);
+                setError('No user found. Redirecting to login.');
             }, 2000);
-            return () => clearTimeout(timer);
+            return () => {
+                clearTimeout(timer);
+                setError(null);
+            };
         } else {
             setLoading(false);
         }

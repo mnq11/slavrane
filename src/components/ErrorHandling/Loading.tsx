@@ -5,7 +5,7 @@ import {useLoadingStyles} from "./Loading.styles";
 
 interface LoadingProps {
     loading: boolean;
-    error: boolean;
+    error: string | null;
 }
 
 const Loading: React.FC<LoadingProps> = ({loading, error}) => {
@@ -20,9 +20,9 @@ const Loading: React.FC<LoadingProps> = ({loading, error}) => {
             )}
             {error && (
                 <Snackbar
-                    open={error}
+                    open={!!error}
                     autoHideDuration={6000}
-                    message="An error occurred while loading your data."
+                    message={error}
                 />
             )}
         </>

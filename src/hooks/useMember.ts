@@ -76,20 +76,22 @@ export interface Savings {
 
 
 export interface Member {
-    MemberID: number;
+    MemberID?: number;
     FullName: string;
     Email: string;
-    PhoneNumber: number;
+    PhoneNumber: string;
     FamilyID:number;
-    Role: 'normal' | 'moderator' | 'admin' | 'analyst';
-    Tasks: Task[];
-    Resources: Resource[];
-    Expenses: Expense[];
-    Family: Family;
-    Incomes: Income[];
-    Roles: Role[];
-    Savings: Savings[];
-    Skills: Skill[];
+    Password: string;
+    Role?: 'normal' | 'moderator' | 'admin' | 'analyst';
+    DateOfBirth: string;
+    Tasks?: Task[];
+    Resources?: Resource[];
+    Expenses?: Expense[];
+    Family?: Family;
+    Incomes?: Income[];
+    Roles?: Role[];
+    Savings?: Savings[];
+    Skills?: Skill[];
 }
 export interface Resource {
     ResourceID: number;

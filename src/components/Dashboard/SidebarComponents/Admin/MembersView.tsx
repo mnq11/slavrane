@@ -1,5 +1,5 @@
 // MembersView.tsx
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
     Table,
@@ -15,6 +15,11 @@ import {
     DialogContent,
     TextField, DialogTitle
 } from '@material-ui/core';
+import {Select} from 'antd';
+import {toast} from "react-toastify";
+import Loading from "../../../ErrorHandling/Loading";
+
+const {Option} = Select;
 
 interface MembersViewProps {
     family: Family;
@@ -24,6 +29,8 @@ interface MembersViewProps {
     onUpdateMember: (member: Member) => void;
     onDeleteMember: (memberId: number) => void;
     onCreateMember: (member: Member) => void;
+    onSelectMemberToUpdate: (member: Member) => void;
+
 }
 
 const MembersView: React.FC<MembersViewProps> = ({
@@ -33,52 +40,41 @@ const MembersView: React.FC<MembersViewProps> = ({
                                                      selectedMemberId,
                                                      onUpdateMember,
                                                      onDeleteMember,
-                                                     onCreateMember
+                                                     onCreateMember,
+                                                     onSelectMemberToUpdate
                                                  }) => {
-
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [memberToUpdate, setMemberToUpdate] = useState<Member | null>(null);
     const [newMember, setNewMember] = useState<Member>({
-        Expenses: [],
-        Incomes: [],
-        Resources: [],
-        Role: 'normal',
-        PhoneNumber: 0,
-        Roles: [],
-        Savings: [],
-        Skills: [],
-        Tasks: [],
-        FamilyID: 0,
-        MemberID: 0,
+        FamilyID: family.FamilyID,
         FullName: '',
         Email: '',
-        Family: {
-            FamilyID: 0,
-            FamilyName: '',
-            Address: '',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        }
+        Password: '',
+        DateOfBirth: new Date().toISOString(),
+        PhoneNumber: '',
+        Role: 'normal',
     });
 
-    const handleDialogOpen = (member: Member) => {
+
+    const handleUpdateDialogOpen = (member: Member) => {
         setMemberToUpdate(member);
-        setNewMember(member);
-        setDialogOpen(true);
+        setNewMember(prevMember => ({...prevMember, ...member}));
+        setUpdateDialogOpen(true);
+        onSelectMemberToUpdate(member);
+    };
+
+
+    const handleCreateDialogOpen = () => {
+        setCreateDialogOpen(true);
     };
 
     const handleDialogClose = () => {
-        setDialogOpen(false);
+        setUpdateDialogOpen(false);
+        setCreateDialogOpen(false);
         setMemberToUpdate(null);
-    };
-
-    const handleCreateOrUpdateMember = () => {
-        if (memberToUpdate) {
-            onUpdateMember(newMember);
-        } else {
-            onCreateMember(newMember);
-        }
-        setDialogOpen(false);
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,12 +83,50 @@ const MembersView: React.FC<MembersViewProps> = ({
             [event.target.name]: event.target.value
         });
     };
+    const handleInputChangeRole = (value: "normal" | "moderator" | "admin" | "analyst") => {
+        setNewMember({
+            ...newMember,
+            Role: value
+        });
+    };
 
+    const handleUpdateMember = async () => {
+        if (newMember && newMember.MemberID) {
+            setLoading(true);
+            try {
+                await onUpdateMember(newMember);
+                console.log("trying to update selected member  ", newMember);
+            } catch (error) {
+                console.error(error);
+                toast.error('An error occurred while updating the member.');
+            } finally {
+                setLoading(false);
+                handleDialogClose();
+            }
+        } else {
+            toast.error('No member selected for update.');
+        }
+    };
+
+
+
+    const handleCreateMember = () => {
+        setLoading(true);
+        try {
+            onCreateMember(newMember);
+        } catch (error) {
+        } finally {
+            setLoading(false);
+            handleDialogClose();
+        }
+    };
     return (
         <div>
-            <Button onClick={() => handleDialogOpen(newMember)}>Create Member</Button>
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>{memberToUpdate ? 'Update Member' : 'Create New Member'}</DialogTitle>
+            <Loading loading={loading} error={error}/>
+            <Button onClick={handleCreateDialogOpen}>Create Member</Button>
+
+            <Dialog open={updateDialogOpen} onClose={handleDialogClose}>
+                <DialogTitle>Update Member</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -131,14 +165,101 @@ const MembersView: React.FC<MembersViewProps> = ({
                         onChange={handleInputChange}
                         fullWidth
                     />
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleCreateOrUpdateMember} color="primary">
-                        {memberToUpdate ? 'Update' : 'Create'}
+                    <Button onClick={handleUpdateMember} color="primary">
+                        Update
                     </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={createDialogOpen} onClose={handleDialogClose}>
+                <DialogTitle>Create New Member</DialogTitle>
+                <DialogContent>
+                    <Dialog open={createDialogOpen} onClose={handleDialogClose}>
+                        <DialogTitle>Create New Member</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                name="FullName"
+                                label="Full Name"
+                                type="text"
+                                value={newMember.FullName}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                            <TextField
+                                margin="dense"
+                                name="Email"
+                                label="Email"
+                                type="email"
+                                value={newMember.Email}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                            Role :
+                            <Select
+                                value={newMember.Role}
+                                style={{width: 120}}
+
+                                onChange={handleInputChangeRole}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                <Option value={'normal'}>Normal</Option>
+                                <Option value={'moderator'}>Moderator</Option>
+                                <Option value={'admin'}>Admin</Option>
+                                <Option value={'analyst'}>Analyst</Option>
+                            </Select>
+                            <TextField
+                                margin="dense"
+                                name="DateOfBirth"
+                                type="date"
+                                value={newMember.DateOfBirth}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                            <TextField
+                                margin="dense"
+                                name="Password"
+                                label="Password"
+                                type="password"
+                                value={newMember.Password}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                            <TextField
+                                margin="dense"
+                                name="PhoneNumber"
+                                label="Phone Number"
+                                type="tel"
+                                value={newMember.PhoneNumber}
+                                onChange={handleInputChange}
+                                fullWidth
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleDialogClose} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleCreateMember} color="primary">
+                                Create
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleCreateMember} color="primary">
+                        Create
+                    </Button>
+
                 </DialogActions>
             </Dialog>
             <TableContainer component={Paper}>
@@ -155,7 +276,11 @@ const MembersView: React.FC<MembersViewProps> = ({
                     <TableBody>
                         {members.map((member) => (
                             (!selectedMemberId || selectedMemberId === member.MemberID) && (
-                                <TableRow key={member.MemberID} onClick={() => onSelectMember(member)}>
+                                <TableRow key={member.MemberID} onClick={() => {
+                                    if (member.MemberID !== undefined) {
+                                        onSelectMember(member);
+                                    }
+                                }}>
                                     <TableCell>{member.MemberID}</TableCell>
                                     <TableCell>{member.FullName}</TableCell>
                                     <TableCell>{member.Email}</TableCell>
@@ -164,11 +289,13 @@ const MembersView: React.FC<MembersViewProps> = ({
                                     <TableCell>
                                         <Button onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDialogOpen(member);
+                                            handleUpdateDialogOpen(member);
                                         }}>Update</Button>
                                         <Button onClick={(e) => {
                                             e.stopPropagation();
-                                            onDeleteMember(member.MemberID);
+                                            if (member.MemberID !== undefined) {
+                                                onDeleteMember(member.MemberID);
+                                            }
                                         }}>Delete</Button>
                                     </TableCell>
                                 </TableRow>

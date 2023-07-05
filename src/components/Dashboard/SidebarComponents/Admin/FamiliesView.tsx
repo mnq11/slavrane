@@ -20,6 +20,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MembersView from './MembersView';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
+import {toast} from "react-toastify";
 
 interface FamiliesViewProps {
     families: Family[];
@@ -31,6 +32,9 @@ interface FamiliesViewProps {
     onCreateFamily: (family: Family) => void;
     onUpdateFamily: (family: Family) => void;
     onDeleteFamily: (familyId: number) => void;
+    setMembers: React.Dispatch<React.SetStateAction<Member[]>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
 }
 
 const FamiliesView: React.FC<FamiliesViewProps> = ({
@@ -42,7 +46,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                                        selectedMemberId,
                                                        onCreateFamily,
                                                        onUpdateFamily,
-                                                       onDeleteFamily
+                                                       onDeleteFamily,
+                                                       setMembers,
+                                                       setLoading,
+
                                                    }) => {
     const classes = FamiliesViewStyles(); // use the styles
 
@@ -56,7 +63,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [localMembers, setLocalMembers] = useState<Member[]>([]);
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-
+    const [newMember, setNewMember] = useState<Member | null>(null);
 
 
     const handleOpenDialog = (family: Family) => {
@@ -102,44 +109,64 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setPage(0);
     };
 
-
-    const handleUpdateMember = (member: Member) => {
-        // Call the API to update the member
-        updateMember(member)
-            .then(() => {
-                // Handle successful update
-            })
-            .catch((error) => {
-                // Handle error
-            });
+    const handleSelectMemberToUpdate = (member: Member) => {
+        setNewMember(member);
     };
 
-    const handleDeleteMember = (memberId: number) => {
-        // Call the API to delete the member
-        deleteMember(memberId)
-            .then(() => {
-                // Handle successful deletion
-            })
-            .catch((error) => {
-                // Handle error
-            });
-    };
+    function handleDialogClose() {
+        setSelectedMember(null);
+        setNewMember(null);
+    }
 
-    const handleCreateMember = (member: Member) => {
-        // Call the API to create the member
-        createMember(member)
-            .then(() => {
-                // Handle successful creation
-            })
-            .catch((error) => {
-                // Handle error
-            });
+    const handleUpdateMember = async (updatedMember: Member) => {
+        setLoading(true);
+        try {
+            console.log('the parent receive to handle the new data to the api : ', updatedMember);
+            await updateMember(updatedMember); // use updateMember here
+            // Update the member data in the parent component's state
+            setMembers(prevMembers => prevMembers.map(member => member.MemberID === updatedMember.MemberID ? updatedMember : member));
+            toast.success('Member updated successfully.');
+        } catch (error) {
+            console.log(error);
+            toast.error('An error occurred while updating the member.');
+        } finally {
+            setLoading(false);
+            handleDialogClose();
+        }
     };
 
 
-    const handleSelectMember = (member: Member) => {
-        setSelectedMember(member);
+
+    const handleDeleteMember = async (memberId: number) => {
+        const confirm = window.confirm('Are you sure you want to delete this member?');
+        if (confirm) {
+            setLoading(true);
+            try {
+                await deleteMember(memberId);
+                setMembers(prevMembers => prevMembers.filter(member => member.MemberID !== memberId));
+                toast.success('Member deleted successfully.');
+            } catch (error) {
+                toast.error('An error occurred while deleting the member.');
+            } finally {
+                setLoading(false);
+            }
+        }
     };
+
+
+    const handleCreateMember = async (member: Member) => {
+        try {
+            const newMember = await createMember(member);
+            setMembers(prevMembers => [...prevMembers, newMember]);
+            toast.success('Member created successfully.');
+        } catch (error) {
+            toast.error('An error occurred while creating the member.');
+        } finally {
+            setLoading(false);
+            handleDialogClose();
+        }
+    };
+
     return (
         <div className={classes.root}>
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
@@ -169,7 +196,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                          selectedMemberId={selectedMemberId}
                                          onUpdateMember={handleUpdateMember}
                                          onDeleteMember={handleDeleteMember}
-                                         onCreateMember={handleCreateMember}/>
+                                         onCreateMember={handleCreateMember}
+                                         onSelectMemberToUpdate={handleSelectMemberToUpdate}
+
+                            />
                         </AccordionDetails>
                     </Accordion>
                 ))
@@ -199,7 +229,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                          selectedMemberId={selectedMemberId}
                                          onUpdateMember={handleUpdateMember}
                                          onDeleteMember={handleDeleteMember}
-                                         onCreateMember={handleCreateMember}/>
+                                         onCreateMember={handleCreateMember}
+                                         onSelectMemberToUpdate={handleSelectMemberToUpdate}
+
+                            />
                         </AccordionDetails>
                     </Accordion>
                 ))
@@ -214,7 +247,8 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
             <Dialog open={dialogOpen} onClose={handleCloseDialog} className={classes.dialog}>
-                <DialogTitle className={classes.dialogTitle}>{familyToUpdate ? 'Update Family' : 'Create New Family'}</DialogTitle>
+                <DialogTitle
+                    className={classes.dialogTitle}>{familyToUpdate ? 'Update Family' : 'Create New Family'}</DialogTitle>
                 <DialogContent className={classes.dialogContent}>
                     <TextField
                         autoFocus

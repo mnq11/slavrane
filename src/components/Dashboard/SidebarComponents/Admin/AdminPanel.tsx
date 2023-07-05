@@ -177,10 +177,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
                 selectedFamilyId={selectedFamily ? selectedFamily.FamilyID : null}
                 onSelectMember={handleSelectMember}
                 members={members}
-                selectedMemberId={selectedMember ? selectedMember.MemberID : null}
+                selectedMemberId={selectedMember?.MemberID ?? null}
                 onCreateFamily={handleCreateFamily}
                 onUpdateFamily={handleUpdateFamily}
-                onDeleteFamily={handleDeleteFamily} // pass the new function as a prop
+                onDeleteFamily={handleDeleteFamily}
+                setMembers={setMembers}
+                setLoading={setLoading}
+
             />
             {selectedMember && <MemberDetailsView member={selectedMember} tasks={tasks} resources={resources} incomes={incomes} expenses={expenses} family={family} roles={roles} savings={savings} skills={skills} />}
         </Container>
