@@ -180,7 +180,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                     <Button className={classes.updateButton} onClick={(e) => {
                                         e.stopPropagation();
                                         handleOpenDialog(family);
-                                    }}>Update</Button>
+                                    }}>Update Family</Button>
                                     <Button className={classes.deleteButton} onClick={(e) => {
                                         e.stopPropagation();
                                         onDeleteFamily(family.FamilyID);
@@ -217,7 +217,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                     <Button className={classes.deleteButton} onClick={(e) => {
                                         e.stopPropagation();
                                         onDeleteFamily(family.FamilyID);
-                                    }}>Delete</Button>
+                                    }}>Delete Family</Button>
                                 </div>
                             </div>
                         </AccordionSummary>

@@ -18,6 +18,7 @@ import {
 import {Select} from 'antd';
 import {toast} from "react-toastify";
 import Loading from "../../../ErrorHandling/Loading";
+import { MembersViewStyles } from './AdminPanel.Styles';
 
 const {Option} = Select;
 
@@ -57,6 +58,7 @@ const MembersView: React.FC<MembersViewProps> = ({
         PhoneNumber: '',
         Role: 'normal',
     });
+    const classes = MembersViewStyles();
 
 
     const handleUpdateDialogOpen = (member: Member) => {
@@ -119,9 +121,9 @@ const MembersView: React.FC<MembersViewProps> = ({
         }
     };
     return (
-        <div>
+        <div className={classes.root}>
             <Loading loading={loading} error={error}/>
-            <Button onClick={handleCreateDialogOpen}>Create Member</Button>
+            <Button className={classes.createButton} onClick={handleCreateDialogOpen}>Create Member</Button>
 
             <Dialog open={updateDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Update Member</DialogTitle>
@@ -264,7 +266,7 @@ const MembersView: React.FC<MembersViewProps> = ({
 
                 </DialogActions>
             </Dialog>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className={classes.table}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -289,16 +291,16 @@ const MembersView: React.FC<MembersViewProps> = ({
                                     <TableCell>{member.Role}</TableCell>
                                     <TableCell>{member.PhoneNumber}</TableCell>
                                     <TableCell>
-                                        <Button onClick={(e) => {
+                                        <Button className={classes.updateButton} onClick={(e) => {
                                             e.stopPropagation();
                                             handleUpdateDialogOpen(member);
-                                        }}>Update</Button>
-                                        <Button onClick={(e) => {
+                                        }}>Update Member</Button>
+                                        <Button className={classes.deleteButton} onClick={(e) => {
                                             e.stopPropagation();
                                             if (member.MemberID !== undefined) {
                                                 onDeleteMember(member.MemberID);
                                             }
-                                        }}>Delete</Button>
+                                        }}>Delete Member</Button>
                                     </TableCell>
                                 </TableRow>
                             )

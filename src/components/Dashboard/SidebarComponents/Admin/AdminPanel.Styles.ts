@@ -1,5 +1,17 @@
 import { makeStyles } from '@material-ui/core/styles';
 
+// Define your color scheme
+const colors = {
+    darkBlue: '#3f51b5',
+    lightBlue: '#303f9f',
+    white: '#fff',
+    red: '#f44336',
+    darkRed: '#d32f2f',
+    green: '#4caf50',
+    darkGreen: '#388e3c',
+
+};
+
 export const MemberDetailsViewStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -8,11 +20,15 @@ export const MemberDetailsViewStyles = makeStyles((theme) => ({
     },
     title: {
         marginBottom: theme.spacing(2),
-        color: '#3f51b5', // dark blue title
+        color: colors.darkBlue,
     },
     button: {
         margin: theme.spacing(1),
-        backgroundColor: '#3f51b5', // dark blue button
+        backgroundColor: colors.darkBlue,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.lightBlue,
+        },
     },
     card: {
         padding: theme.spacing(2),
@@ -20,71 +36,112 @@ export const MemberDetailsViewStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: '#fff', // white card
-        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)', // shadow for depth
+        backgroundColor: colors.white,
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
     },
     toggleAllCard: {
         marginTop: theme.spacing(2),
         padding: theme.spacing(2),
         display: 'flex',
         justifyContent: 'center',
-        backgroundColor: '#3f51b5', // dark blue card
-        color: '#fff', // white text
+        backgroundColor: colors.darkBlue,
+        color: colors.white,
     },
     toggleAllButton: {
         fontWeight: 'bold',
     },
 }));
 
-
-export const FamiliesViewStyles = makeStyles({
+export const FamiliesViewStyles = makeStyles((theme) => ({
     root: {
-        padding: '20px',
-        backgroundColor: '#f5f5f5', // light grey background
+        padding: theme.spacing(3),
     },
     row: {
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: '#e0e0e0', // light grey background on hover
+            backgroundColor: '#e0e0e0',
         },
     },
     table: {
-        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)', // shadow for depth
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
     },
     button: {
-        margin: '10px',
-        backgroundColor: '#3f51b5', // dark blue button
-        color: '#fff', // white text
+        margin: theme.spacing(1),
+        backgroundColor: colors.green,
+        color: colors.white,
         '&:hover': {
-            backgroundColor: '#303f9f', // darker blue on hover
+            backgroundColor: colors.darkGreen,
         },
-    },updateButton: {
-        margin: '10px',
-        marginRight: '20px', // add some space to the right
-        backgroundColor: '#3f51b5', // dark blue button
-        color: '#fff', // white text
+    },
+    updateButton: {
+        margin: theme.spacing(1),
+        marginRight: theme.spacing(2),
+        backgroundColor: colors.darkBlue,
+        color: colors.white,
         '&:hover': {
-            backgroundColor: '#303f9f', // darker blue on hover
+            backgroundColor: colors.lightBlue,
         },
     },
     deleteButton: {
-        margin: '10px',
-        backgroundColor: '#f44336', // red button
-        color: '#fff', // white text
+        margin: theme.spacing(1),
+        backgroundColor: colors.red,
+        color: colors.white,
         '&:hover': {
-            backgroundColor: '#d32f2f', // darker red on hover
+            backgroundColor: colors.darkRed,
         },
     },
     dialog: {
-        padding: '20px',
+        padding: theme.spacing(2),
     },
     dialogTitle: {
-        color: '#3f51b5', // dark blue title
+        color: colors.darkBlue,
     },
     dialogContent: {
-        marginBottom: '20px',
+        marginBottom: theme.spacing(2),
     },
     dialogActions: {
         justifyContent: 'space-between',
     },
-});
+}));
+
+export const MembersViewStyles = makeStyles((theme) => ({
+    root: {
+        padding: theme.spacing(3),
+    },
+    table: {
+        marginTop: theme.spacing(2),
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
+    },
+    button: {
+        margin: theme.spacing(1),
+        backgroundColor: colors.darkBlue,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.lightBlue,
+        },
+    },
+    updateButton: {
+        margin: theme.spacing(1),
+        backgroundColor: colors.lightBlue,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.darkBlue,
+        },
+    },
+    deleteButton: {
+        margin: theme.spacing(1),
+        backgroundColor: colors.red,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.darkRed,
+        },
+    },
+    createButton: {
+        margin: theme.spacing(1),
+        backgroundColor: colors.green,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.darkGreen,
+        },
+    },
+}));
