@@ -121,13 +121,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const handleUpdateMember = async (updatedMember: Member) => {
         setLoading(true);
         try {
-            console.log('the parent receive to handle the new data to the api : ', updatedMember);
             await updateMember(updatedMember); // use updateMember here
-            // Update the member data in the parent component's state
             setMembers(prevMembers => prevMembers.map(member => member.MemberID === updatedMember.MemberID ? updatedMember : member));
             toast.success('Member updated successfully.');
         } catch (error) {
-            console.log(error);
             toast.error('An error occurred while updating the member.');
         } finally {
             setLoading(false);

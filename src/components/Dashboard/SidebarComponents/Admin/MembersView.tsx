@@ -95,9 +95,7 @@ const MembersView: React.FC<MembersViewProps> = ({
             setLoading(true);
             try {
                 await onUpdateMember(newMember);
-                console.log("trying to update selected member  ", newMember);
             } catch (error) {
-                console.error(error);
                 toast.error('An error occurred while updating the member.');
             } finally {
                 setLoading(false);
@@ -147,15 +145,19 @@ const MembersView: React.FC<MembersViewProps> = ({
                         onChange={handleInputChange}
                         fullWidth
                     />
-                    <TextField
-                        margin="dense"
-                        name="Role"
-                        label="Role"
-                        type="text"
+                    Role :
+                    <Select
                         value={newMember.Role}
-                        onChange={handleInputChange}
-                        fullWidth
-                    />
+                        style={{width: 120}}
+
+                        onChange={handleInputChangeRole}
+                        getPopupContainer={trigger => trigger.parentNode}
+                    >
+                        <Option value={'normal'}>Normal</Option>
+                        <Option value={'moderator'}>Moderator</Option>
+                        <Option value={'admin'}>Admin</Option>
+                        <Option value={'analyst'}>Analyst</Option>
+                    </Select>
                     <TextField
                         margin="dense"
                         name="PhoneNumber"
