@@ -1,8 +1,19 @@
 // DetailCard.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import {DetailedCardStyles} from "./AdminPanel.Styles";
 import Button from "@material-ui/core/Button";
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from "@material-ui/core";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    DialogActions,
+    DialogContent,
+    Dialog, DialogTitle, TextField
+} from "@material-ui/core";
 
 interface DetailCardProps {
     label: string;
@@ -16,8 +27,29 @@ interface DetailCardProps {
 
 const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, onCreate, onUpdate, onDelete }) => {
     const classes = DetailedCardStyles();
+    const [open, setOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState<any>(null);
 
     const tableHeaders = data.length > 0 ? Object.keys(data[0]).filter(key => !['MemberTask', 'MemberResource', 'MemberIncome', 'MemberExpense', 'MemberRole'].includes(key)) : [];
+    const handleClickOpen = (item: any) => {
+        setCurrentItem(item);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleUpdate = () => {
+        onUpdate(currentItem);
+        setOpen(false);
+    };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentItem({
+            ...currentItem,
+            [event.target.name]: event.target.value,
+        });
+    };
 
     return (
         <div className={classes.root}>
@@ -47,7 +79,7 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                                         </TableCell>
                                     ))}
                                     <TableCell align="right">
-                                        <Button variant="contained" color="default" onClick={() => onUpdate(item)} className={classes.button}>
+                                        <Button variant="contained" color="default" onClick={() => handleClickOpen(item)} className={classes.button}>
                                             Update
                                         </Button>
                                         <Button variant="contained" color="default" onClick={() => onDelete(item)} className={classes.button}>
@@ -60,8 +92,40 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                     </Table>
                 </TableContainer>
             )}
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Update {label}</DialogTitle>
+                <DialogContent>
+                    {currentItem && Object.keys(currentItem).map((key, index) => {
+                        if (typeof currentItem[key] !== 'object' && key !== `${label}ID`) {
+                            return (
+                                <TextField
+                                    key={index}
+                                    autoFocus
+                                    margin="dense"
+                                    name={key}
+                                    label={key}
+                                    type="text"
+                                    fullWidth
+                                    value={currentItem[key]}
+                                    onChange={handleChange}
+                                />
+                            );
+                        }
+                        return null;
+                    })}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleUpdate} color="primary">
+                        Update
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
+
 };
 
 export default DetailCard;
