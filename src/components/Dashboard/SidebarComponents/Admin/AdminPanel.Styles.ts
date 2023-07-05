@@ -145,3 +145,20 @@ export const MembersViewStyles = makeStyles((theme) => ({
         },
     },
 }));
+
+export const DetailedCardStyles = makeStyles((theme) => ({
+    root: {
+        marginBottom: theme.spacing(2),
+    },
+    button: {
+        margin: theme.spacing(1),
+    },
+    item: {
+        backgroundColor: theme.palette.background.paper,
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+    },
+    table: {
+        minWidth: 650,
+    },
+}));

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+// MemberDetailsView.tsx
+import React, { useState, useCallback } from 'react';
 import {Expense, Family, Income, Member, Resource, Role, Savings, Skill, Task} from "../../../../hooks/useMember";
-import {Typography, Card, CardContent, Switch, FormControlLabel, Button, CircularProgress} from '@material-ui/core';
-import DetailTable from './DetailTable';
+import {Typography, Card, Button, CircularProgress} from '@material-ui/core';
 import { MemberDetailsViewStyles } from './AdminPanel.Styles';
+import DetailCard from './DetailCard';
 
 interface MemberDetailsViewProps {
     member: Member;
@@ -19,6 +20,8 @@ interface MemberDetailsViewProps {
 const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, resources, incomes, expenses, family, roles, savings, skills }) => {
     const classes = MemberDetailsViewStyles();
     const [showAll, setShowAll] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [loading, setLoading] = useState(false);
     const [showTables, setShowTables] = useState({
         family: false,
         tasks: false,
@@ -30,10 +33,12 @@ const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, re
         skills: false
     });
 
+    // Function to toggle the visibility of a specific table
     const toggleTable = (table: keyof typeof showTables) => {
         setShowTables(prevState => ({...prevState, [table]: !prevState[table]}));
     };
 
+    // Function to toggle the visibility of all tables
     const toggleAll = () => {
         const newState = !showAll;
         setShowAll(newState);
@@ -49,81 +54,124 @@ const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, re
         });
     };
 
+    // Function to handle the creation of a new item
+    // This function should be replaced with the actual implementation
+    const handleCreate = useCallback(async () => {
+        try {
+            setLoading(true);
+            // Handle create action here
+            // ...
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            if (error instanceof Error) {
+                setError(error);
+            }
+            setLoading(false);
+        }
+    }, []);
+
+    // Function to handle the update of an existing item
+    // This function should be replaced with the actual implementation
+    const handleUpdate = useCallback(async (item: any) => {
+        try {
+            setLoading(true);
+            // Handle update action here
+            // ...
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            if (error instanceof Error) {
+                setError(error);
+            }
+            setLoading(false);
+        }
+    }, []);
+
+    // Function to handle the deletion of an existing item
+    // This function should be replaced with the actual implementation
+    const handleDelete = useCallback(async (item: any) => {
+        try {
+            setLoading(true);
+            // Handle delete action here
+            // ...
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            if (error instanceof Error) {
+                setError(error);
+            }
+            setLoading(false);
+        }
+    }, []);
+
+    // If the member data is not available, show a loading spinner
     if (!member) {
         return <CircularProgress />;
     }
 
+    // IfApologies for the cut-off in the previous message. Here's the continuation:
+
+    if (error) {
+        return <p>Error: {error.message}</p>;
+    }
+
+    // Render the member details view
     return (
         <div className={classes.root}>
             <Typography variant="h4" component="h2" className={classes.title}>{member.FullName}</Typography>
             <Card className={classes.toggleAllCard}>
-                <Button className={classes.toggleAllButton} onClick={toggleAll}>
+                <Button className={classes.toggleAllButton} onClick={toggleAll} disabled={loading}>
                     {showAll ? 'Hide All' : 'Show All'}
                 </Button>
             </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.family} onChange={() => toggleTable('family')} />}
-                        label="Family"
+            {loading ? (
+                <CircularProgress />
+            ) : (
+                <>
+                    <DetailCard label="Tasks" data={tasks} show={showTables.tasks}
+                                toggleShow={() => toggleTable('tasks')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.family && family && <DetailTable data={[family]} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.tasks} onChange={() => toggleTable('tasks')} />}
-                        label="Tasks"
+                    <DetailCard label="Resources" data={resources}
+                                show={showTables.resources}
+                                toggleShow={() => toggleTable('resources')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.tasks && <DetailTable data={tasks} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.resources} onChange={() => toggleTable('resources')} />}
-                        label="Resources"
+                    <DetailCard label="Incomes" data={incomes}
+                                show={showTables.incomes}
+                                toggleShow={() => toggleTable('incomes')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.resources && <DetailTable data={resources} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.incomes} onChange={() => toggleTable('incomes')} />}
-                        label="Incomes"
+                    <DetailCard label="Expenses" data={expenses}
+                                show={showTables.expenses}
+                                toggleShow={() => toggleTable('expenses')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.incomes && <DetailTable data={incomes} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.expenses} onChange={() => toggleTable('expenses')} />}
-                        label="Expenses"
+                    <DetailCard label="Roles" data={roles}
+                                show={showTables.roles}
+                                toggleShow={() => toggleTable('roles')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.expenses && <DetailTable data={expenses} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.roles} onChange={() => toggleTable('roles')} />}
-                        label="Roles"
+                    <DetailCard label="Savings" data={savings}
+                                show={showTables.savings}
+                                toggleShow={() => toggleTable('savings')}
+                                onCreate={handleCreate}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
                     />
-                    {showTables.roles && <DetailTable data={roles} />}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardContent>
-                    <FormControlLabel
-                        control={<Switch checked={showTables.savings} onChange={() => toggleTable('savings')} />}
-                        label="Savings"
-                    />
-                    {showTables.savings && <DetailTable data={savings}/>}
-                </CardContent>
-            </Card>
+                </>
+            )}
         </div>
     );
 };
