@@ -17,7 +17,7 @@ const createDummyData = async (sequelize, models) => {
         const resources = ['Vehicle', 'Computer', 'Phone', 'Bicycle', 'Television'];
         const skills = ['Driving', 'Cooking', 'Cleaning', 'Programming', 'Teaching'];
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             const dummyMember = await models.Member.create({
                 FamilyID: dummyFamily.FamilyID,
                 FullName: faker.name.findName(),

@@ -9,7 +9,6 @@ const winston = require('winston');
 const compression = require('compression');
 const initializeDatabase = require("./DB/databaseSetup");
 // const createDummyData = require("./DB/dummyData");
-// const createDummyData = require("./DB/dummyData");
 
 const app = express();
 const port = process.env.SERVER_PORT || 3001;

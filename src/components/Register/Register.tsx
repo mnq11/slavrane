@@ -14,6 +14,7 @@ const Register: React.FC = () => {
         initialValues: {
             FamilyID: '',
             RoleID: '250',
+            Role: 'normal',
             FullName: '',
             DateOfBirth: '',
             Email: '',
