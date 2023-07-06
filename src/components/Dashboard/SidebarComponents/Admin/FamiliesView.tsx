@@ -61,9 +61,8 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     // Pagination state
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [localMembers, setLocalMembers] = useState<Member[]>([]);
-    const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-    const [newMember, setNewMember] = useState<Member | null>(null);
+    const [, setSelectedMember] = useState<Member | null>(null);
+    const [, setNewMember] = useState<Member | null>(null);
 
 
     const handleOpenDialog = (family: Family) => {

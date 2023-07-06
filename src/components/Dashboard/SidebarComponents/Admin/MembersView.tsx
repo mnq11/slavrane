@@ -1,5 +1,5 @@
 // MembersView.tsx
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
     Table,
@@ -45,10 +45,10 @@ const MembersView: React.FC<MembersViewProps> = ({
                                                      onSelectMemberToUpdate
                                                  }) => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
     const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
-    const [memberToUpdate, setMemberToUpdate] = useState<Member | null>(null);
+    const [, setMemberToUpdate] = useState<Member | null>(null);
     const [newMember, setNewMember] = useState<Member>({
         FamilyID: family.FamilyID,
         FullName: '',

@@ -20,43 +20,65 @@ interface DetailCardProps {
     data: any[];
     show: boolean;
     toggleShow: () => void;
-    onCreate: () => void;
+    onCreate: (item: any) => void;
     onUpdate: (item: any) => void;
     onDelete: (item: any) => void;
 }
 
 const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, onCreate, onUpdate, onDelete }) => {
     const classes = DetailedCardStyles();
-    const [open, setOpen] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [openCreate, setOpenCreate] = useState(false);
     const [currentItem, setCurrentItem] = useState<any>(null);
+    const [newItem, setNewItem] = useState<any>({});
 
     const tableHeaders = data.length > 0 ? Object.keys(data[0]).filter(key => !['MemberTask', 'MemberResource', 'MemberIncome', 'MemberExpense', 'MemberRole'].includes(key)) : [];
-    const handleClickOpen = (item: any) => {
+    const handleClickOpenUpdate = (item: any) => {
         setCurrentItem(item);
-        setOpen(true);
+        setOpenUpdate(true);
+    };
+
+    const handleClickOpenCreate = () => {
+        setNewItem({});
+        setOpenCreate(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setOpenUpdate(false);
+        setOpenCreate(false);
     };
 
     const handleUpdate = () => {
         onUpdate(currentItem);
-        setOpen(false);
+        setOpenUpdate(false);
     };
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleCreate = () => {
+        onCreate(newItem);
+        setOpenCreate(false);
+    };
+
+    const handleChangeUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentItem({
             ...currentItem,
             [event.target.name]: event.target.value,
         });
     };
 
+    const handleChangeCreate = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewItem({
+            ...newItem,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+
     return (
         <div className={classes.root}>
             <Button variant="contained" color="primary" onClick={toggleShow} className={classes.button}>
                 Toggle {label}
             </Button>
-            <Button variant="contained" color="secondary" onClick={onCreate} className={classes.button}>
+            <Button variant="contained" color="secondary" onClick={handleClickOpenCreate} className={classes.button}>
                 Create {label}
             </Button>
             {show && (
@@ -79,10 +101,12 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                                         </TableCell>
                                     ))}
                                     <TableCell align="right">
-                                        <Button variant="contained" color="default" onClick={() => handleClickOpen(item)} className={classes.button}>
+                                        <Button variant="contained" color="default"
+                                                onClick={() => handleClickOpenUpdate(item)} className={classes.button}>
                                             Update
                                         </Button>
-                                        <Button variant="contained" color="default" onClick={() => onDelete(item)} className={classes.button}>
+                                        <Button variant="contained" color="default" onClick={() => onDelete(item)}
+                                                className={classes.button}>
                                             Delete
                                         </Button>
                                     </TableCell>
@@ -92,11 +116,15 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                     </Table>
                 </TableContainer>
             )}
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={openUpdate} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Update {label}</DialogTitle>
                 <DialogContent>
                     {currentItem && Object.keys(currentItem).map((key, index) => {
-                        if (typeof currentItem[key] !== 'object' && key !== `${label}ID`) {
+                        if (key !== 'object' && key !== `IncomeID`
+                            && key !== `ExpenseID` && key !== `RoleID` && key !== `id`
+                            && key !== `TaskID` && key !== `ResourceID`&& key !== `MemberResource`
+                            && key !== `MemberTask`&& key !== `MemberIncome`&& key !== `MemberExpense`
+                            && key !== `MemberRole`&& key !== `memberId`&& key !== `familyId`) {
                             return (
                                 <TextField
                                     key={index}
@@ -107,7 +135,7 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                                     type="text"
                                     fullWidth
                                     value={currentItem[key]}
-                                    onChange={handleChange}
+                                    onChange={handleChangeUpdate}
                                 />
                             );
                         }
@@ -120,6 +148,40 @@ const DetailCard: React.FC<DetailCardProps> = ({ label, data, show, toggleShow, 
                     </Button>
                     <Button onClick={handleUpdate} color="primary">
                         Update
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCreate} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Create {label}</DialogTitle>
+                <DialogContent>
+                    {tableHeaders.map((key, index) => {
+                        if (key !== `IncomeID` && key !== `IncomeID`
+                            && key !== `ExpenseID` && key !== `RoleID`
+                            && key !== `id` && key !== `TaskID` && key !== `ResourceID`
+                            && key !== `memberId` && key !== `familyId`) {
+                            return (
+                                <TextField
+                                    key={index}
+                                    autoFocus
+                                    margin="dense"
+                                    name={key}
+                                    label={key}
+                                    type="text"
+                                    fullWidth
+                                    value={newItem[key] || ''}
+                                    onChange={handleChangeCreate}
+                                />
+                            );
+                        }
+                        return null;
+                    })}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleCreate} color="primary">
+                        Create
                     </Button>
                 </DialogActions>
             </Dialog>
