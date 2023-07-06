@@ -239,7 +239,7 @@ module.exports = (models) => {
         getMemberRoles,
         getMemberSavings,
         getMemberSkills,
-        updateMember, // Add this line
-        deleteMember, // Add this line
+        updateMember,
+        deleteMember,
     };
 };

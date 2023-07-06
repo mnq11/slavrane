@@ -85,6 +85,8 @@ const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, re
                         tasks={tasks}
                         show={showTables.tasks}
                         toggleShow={() => toggleTable('tasks')}
+                        currentMember={member}
+
                     />
 
 

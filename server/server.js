@@ -58,6 +58,10 @@ initializeDatabase().then(async (db) => {
     const familyRoutes = require('./routes/familyRoutes')(models);
     app.use('/families', familyRoutes);
 
+    const taskRoutes = require('./routes/tasks')(models);
+    app.use('/tasks', taskRoutes);
+
+
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
     });

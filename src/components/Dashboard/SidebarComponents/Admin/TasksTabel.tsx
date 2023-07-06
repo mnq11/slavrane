@@ -14,16 +14,20 @@ import {
     DialogContent,
     Dialog, DialogTitle, TextField, MenuItem, Select
 } from "@material-ui/core";
-import {Task} from "../../../../hooks/useMember";
-
+import {Member, Task} from "../../../../hooks/useMember";
+import {createTask, deleteTask, updateTask} from "../../../../API/api";
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface TasksTableProps {
     label: string;
     tasks: Task[];
     show: boolean;
     toggleShow: () => void;
+    currentMember: Member;
+
 }
 
-const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow }) => {
+const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow, currentMember }) => {
     const classes = DetailedCardStyles();
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
@@ -38,14 +42,14 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow 
 
     const handleClickOpenCreate = () => {
         setNewTask({
-            TaskID: 0,
+            TaskID: Math.floor(Math.random() * 1000000),
             Description: '',
             DueDate: '',
             Status: '',
             createdAt: '',
             updatedAt: '',
             MemberTask: {
-                id: 0,
+                id: Math.floor(Math.random() * 1000000),
                 MemberID: 0,
                 TaskID: 0
             }
@@ -84,38 +88,58 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow 
             });
         }
     };
-    const handleUpdate = async () => {
-        // API call to update the task
+    const handleCreate = async () => {
+        // API call to create the task
         try {
-            // await api.updateTask(currentTask);
-            // setOpenUpdate(false);
+            if (newTask && currentMember) {
+                const taskWithMember = {
+                    ...newTask,
+                    MemberTask: {
+                        ...newTask.MemberTask,
+                        MemberID: currentMember.MemberID // Use currentMember's ID here
+                    }
+                };
+                await createTask(taskWithMember);
+                toast.success('Task created successfully');
+                setOpenCreate(false);
+            }
         } catch (error) {
+            toast.error('An error occurred while creating the task');
             console.error(error);
         }
     };
 
-    const handleCreate = async () => {
-        // API call to create the task
+const handleUpdate = async () => {
+        // API call to update the task
         try {
-            // await api.createTask(newTask);
-            // setOpenCreate(false);
+            if (currentTask) {
+                await updateTask(currentTask);
+                toast.success('Task updated successfully');
+                setOpenUpdate(false);
+            }
         } catch (error) {
+            toast.error('An error occurred while updating the task');
             console.error(error);
         }
-    };
+}
 
     const handleDelete = async () => {
         // API call to delete the task
         try {
-            // await api.deleteTask(currentTask.TaskID);
-            // setOpenDelete(false);
+            if (currentTask) {
+                await deleteTask(currentTask.TaskID);
+                toast.success('Task deleted successfully');
+                setOpenDelete(false);
+            }
         } catch (error) {
+            toast.error('An error occurred while deleting the task');
             console.error(error);
         }
     };
 
     return (
         <div className={classes.root}>
+            <ToastContainer />
             <Button variant="contained" color="primary" onClick={toggleShow} className={classes.button}>
                 View Tasks
             </Button>
@@ -187,7 +211,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow 
                                 defaultValue={'Not Started'}
                             >
                                 <MenuItem value={'Not Started'}>Not Started</MenuItem>
-                                <MenuItem value={'Pending'}>In Progress</MenuItem>
+                                <MenuItem value={'Pending'}>Pending</MenuItem>
                                 <MenuItem value={'In Progress'}>In Progress</MenuItem>
                                 <MenuItem value={'Completed'}>Completed</MenuItem>
                             </Select>
@@ -211,8 +235,8 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow 
                                 label="Description"
                                 type="text"
                                 fullWidth
-                                value={currentTask?.Description || ''}
-                                onChange={handleChangeUpdate}
+                                value={newTask?.Description || ''}
+                                onChange={handleChangeCreate}
                             />
                             <TextField
                                 margin="dense"
@@ -220,22 +244,22 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow 
                                 label="Due Date"
                                 type="date"
                                 fullWidth
-                                value={currentTask?.DueDate || ''}
-                                onChange={handleChangeUpdate}
+                                value={newTask?.DueDate || ''}
+                                onChange={handleChangeCreate}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
                             />
                             <Select
-                                value={currentTask?.Status || ''}
-                                onChange={handleChangeUpdate}
+                                value={newTask?.Status || ''}
+                                onChange={handleChangeCreate}
                                 inputProps={{
                                     name: 'Status',
                                 }}
                                 defaultValue={'Not Started'}
                             >
                                 <MenuItem value={'Not Started'}>Not Started</MenuItem>
-                                <MenuItem value={'Pending'}>In Progress</MenuItem>
+                                <MenuItem value={'Pending'}>Pending</MenuItem>
                                 <MenuItem value={'In Progress'}>In Progress</MenuItem>
                                 <MenuItem value={'Completed'}>Completed</MenuItem>
                             </Select>

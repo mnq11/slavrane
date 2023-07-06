@@ -120,3 +120,17 @@ export async function deleteMember(memberId) {
     const response = await api.delete(`/members/${memberId}`);
     return response.data;
 }
+export async function createTask(task) {
+    const response = await api.post('/tasks', task);
+    return response.data;
+}
+
+export async function updateTask(task) {
+    const response = await api.put(`/tasks/${task.TaskID}`, task);
+    return response.data;
+}
+
+export async function deleteTask(taskId) {
+    const response = await api.delete(`/tasks/${taskId}`);
+    return response.data;
+}
