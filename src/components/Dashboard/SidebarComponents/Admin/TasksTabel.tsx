@@ -109,11 +109,12 @@ const TasksTable: React.FC<TasksTableProps> = ({ label, tasks, show, toggleShow,
         }
     };
 
-const handleUpdate = async () => {
+    const handleUpdate = async () => {
         // API call to update the task
         try {
             if (currentTask) {
-                await updateTask(currentTask);
+                const { MemberTask, ...taskToUpdate } = currentTask;
+                await updateTask(taskToUpdate);
                 toast.success('Task updated successfully');
                 setOpenUpdate(false);
             }
@@ -121,7 +122,12 @@ const handleUpdate = async () => {
             toast.error('An error occurred while updating the task');
             console.error(error);
         }
-}
+    };
+
+
+
+
+
 
     const handleDelete = async () => {
         // API call to delete the task
@@ -178,7 +184,7 @@ const handleUpdate = async () => {
                         </TableBody>
                     </Table>
                     <Dialog open={openUpdate} onClose={handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Update Task</DialogTitle>
+                        <DialogTitle id="form-dialog-title">Update Task</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -187,8 +193,8 @@ const handleUpdate = async () => {
                                 label="Description"
                                 type="text"
                                 fullWidth
-                                value={newTask?.Description || ''}
-                                onChange={handleChangeCreate}
+                                value={currentTask?.Description || ''}
+                                onChange={handleChangeUpdate}
                             />
                             <TextField
                                 margin="dense"
@@ -196,8 +202,8 @@ const handleUpdate = async () => {
                                 label="Due Date"
                                 type="date"
                                 fullWidth
-                                value={newTask?.DueDate || ''}
-                                onChange={handleChangeCreate}
+                                value={currentTask?.DueDate || ''}
+                                onChange={handleChangeUpdate}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -216,15 +222,15 @@ const handleUpdate = async () => {
                                 <MenuItem value={'Completed'}>Completed</MenuItem>
                             </Select>
                         </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={handleUpdate} color="primary">
-                            Update
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleUpdate} color="primary">
+                                Update
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                     <Dialog open={openCreate} onClose={handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle id="form-dialog-title">Create Task</DialogTitle>
                         <DialogContent>

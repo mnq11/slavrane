@@ -10,11 +10,16 @@ const createTaskSchema = Joi.object({
 });
 
 const updateTaskSchema = Joi.object({
+    TaskID: Joi.number().integer().optional(),
     Description: Joi.string().optional(),
     DueDate: Joi.date().optional(),
-    Status: Joi.string().valid('Not Started', 'In Progress', 'Completed').optional(),
+    Status: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').optional(),
+    createdAt: Joi.date().optional(),
+    updatedAt: Joi.date().optional(),
+    MemberID: Joi.number().integer().optional(),
     // Add validation for other fields as needed
 });
+
 
 module.exports = (models) => {
     const { Task, Member } = models;
