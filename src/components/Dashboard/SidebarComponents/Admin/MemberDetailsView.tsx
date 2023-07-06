@@ -1,9 +1,9 @@
 // MemberDetailsView.tsx
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {Expense, Family, Income, Member, Resource, Role, Savings, Skill, Task} from "../../../../hooks/useMember";
 import {Typography, Card, Button, CircularProgress} from '@material-ui/core';
 import { MemberDetailsViewStyles } from './AdminPanel.Styles';
-import DetailCard from './DetailCard';
+import TasksTabel from './TasksTabel';
 
 interface MemberDetailsViewProps {
     member: Member;
@@ -54,56 +54,7 @@ const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, re
         });
     };
 
-    // Function to handle the creation of a new item
-    // This function should be replaced with the actual implementation
-    const handleCreate = useCallback(async () => {
-        try {
-            setLoading(true);
-            // Handle create action here
-            // ...
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            if (error instanceof Error) {
-                setError(error);
-            }
-            setLoading(false);
-        }
-    }, []);
 
-    // Function to handle the update of an existing item
-    // This function should be replaced with the actual implementation
-    const handleUpdate = useCallback(async (item: any) => {
-        try {
-            setLoading(true);
-            // Handle update action here
-            // ...
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            if (error instanceof Error) {
-                setError(error);
-            }
-            setLoading(false);
-        }
-    }, []);
-
-    // Function to handle the deletion of an existing item
-    // This function should be replaced with the actual implementation
-    const handleDelete = useCallback(async (item: any) => {
-        try {
-            setLoading(true);
-            // Handle delete action here
-            // ...
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-            if (error instanceof Error) {
-                setError(error);
-            }
-            setLoading(false);
-        }
-    }, []);
 
     // If the member data is not available, show a loading spinner
     if (!member) {
@@ -129,47 +80,15 @@ const MemberDetailsView: React.FC<MemberDetailsViewProps> = ({ member, tasks, re
                 <CircularProgress />
             ) : (
                 <>
-                    <DetailCard label="Tasks" data={tasks} show={showTables.tasks}
-                                toggleShow={() => toggleTable('tasks')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
+                    <TasksTabel
+                        label="Tasks"
+                        tasks={tasks}
+                        show={showTables.tasks}
+                        toggleShow={() => toggleTable('tasks')}
                     />
-                    <DetailCard label="Resources" data={resources}
-                                show={showTables.resources}
-                                toggleShow={() => toggleTable('resources')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
-                    />
-                    <DetailCard label="Incomes" data={incomes}
-                                show={showTables.incomes}
-                                toggleShow={() => toggleTable('incomes')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
-                    />
-                    <DetailCard label="Expenses" data={expenses}
-                                show={showTables.expenses}
-                                toggleShow={() => toggleTable('expenses')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
-                    />
-                    <DetailCard label="Roles" data={roles}
-                                show={showTables.roles}
-                                toggleShow={() => toggleTable('roles')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
-                    />
-                    <DetailCard label="Savings" data={savings}
-                                show={showTables.savings}
-                                toggleShow={() => toggleTable('savings')}
-                                onCreate={handleCreate}
-                                onUpdate={handleUpdate}
-                                onDelete={handleDelete}
-                    />
+
+
+
                 </>
             )}
         </div>

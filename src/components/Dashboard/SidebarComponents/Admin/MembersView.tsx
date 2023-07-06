@@ -130,106 +130,49 @@ const MembersView: React.FC<MembersViewProps> = ({
             ) : error ? (
                 <div>Error: {error.message}</div>
             ) : (
-                <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
+                <TableContainer component={Paper} className={classes.table}>
+                    <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Full Name</TableCell>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Name</TableCell>
                                 <TableCell>Email</TableCell>
-                                <TableCell>Phone Number</TableCell>
                                 <TableCell>Role</TableCell>
-                                <TableCell align="right">Actions</TableCell>
+                                <TableCell>Phone Number</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {members.map((member) => (
-                                <TableRow key={member.MemberID} selected={member.MemberID === selectedMemberId}>
-                                    <TableCell component="th" scope="row">
-                                        {member.FullName}
-                                    </TableCell>
-                                    <TableCell>{member.Email}</TableCell>
-                                    <TableCell>{member.PhoneNumber}</TableCell>
-                                    <TableCell>{member.Role}</TableCell>
-                                    <TableCell align="right">
-                                        <Button variant="contained" color="default"
-                                                onClick={() => handleUpdateDialogOpen(member)} className={classes.button}>
-                                            Update
-                                        </Button>
-                                        <Button
-                                            variant="contained"
-                                            color="default"
-                                            onClick={() => {
+                                (!selectedMemberId || selectedMemberId === member.MemberID) && (
+                                    <TableRow key={member.MemberID} onClick={() => {
+                                        if (member.MemberID !== undefined) {
+                                            onSelectMember(member);
+                                        }
+                                    }}>
+                                        <TableCell>{member.MemberID}</TableCell>
+                                        <TableCell>{member.FullName}</TableCell>
+                                        <TableCell>{member.Email}</TableCell>
+                                        <TableCell>{member.Role}</TableCell>
+                                        <TableCell>{member.PhoneNumber}</TableCell>
+                                        <TableCell>
+                                            <Button className={classes.updateButton} onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleUpdateDialogOpen(member);
+                                            }}>Update Member</Button>
+                                            <Button className={classes.deleteButton} onClick={(e) => {
+                                                e.stopPropagation();
                                                 if (member.MemberID !== undefined) {
                                                     onDeleteMember(member.MemberID);
                                                 }
-                                            }}
-                                            className={classes.button}
-                                        >
-                                            Delete
-                                        </Button>
-
-                                    </TableCell>
-                                </TableRow>
+                                            }}>Delete Member</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                )
                             ))}
                         </TableBody>
                     </Table>
-                </TableContainer>
-            )}
-            <Dialog open={updateDialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Update Member</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        name="FullName"
-                        label="Full Name"
-                        type="text"
-                        fullWidth
-                        value={newMember.FullName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="Email"
-                        label="Email"
-                        type="email"
-                        fullWidth
-                        value={newMember.Email}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="PhoneNumber"
-                        label="Phone Number"
-                        type="tel"
-                        fullWidth
-                        value={newMember.PhoneNumber}
-                        onChange={handleInputChange}
-                    />
-                    <Select
-                        value={newMember.Role}
-                        onChange={handleInputChangeRole}
-                    >
-                        <Option value="normal">Normal</Option>
-                        <Option value="moderator">Moderator</Option>
-                        <Option value="admin">Admin</Option>
-                        <Option value="analyst">Analyst</Option>
-                    </Select>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleUpdateMember} color="primary">
-                        Update
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={createDialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Create New Member</DialogTitle>
-                <DialogContent>
-                    <Dialog open={createDialogOpen} onClose={handleDialogClose}>
-                        <DialogTitle>Create New Member</DialogTitle>
+                    <Dialog open={updateDialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Update Member</DialogTitle>
                         <DialogContent>
                             <TextField
                                 autoFocus
@@ -237,58 +180,122 @@ const MembersView: React.FC<MembersViewProps> = ({
                                 name="FullName"
                                 label="Full Name"
                                 type="text"
+                                fullWidth
                                 value={newMember.FullName}
                                 onChange={handleInputChange}
-                                fullWidth
                             />
                             <TextField
                                 margin="dense"
                                 name="Email"
                                 label="Email"
                                 type="email"
+                                fullWidth
                                 value={newMember.Email}
                                 onChange={handleInputChange}
-                                fullWidth
-                            />
-                            Role :
-                            <Select
-                                value={newMember.Role}
-                                style={{width: 120}}
-
-                                onChange={handleInputChangeRole}
-                                getPopupContainer={trigger => trigger.parentNode}
-                            >
-                                <Option value={'normal'}>Normal</Option>
-                                <Option value={'moderator'}>Moderator</Option>
-                                <Option value={'admin'}>Admin</Option>
-                                <Option value={'analyst'}>Analyst</Option>
-                            </Select>
-                            <TextField
-                                margin="dense"
-                                name="DateOfBirth"
-                                type="date"
-                                value={newMember.DateOfBirth}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                            <TextField
-                                margin="dense"
-                                name="Password"
-                                label="Password"
-                                type="password"
-                                value={newMember.Password}
-                                onChange={handleInputChange}
-                                fullWidth
                             />
                             <TextField
                                 margin="dense"
                                 name="PhoneNumber"
                                 label="Phone Number"
                                 type="tel"
+                                fullWidth
                                 value={newMember.PhoneNumber}
                                 onChange={handleInputChange}
-                                fullWidth
                             />
+                            <Select
+                                value={newMember.Role}
+                                onChange={handleInputChangeRole}
+                                getPopupContainer={trigger => trigger.parentNode}
+                            >
+                                <Option value="normal">Normal</Option>
+                                <Option value="moderator">Moderator</Option>
+                                <Option value="admin">Admin</Option>
+                                <Option value="analyst">Analyst</Option>
+                            </Select>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleDialogClose} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleUpdateMember} color="primary">
+                                Update
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog open={createDialogOpen} onClose={handleDialogClose}>
+                        <DialogTitle>Create New Member</DialogTitle>
+                        <DialogContent>
+                            <Dialog open={createDialogOpen} onClose={handleDialogClose}>
+                                <DialogTitle>Create New Member</DialogTitle>
+                                <DialogContent>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        name="FullName"
+                                        label="Full Name"
+                                        type="text"
+                                        value={newMember.FullName}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        name="Email"
+                                        label="Email"
+                                        type="email"
+                                        value={newMember.Email}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    Role :
+                                    <Select
+                                        value={newMember.Role}
+                                        onChange={handleInputChangeRole}
+                                        getPopupContainer={trigger => trigger.parentNode}
+                                    >
+                                        <Option value="normal">Normal</Option>
+                                        <Option value="moderator">Moderator</Option>
+                                        <Option value="admin">Admin</Option>
+                                        <Option value="analyst">Analyst</Option>
+                                    </Select>
+
+                                    <TextField
+                                        margin="dense"
+                                        name="DateOfBirth"
+                                        type="date"
+                                        value={newMember.DateOfBirth}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        name="Password"
+                                        label="Password"
+                                        type="text"
+                                        value={newMember.Password}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        margin="dense"
+                                        name="PhoneNumber"
+                                        label="Phone Number"
+                                        type="tel"
+                                        value={newMember.PhoneNumber}
+                                        onChange={handleInputChange}
+                                        fullWidth
+                                    />
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleDialogClose} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleCreateMember} color="primary">
+                                        Create
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleDialogClose} color="primary">
@@ -297,62 +304,14 @@ const MembersView: React.FC<MembersViewProps> = ({
                             <Button onClick={handleCreateMember} color="primary">
                                 Create
                             </Button>
+
                         </DialogActions>
                     </Dialog>
 
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleCreateMember} color="primary">
-                        Create
-                    </Button>
+                </TableContainer>
 
-                </DialogActions>
-            </Dialog>
-            <TableContainer component={Paper} className={classes.table}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Role</TableCell>
-                            <TableCell>Phone Number</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {members.map((member) => (
-                            (!selectedMemberId || selectedMemberId === member.MemberID) && (
-                                <TableRow key={member.MemberID} onClick={() => {
-                                    if (member.MemberID !== undefined) {
-                                        onSelectMember(member);
-                                    }
-                                }}>
-                                    <TableCell>{member.MemberID}</TableCell>
-                                    <TableCell>{member.FullName}</TableCell>
-                                    <TableCell>{member.Email}</TableCell>
-                                    <TableCell>{member.Role}</TableCell>
-                                    <TableCell>{member.PhoneNumber}</TableCell>
-                                    <TableCell>
-                                        <Button className={classes.updateButton} onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleUpdateDialogOpen(member);
-                                        }}>Update Member</Button>
-                                        <Button className={classes.deleteButton} onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (member.MemberID !== undefined) {
-                                                onDeleteMember(member.MemberID);
-                                            }
-                                        }}>Delete Member</Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            )}
+
         </div>
     );
 };

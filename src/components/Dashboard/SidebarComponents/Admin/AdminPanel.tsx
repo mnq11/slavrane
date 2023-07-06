@@ -1,5 +1,5 @@
 // AdminPanel.tsx
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
     getAllFamilies,
@@ -115,16 +115,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     }, [selectedMember]);
 
 
-    const handleSelectFamily = (family: Family) => {
+    const handleSelectFamily = useCallback((family: Family) => {
         if (selectedFamily && family.FamilyID === selectedFamily.FamilyID) {
-            // If the clicked family is already the selected family, deselect it
             setSelectedFamily(null);
-            setSelectedMember(null); // Also deselect any selected member
+            setSelectedMember(null);
         } else {
-            // Otherwise, select the clicked family
             setSelectedFamily(family);
         }
-    };
+    }, [selectedFamily]);
+
 
 
     const handleSelectMember = (member: Member) => {
