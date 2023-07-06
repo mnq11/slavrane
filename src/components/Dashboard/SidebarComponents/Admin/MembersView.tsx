@@ -45,7 +45,7 @@ const MembersView: React.FC<MembersViewProps> = ({
                                                      onSelectMemberToUpdate
                                                  }) => {
     const [loading, setLoading] = useState(false);
-    const [error] = useState(null);
+    const [error] = useState<{ message: string } | null>(null);
     const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const [, setMemberToUpdate] = useState<Member | null>(null);
@@ -122,11 +122,61 @@ const MembersView: React.FC<MembersViewProps> = ({
     };
     return (
         <div className={classes.root}>
-            <Loading loading={loading} error={error}/>
-            <Button className={classes.createButton} onClick={handleCreateDialogOpen}>Create Member</Button>
+            <Button variant="contained" color="primary" onClick={handleCreateDialogOpen} className={classes.button}>
+                Create Member
+            </Button>
+            {loading ? (
+                <Loading loading={loading} error={error ? error.message : null} />
+            ) : error ? (
+                <div>Error: {error.message}</div>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Full Name</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Phone Number</TableCell>
+                                <TableCell>Role</TableCell>
+                                <TableCell align="right">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {members.map((member) => (
+                                <TableRow key={member.MemberID} selected={member.MemberID === selectedMemberId}>
+                                    <TableCell component="th" scope="row">
+                                        {member.FullName}
+                                    </TableCell>
+                                    <TableCell>{member.Email}</TableCell>
+                                    <TableCell>{member.PhoneNumber}</TableCell>
+                                    <TableCell>{member.Role}</TableCell>
+                                    <TableCell align="right">
+                                        <Button variant="contained" color="default"
+                                                onClick={() => handleUpdateDialogOpen(member)} className={classes.button}>
+                                            Update
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="default"
+                                            onClick={() => {
+                                                if (member.MemberID !== undefined) {
+                                                    onDeleteMember(member.MemberID);
+                                                }
+                                            }}
+                                            className={classes.button}
+                                        >
+                                            Delete
+                                        </Button>
 
-            <Dialog open={updateDialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Update Member</DialogTitle>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
+            <Dialog open={updateDialogOpen} onClose={handleDialogClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Update Member</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -134,42 +184,37 @@ const MembersView: React.FC<MembersViewProps> = ({
                         name="FullName"
                         label="Full Name"
                         type="text"
+                        fullWidth
                         value={newMember.FullName}
                         onChange={handleInputChange}
-                        fullWidth
                     />
                     <TextField
                         margin="dense"
                         name="Email"
                         label="Email"
                         type="email"
+                        fullWidth
                         value={newMember.Email}
                         onChange={handleInputChange}
-                        fullWidth
                     />
-                    Role :
-                    <Select
-                        value={newMember.Role}
-                        style={{width: 120}}
-
-                        onChange={handleInputChangeRole}
-                        getPopupContainer={trigger => trigger.parentNode}
-                    >
-                        <Option value={'normal'}>Normal</Option>
-                        <Option value={'moderator'}>Moderator</Option>
-                        <Option value={'admin'}>Admin</Option>
-                        <Option value={'analyst'}>Analyst</Option>
-                    </Select>
                     <TextField
                         margin="dense"
                         name="PhoneNumber"
                         label="Phone Number"
                         type="tel"
+                        fullWidth
                         value={newMember.PhoneNumber}
                         onChange={handleInputChange}
-                        fullWidth
                     />
-
+                    <Select
+                        value={newMember.Role}
+                        onChange={handleInputChangeRole}
+                    >
+                        <Option value="normal">Normal</Option>
+                        <Option value="moderator">Moderator</Option>
+                        <Option value="admin">Admin</Option>
+                        <Option value="analyst">Analyst</Option>
+                    </Select>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
