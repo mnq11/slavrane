@@ -2,43 +2,24 @@
 import {useEffect, useState} from 'react';
 
 // Define interfaces for related models
-export interface MemberTask {
-    id: number;
-    MemberID?: number;
-    TaskID?: number;
-}
-
-export interface Task {
-    TaskID: number;
-    Description: string;
-    DueDate: string;
-    Status: string;
-    createdAt: string;
-    updatedAt: string;
-    MemberTask: MemberTask;
-}
 
 
 export interface Expense {
     ExpenseID: number;
+    FamilyID: number;
+    MemberID: number;
     Category: string;
     Amount: number;
+    Date: string;
+    Recurring: string;
     Frequency: string;
-    StartDate: string;
-    EndDate: string;
-    createdAt: string;
-    updatedAt: string;
-    MemberExpense: {
-        id: number;
-        MemberID: number;
-        ExpenseID: number;
-    }
+
 }
 
 export interface Family {
     FamilyID: number;
     FamilyName: string;
-
+    ContactNumber: string;
     Address: string;
     createdAt: string;
     updatedAt: string;
@@ -47,75 +28,91 @@ export interface Family {
 
 export interface Income {
     IncomeID: number;
+    FamilyID: number;
+    MemberID: number;
     Source: string;
     Amount: string;
+    Date: string;
+    Recurring: string;
     Frequency: string;
+    createdAt: string;
+    updatedAt: string;
+
+}
+
+export interface Lones {
+
+    LoanID: number;
+    FamilyID: number;
+    Amount: number;
+    Interest: number;
     StartDate: string;
-    EndDate: string;
-    createdAt: string;
-    updatedAt: string;
-    MemberIncome: {
-        id: number;
-        MemberID: number;
-        IncomeID: number;
-    }
-}
-
-
-export interface Savings {
-    id: number;
-    amount: number;
-    memberId: number;
-    familyId: number;
-    date: string;
-    type: string;
+    DUEDate: string;
+    Lender: string;
+    LoanPurpose: string;
+    RepaymentStatus: string;
     createdAt: string;
     updatedAt: string;
 }
-
 
 
 export interface Member {
     MemberID?: number;
-    FullName: string;
-    Email: string;
-    PhoneNumber: string;
-    FamilyID:number;
-    Password: string;
+    FamilyID: number;
+    MemberName: string;
     Role?: 'normal' | 'moderator' | 'admin' | 'analyst';
+    score?: number;
     DateOfBirth: string;
-    Tasks?: Task[];
-    Resources?: Resource[];
-    Expenses?: Expense[];
-    Family?: Family;
-    Incomes?: Income[];
-    Savings?: Savings[];
-    Skills?: Skill[];
+    Gender: string;
+    Email: string;
+    Password: string;
+    ContactNumber: string;
+    createdAt: string;
+    updatedAt: string;
 }
 export interface Resource {
     ResourceID: number;
-    ResourceType: string;
+    FamilyID: string;
     ResourceName: string;
+    ResourceValue: number;
+    ResourceDescription: string;
+    DateAcquired: string;
     createdAt: string;
     updatedAt: string;
-    MemberResource: {
-        id: number;
-        MemberID: number;
-        ResourceID: number;
-    }
+}
+export interface Savings {
+    SavingsID: number;
+    FamilyID: number;
+    Amount: number;
+    Date: string;
+    SavingsGoal: string;
+    TargetDate: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
 export interface Skill {
     SkillID: number;
+    MemberID: number;
     SkillName: string;
+    SkillLevel: string;
+    DateAcquired: string;
+    Certification: string;
     createdAt: string;
     updatedAt: string;
-    MemberSkill: {
-        id: number;
-        MemberID: number;
-        SkillID: number;
-    }
+}
+export interface Tasks {
+    TaskID: number;
+    MemberID: number;
+    TaskName: string;
+    TaskStatus: string;
+    DueDate: string;
+    Priority: string;
+    Description: string;
+    createdAt: string;
+    updatedAt: string;
+
 }
 export const useMember = () => {
     const userFromStorage = window.localStorage.getItem('member');
