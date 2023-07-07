@@ -18,9 +18,8 @@ import {
     CardActions, Grid
 } from '@material-ui/core';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
-import FamilyInfo from "./FamilyDetails";
-import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FamilyDetails from "./FamilyDetails";
 
 
 interface FamiliesViewProps {
@@ -53,10 +52,8 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [filter, setFilter] = useState('');
     const [dialogLoading, setDialogLoading] = useState(false);
     const [dialogError, setDialogError] = useState<string | null>(null);
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
-
 
 
     const handleCloseDialog = () => {
@@ -65,56 +62,6 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setNewFamilyName('');
         setNewFamilyAddress('');
         setDialogError(null);
-    };
-
-    const handleCreateFamily = async () => {
-        if (newFamilyName === '' || newFamilyAddress === '') {
-            setDialogError('Please fill out all fields');
-            return;
-        }
-
-        setDialogLoading(true);
-        setDialogError(null);
-
-        try {
-            const newFamily = {
-                FamilyID: Math.floor(Math.random() * 1000000),
-                FamilyName: newFamilyName,
-                Address: newFamilyAddress,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
-            await onCreateFamily(newFamily);
-            setDialogLoading(false);
-            handleCloseDialog();
-            toast.success('Family created successfully');
-        } catch (error) {
-            setDialogError('Failed to create family');
-            setDialogLoading(false);
-        }
-    };
-
-    const handleUpdateFamily = async () => {
-        if (newFamilyName === '' || newFamilyAddress === '') {
-            setDialogError('Please fill out all fields');
-            return;
-        }
-
-        setDialogLoading(true);
-        setDialogError(null);
-
-        try {
-            if (familyToUpdate) {
-                await onUpdateFamily({...familyToUpdate, FamilyName: newFamilyName, Address: newFamilyAddress});
-            }
-            setDialogLoading(false);
-            handleCloseDialog();
-            toast.success('Family updated successfully');
-        } catch (error) {
-            setDialogError('Failed to update family');
-            setDialogLoading(false);
-        }
     };
 
     const handlePageChange = (event: unknown, newPage: number) => {
@@ -126,17 +73,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         setPage(0);
     };
 
-    const handleDeleteSelectedFamily = async () => {
-        setLoading(true);
-        if (selectedFamily) {
-            await onDeleteFamily(selectedFamily.FamilyID);
-        }
-        setLoading(false);
-        toast.success('Family deleted successfully');
-    };
+
 
     const handleConfirmDelete = async () => {
-        await handleDeleteSelectedFamily();
+
         setOpenConfirmDialog(false);
     };
 
@@ -150,10 +90,10 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
             />
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
             {selectedFamily ? (
-                <FamilyInfo
+                <FamilyDetails
                     family={selectedFamily}
-                    onUpdateFamily={handleUpdateFamily}
-                    onDeleteFamily={() => setOpenConfirmDialog(true)}
+                    onUpdateFamily={onUpdateFamily}
+                    onDeleteFamily={onDeleteFamily}
                     onBackToFamilyList={() => onSelectFamily(null)}
                 />
 
@@ -217,9 +157,6 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                 <DialogActions className={classes.dialogActions}>
                     <Button onClick={handleCloseDialog} color="primary" disabled={dialogLoading}>
                         Cancel
-                    </Button>
-                    <Button onClick={familyToUpdate ? handleUpdateFamily : handleCreateFamily} color="primary" disabled={dialogLoading}>
-                        {familyToUpdate ? 'Update' : 'Create'}
                     </Button>
                 </DialogActions>
             </Dialog>

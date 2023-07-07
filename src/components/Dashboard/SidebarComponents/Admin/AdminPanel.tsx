@@ -1,3 +1,4 @@
+// AdminPanel.tsx
 import React, {useCallback, useEffect, useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
@@ -6,8 +7,9 @@ import {
     updateFamily,
     deleteFamily,
 } from "../../../../API/api";
-import FamiliesView from './FamiliesView';
 import {CircularProgress, Container, Typography} from '@material-ui/core';
+import FamiliesView from './FamiliesView';
+import {toast} from "react-toastify";
 
 interface AdminPanelProps {
     member: Member;
@@ -42,15 +44,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         try {
             const newFamily = await createFamily(family);
             setFamilies(prevFamilies => [...prevFamilies, newFamily]);
+            toast.success('Family created successfully');
         } catch (error) {
             console.error(error);
+            toast.error('Failed to create family');
         }
     };
+
 
     const handleDeleteFamily = async (familyId: number) => {
         try {
             await deleteFamily(familyId);
             setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
+            toast.success('Family deleted successfully');
         } catch (error) {
             console.error(error);
         }
@@ -60,6 +66,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         try {
             const updatedFamily = await updateFamily(family);
             setFamilies(prevFamilies => prevFamilies.map(f => f.FamilyID === updatedFamily.FamilyID ? updatedFamily : f));
+            toast.success('Family updated successfully');
         } catch (error) {
             console.error(error);
         }

@@ -74,9 +74,13 @@ export async function deleteFamily(familyId) {
     return response.data;
 }
 export async function createMember(member) {
-    const response = await api.post('/members/register', member);
+    const response = await api.post('/members/register', {
+        ...member,
+        FamilyID: parseInt(member.FamilyID), // ensure FamilyID is an integer
+    });
     return response.data;
 }
+
 
 export async function updateMember(member) {
     const response = await api.put(`/members/${member.MemberID}`, member);
