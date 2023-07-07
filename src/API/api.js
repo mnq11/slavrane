@@ -84,6 +84,8 @@ export async function createMember(member) {
 
 export async function updateMember(member) {
     const response = await api.put(`/members/${member.MemberID}`, member);
+    console.log('Api log :for update Member' ,response.data);
+
     return response.data;
 }
 
