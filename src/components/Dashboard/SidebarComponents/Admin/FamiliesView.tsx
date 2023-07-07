@@ -15,7 +15,7 @@ import {
     CircularProgress,
     CardContent,
     Card,
-    CardActions, Grid
+    Grid
 } from '@material-ui/core';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
@@ -36,10 +36,8 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                                                        families,
                                                        selectedFamily,
                                                        onSelectFamily,
-                                                       onCreateFamily,
                                                        onUpdateFamily,
                                                        onDeleteFamily,
-                                                       setLoading,
                                                    }) => {
     const classes = FamiliesViewStyles();
 
@@ -50,7 +48,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [filter, setFilter] = useState('');
-    const [dialogLoading, setDialogLoading] = useState(false);
+    const [dialogLoading] = useState(false);
     const [dialogError, setDialogError] = useState<string | null>(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
@@ -104,18 +102,20 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                         .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
                         .map((family) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
-                                <Card className={classes.card}>
-                                    <CardContent>
-                                        <Typography variant="h5">{family.FamilyName}</Typography>
-                                        <Typography variant="body2">{family.Address}</Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small" onClick={() => onSelectFamily(family)}>View</Button>
-                                    </CardActions>
-                                </Card>
+                                <Button onClick={() => onSelectFamily(family)} style={{textTransform: 'none'}}>
+                                    <Card className={classes.card}>
+                                        <CardContent>
+                                            <Typography variant="h6">Family ID: {family.FamilyID}</Typography>
+                                            <Typography variant="h5">{family.FamilyName}</Typography>
+                                            <Typography variant="body2">{family.Address}</Typography>
+                                            <Typography variant="body2">{family.ContactNumber}</Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Button>
                             </Grid>
                         ))}
                 </Grid>
+
             )}
 
             {!selectedFamily && (

@@ -7,23 +7,23 @@ interface FamilyProps {
 }
 
 const Family: React.FC<FamilyProps> = ({ member }) => {
-    const family = member.Family;
+    // const family = member.Family;
 
-    if (family === undefined) {
-        return <div>Error: Family information not available.</div>;
-    }
-
-    if (!family) {
-        return <div>This member does not have family information.</div>;
-    }
+    // if (family === undefined) {
+    //     return <div>Error: Family information not available.</div>;
+    // }
+    //
+    // if (!family) {
+    //     return <div>This member does not have family information.</div>;
+    // }
 
     return (
         <div>
-            <h1>{member.FullName}'s Family</h1>
-            <p>Family ID: {family.FamilyID}</p>
-            <p>Family Name: {family.FamilyName}</p>
-            <p>Address: {family.Address}</p>
-            <p>Created At: {family.createdAt}</p>
+            {/*<h1>{member.FullName}'s Family</h1>*/}
+            {/*<p>Family ID: {family.FamilyID}</p>*/}
+            {/*<p>Family Name: {family.FamilyName}</p>*/}
+            {/*<p>Address: {family.Address}</p>*/}
+            {/*<p>Created At: {family.createdAt}</p>*/}
 
         </div>
     );

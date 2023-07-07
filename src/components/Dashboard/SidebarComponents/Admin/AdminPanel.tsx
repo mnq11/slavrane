@@ -82,7 +82,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
 
     return (
         <Container>
-            <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
+            <Typography variant="h4" component="h1">Welcome, {member.MemberName}</Typography>
             <FamiliesView
                 families={families}
                 onSelectFamily={handleSelectFamily}

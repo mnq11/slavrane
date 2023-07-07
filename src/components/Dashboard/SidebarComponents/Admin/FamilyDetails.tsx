@@ -37,25 +37,6 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({ family, onUpdateFamily, o
                 </Button>
             </Box>
 
-            <Dialog
-                open={openConfirmDialog}
-                onClose={() => setOpenConfirmDialog(false)}
-            >
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        This action cannot be undone.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenConfirmDialog(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleConfirmDelete} color="secondary">
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Box>
     );
 };

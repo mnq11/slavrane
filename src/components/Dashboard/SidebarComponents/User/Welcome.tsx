@@ -9,7 +9,7 @@ interface WelcomeProps {
 
 const Welcome: React.FC<WelcomeProps> = ({ member }) => (
     <div>
-        <h1>Welcome to the app, {member?.FullName}!</h1>
+        <h1>Welcome to the app, {member?.MemberName}!</h1>
     </div>
 );
 
