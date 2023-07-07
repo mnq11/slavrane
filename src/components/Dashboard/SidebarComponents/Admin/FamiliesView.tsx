@@ -21,7 +21,7 @@ import {FamiliesViewStyles} from "./AdminPanel.Styles";
 import FamilyInfo from "./FamilyDetails";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 
 interface FamiliesViewProps {
     families: Family[];
@@ -53,11 +53,8 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     const [filter, setFilter] = useState('');
     const [dialogLoading, setDialogLoading] = useState(false);
     const [dialogError, setDialogError] = useState<string | null>(null);
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
-
-
 
     const handleCloseDialog = () => {
         setDialogOpen(false);
@@ -111,6 +108,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
             setDialogLoading(false);
             handleCloseDialog();
             toast.success('Family updated successfully');
+            onSelectFamily(null);
         } catch (error) {
             setDialogError('Failed to update family');
             setDialogLoading(false);
@@ -139,7 +137,6 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
         await handleDeleteSelectedFamily();
         setOpenConfirmDialog(false);
     };
-
 
     return (
         <div className={classes.root}>
@@ -238,12 +235,11 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                     <Button onClick={() => setOpenConfirmDialog(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirmDelete} color="secondary">
+                    <Button variant="contained" color="secondary" startIcon={<ErrorOutlineIcon />} onClick={handleConfirmDelete} style={{ marginLeft: '10px' }}>
                         Delete
                     </Button>
                 </DialogActions>
             </Dialog>
-
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={6000}

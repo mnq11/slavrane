@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+// AdminPanel.tsx
+import React, {useEffect, useState, useCallback} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
     getAllFamilies,
@@ -33,7 +34,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
             });
     }, []);
 
-
     const handleSelectFamily = useCallback((family: Family | null) => { // Allow null
         setSelectedFamily(family);
     }, []);
@@ -51,6 +51,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         try {
             await deleteFamily(familyId);
             setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
+            setSelectedFamily(null);
         } catch (error) {
             console.error(error);
         }
@@ -60,6 +61,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         try {
             const updatedFamily = await updateFamily(family);
             setFamilies(prevFamilies => prevFamilies.map(f => f.FamilyID === updatedFamily.FamilyID ? updatedFamily : f));
+            setSelectedFamily(null);
         } catch (error) {
             console.error(error);
         }
