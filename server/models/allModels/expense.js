@@ -1,11 +1,19 @@
 // models/expense.js
-module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('Expense', {
-        ExpenseID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        Category: { type: DataTypes.STRING, allowNull: false },
-        Amount: { type: DataTypes.DECIMAL, allowNull: false },
-        Frequency: { type: DataTypes.STRING, allowNull: false },
-        StartDate: { type: DataTypes.DATE, allowNull: false },
-        EndDate: { type: DataTypes.DATE, allowNull: false }
+module.exports = (sequelize, DataTypes) => {
+    const Expense = sequelize.define('Expense', {
+        ExpenseID: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        FamilyID: DataTypes.INTEGER,
+        MemberID: DataTypes.INTEGER,
+        Category: DataTypes.STRING,
+        Amount: DataTypes.DECIMAL,
+        Date: DataTypes.DATE,
+        Recurring: DataTypes.BOOLEAN,
+        Frequency: DataTypes.STRING
     });
+
+    return Expense;
 };

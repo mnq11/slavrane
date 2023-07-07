@@ -38,7 +38,7 @@ export async function loginMember(email, password) {
 
 
 export async function registerMember(values) {
-    const response = await api.post('/members/register', values);
+    const response = await api.post('/members', values);
     return response.data;
 }
 
@@ -48,49 +48,12 @@ export async function getMembersByFamilyId(familyId) {
     return response.data;
 }
 
-export async function getMemberTasks(memberId) {
-    const response = await api.get(`/members/${memberId}/tasks`);
-    return response.data;
-}
-
-export async function getMemberResources(memberId) {
-    const response = await api.get(`/members/${memberId}/resources`);
-    return response.data;
-}
-
-export async function getMemberIncomes(memberId) {
-    const response = await api.get(`/members/${memberId}/incomes`);
-    return response.data;
-}
-
-export async function getMemberExpenses(memberId) {
-    const response = await api.get(`/members/${memberId}/expenses`);
-    return response.data;
-}
-
-export async function getMemberFamily(memberId) {
-    const response = await api.get(`/members/${memberId}/family`);
-    return response.data;
-}
-
-export async function getMemberRoles(memberId) {
-    const response = await api.get(`/members/${memberId}/roles`);
-    return response.data;
-}
-
-export async function getMemberSavings(memberId) {
-    const response = await api.get(`/members/${memberId}/savings`);
-    return response.data;
-}
-
-export async function getMemberSkills(memberId) {
-    const response = await api.get(`/members/${memberId}/skills`);
-    return response.data;
-}
 export async function getAllFamilies() {
-    const response = await api.get('/families');
+    const response = await api.get('/families/getFamilies');
+    console.log(response.data); // Add this line
     return response.data;
 }
+
 
 export async function createFamily(family) {
     const response = await api.post('/families', family);
@@ -134,3 +97,7 @@ export async function deleteTask(taskId) {
     const response = await api.delete(`/tasks/${taskId}`);
     return response.data;
 }
+export const getTasksForMember = async (memberId) => {
+    const response = await api.get(`/members/${memberId}/tasks`);
+    return response.data;
+};

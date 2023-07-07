@@ -4,7 +4,7 @@ const Joi = require('joi');
 const createTaskSchema = Joi.object({
     Description: Joi.string().required(),
     DueDate: Joi.date().required(),
-    Status: Joi.string().valid('Not Started', 'In Progress', 'Completed').required(),
+    Status: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').required(),
     MemberID: Joi.number().integer().required(),
     // Add validation for other fields as needed
 });

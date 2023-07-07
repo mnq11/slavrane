@@ -1,26 +1,36 @@
 // relationships.js
 
 // Helper function to define many-to-many relationships
-const defineManyToMany = (model1, model2, throughModel, foreignKey1, foreignKey2) => {
-    model1.belongsToMany(model2, { through: throughModel, foreignKey: foreignKey1 });
-    model2.belongsToMany(model1, { through: throughModel, foreignKey: foreignKey2 });
-};
 
-// Helper function to define one-to-many relationships
-const defineOneToMany = (model1, model2, foreignKey) => {
-    model1.hasMany(model2, { foreignKey });
-    model2.belongsTo(model1, { foreignKey });
-};
 
 module.exports = (models) => {
-    defineOneToMany(models.Family, models.Member, 'FamilyID');
+    module.exports = (models) => {
+        models.Family.hasMany(models.Member, { foreignKey: 'FamilyID' });
+        models.Member.belongsTo(models.Family, { foreignKey: 'FamilyID' });
 
-    defineManyToMany(models.Role, models.Member, models.MemberRole, 'RoleID', 'MemberID');
-    defineManyToMany(models.Task, models.Member, models.MemberTask, 'TaskID', 'MemberID');
-    defineManyToMany(models.Resource, models.Member, models.MemberResource, 'ResourceID', 'MemberID');
-    defineManyToMany(models.Skill, models.Member, models.MemberSkill, 'SkillID', 'MemberID');
-    defineManyToMany(models.Income, models.Member, models.MemberIncome, 'IncomeID', 'MemberID');
-    defineManyToMany(models.Expense, models.Member, models.MemberExpense, 'ExpenseID', 'MemberID');
+        models.Member.hasMany(models.Task, { foreignKey: 'MemberID' });
+        models.Task.belongsTo(models.Member, { foreignKey: 'MemberID' });
 
-    defineOneToMany(models.Member, models.Savings, 'memberId');
-};
+
+
+        models.Member.hasMany(models.Resource, { foreignKey: 'ResourceID' });
+        models.Resource.belongsTo(models.Member, { foreignKey: 'ResourceID' });
+
+        models.Member.hasMany(models.Skill, { foreignKey: 'SkillID' });
+        models.Skill.belongsTo(models.Member, { foreignKey: 'SkillID' });
+
+        models.Member.hasMany(models.Income, { foreignKey: 'IncomeID' });
+        models.Income.belongsTo(models.Member, { foreignKey: 'IncomeID' });
+
+        models.Member.hasMany(models.Expense, { foreignKey: 'ExpenseID' });
+        models.Expense.belongsTo(models.Member, { foreignKey: 'ExpenseID' });
+
+        models.Family.hasMany(models.Savings, { foreignKey: 'SavingsID' });
+        models.Savings.belongsTo(models.Family, { foreignKey: 'SavingsID' });
+
+        models.Family.hasMany(models.Loan, { foreignKey: 'LoanID' });
+        models.Loan.belongsTo(models.Family, { foreignKey: 'LoanID' });
+    };
+
+
+ };

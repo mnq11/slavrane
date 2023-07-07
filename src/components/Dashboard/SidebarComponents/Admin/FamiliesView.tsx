@@ -18,7 +18,6 @@ import {
 } from '@material-ui/core';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MembersView from './MembersView';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
 import {toast} from "react-toastify";
 
@@ -188,14 +187,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                             </div>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <MembersView family={family} onSelectMember={onSelectMember} members={members}
-                                         selectedMemberId={selectedMemberId}
-                                         onUpdateMember={handleUpdateMember}
-                                         onDeleteMember={handleDeleteMember}
-                                         onCreateMember={handleCreateMember}
-                                         onSelectMemberToUpdate={handleSelectMemberToUpdate}
 
-                            />
                         </AccordionDetails>
                     </Accordion>
                 ))
@@ -221,14 +213,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                             </div>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <MembersView family={family} onSelectMember={onSelectMember} members={members}
-                                         selectedMemberId={selectedMemberId}
-                                         onUpdateMember={handleUpdateMember}
-                                         onDeleteMember={handleDeleteMember}
-                                         onCreateMember={handleCreateMember}
-                                         onSelectMemberToUpdate={handleSelectMemberToUpdate}
 
-                            />
                         </AccordionDetails>
                     </Accordion>
                 ))

@@ -1,18 +1,21 @@
 // models/member.js
-module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('Member', {
-        MemberID: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-        FullName: DataTypes.STRING,
+module.exports = (sequelize, DataTypes) => {
+    const Member = sequelize.define('Member', {
+        MemberID: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        FamilyID: DataTypes.INTEGER,
+        MemberName: DataTypes.STRING,
+        Role: DataTypes.STRING,
+        score: DataTypes.INTEGER,
         DateOfBirth: DataTypes.DATE,
+        Gender: DataTypes.STRING,
         Email: DataTypes.STRING,
-        PhoneNumber: DataTypes.STRING,
         Password: DataTypes.STRING,
-        Role: {
-            type: DataTypes.ENUM,
-            values: ['normal', 'moderator', 'admin', 'analyst'],
-            defaultValue: 'normal'
-        }
-
-
+        ContactNumber: DataTypes.STRING
     });
+
+    return Member;
 };

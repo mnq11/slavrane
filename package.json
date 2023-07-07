@@ -21,6 +21,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
+    "express-validator": "^7.0.1",
     "faker": "^5.5.3",
     "formik": "^2.4.2",
     "helmet": "^7.0.0",

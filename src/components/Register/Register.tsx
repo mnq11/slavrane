@@ -13,8 +13,6 @@ const Register: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             FamilyID: '',
-            RoleID: '250',
-            Role: 'normal',
             FullName: '',
             DateOfBirth: '',
             Email: '',
@@ -23,8 +21,6 @@ const Register: React.FC = () => {
         },
         validationSchema: Yup.object({
             FamilyID: Yup.string()
-                .required('Required'),
-            RoleID: Yup.string()
                 .required('Required'),
             FullName: Yup.string()
                 .required('Required'),
@@ -68,7 +64,7 @@ const Register: React.FC = () => {
                                onChange={formik.handleChange}
                                value={formik.values.FamilyID}
                                error={formik.touched.FamilyID && formik.errors.FamilyID ? formik.errors.FamilyID : undefined}/>
-                   <FormInput label="Full Name" id="FullName" name="FullName" type="text"
+                    <FormInput label="Full Name" id="FullName" name="FullName" type="text"
                                onChange={formik.handleChange}
                                value={formik.values.FullName}
                                error={formik.touched.FullName && formik.errors.FullName ? formik.errors.FullName : undefined}/>
@@ -101,8 +97,6 @@ const Register: React.FC = () => {
             </div>
         </Container>
     );
-
-
 };
 
 export default Register;

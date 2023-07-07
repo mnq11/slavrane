@@ -11,19 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     const modelNames = [
         'member',
         'family',
-        'role',
         'task',
         'resource',
         'skill',
         'income',
         'expense',
         'savings',
-        'memberRole',
-        'memberTask',
-        'memberResource',
-        'memberSkill',
-        'memberIncome',
-        'memberExpense'
+        'loan'
     ];
     return modelNames.reduce((models, modelName) => {
         models[modelName.charAt(0).toUpperCase() + modelName.slice(1)] = importModel(modelName, sequelize, DataTypes);

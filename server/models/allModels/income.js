@@ -1,11 +1,19 @@
 // models/income.js
-module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('Income', {
-        IncomeID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        Source: { type: DataTypes.STRING, allowNull: false },
-        Amount: { type: DataTypes.DECIMAL, allowNull: false },
-        Frequency: { type: DataTypes.STRING, allowNull: false },
-        StartDate: { type: DataTypes.DATE, allowNull: false },
-        EndDate: { type: DataTypes.DATE, allowNull: false }
+module.exports = (sequelize, DataTypes) => {
+    const Income = sequelize.define('Income', {
+        IncomeID: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        FamilyID: DataTypes.INTEGER,
+        MemberID: DataTypes.INTEGER,
+        Source: DataTypes.STRING,
+        Amount: DataTypes.DECIMAL,
+        Date: DataTypes.DATE,
+        Recurring: DataTypes.BOOLEAN,
+        Frequency: DataTypes.STRING
     });
+
+    return Income;
 };

@@ -6,7 +6,6 @@ import {useSidebarStyles} from "./DashboardStyleing/Dashboard.styles";
 import {Member} from "../../hooks/useMember"; // Import the User interface
 import Welcome from './SidebarComponents/User/Welcome';
 import UserSettings from './SidebarComponents/User/UserSettings';
-import Role from "./SidebarComponents/User/Role";
 import Family from "./SidebarComponents/User/Family";
 import Task from "./SidebarComponents/User/Task";
 import Resource from "./SidebarComponents/User/Resource";
@@ -30,7 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
         {label: 'Welcome', content: <Welcome member={member} />},
         ...(member.Role === 'admin' ? [{label: 'Admin Panel', content: <AdminPanel member={member} />}] : []),
         {label: 'Family', content: <Family member={member} />},
-        {label: 'Role', content: <Role member={member} />},
         {label: 'Task', content: <Task member={member} />},
         {label: 'Resource', content: <Resource member={member} />},
         {label: 'Skill', content: <Skill member={member} />},

@@ -1,5 +1,3 @@
-// dummyData.js
-const { sequelize, models } = require('./databaseSetup');
 const faker = require('faker');
 
 const createDummyData = async (sequelize, models) => {
@@ -7,19 +5,15 @@ const createDummyData = async (sequelize, models) => {
         // Sync the models with the database
         await sequelize.sync({ alter: true });
 
-        const dummyFamily = await models.Family.create({
-            FamilyName: faker.name.lastName(),
-            Address: faker.address.streetAddress()
-        });
-
-        const roles = ['Parent', 'Child', 'Grandparent', 'Uncle', 'Aunt'];
-        const tasks = ['Buy groceries', 'Clean the house', 'Do the laundry', 'Cook dinner', 'Mow the lawn'];
-        const resources = ['Vehicle', 'Computer', 'Phone', 'Bicycle', 'Television'];
-        const skills = ['Driving', 'Cooking', 'Cleaning', 'Programming', 'Teaching'];
-
         for (let i = 0; i < 10; i++) {
+            const dummyFamily = await models.Family.create({
+                FamilyName: faker.name.lastName(),
+                Address: faker.address.streetAddress(),
+                ContactNumber: faker.phone.phoneNumber()
+            });
+
             const dummyMember = await models.Member.create({
-                FamilyID: dummyFamily.FamilyID,
+                FamilyID: dummyFamily.id,
                 FullName: faker.name.findName(),
                 DateOfBirth: faker.date.past(),
                 Email: faker.internet.email(),
@@ -27,26 +21,26 @@ const createDummyData = async (sequelize, models) => {
                 Password: faker.internet.password()
             });
 
-            const dummyRole = await models.Role.create({
-                RoleName: roles[i]
-            });
-
             const dummyTask = await models.Task.create({
-                Description: tasks[i],
+                MemberID: dummyMember.id,
+                Description: faker.lorem.sentence(),
                 DueDate: faker.date.future(),
                 Status: 'Pending'
             });
 
             const dummyResource = await models.Resource.create({
-                ResourceType: resources[i],
+                MemberID: dummyMember.id,
+                ResourceType: faker.commerce.productMaterial(),
                 ResourceName: faker.commerce.productName()
             });
 
             const dummySkill = await models.Skill.create({
-                SkillName: skills[i]
+                MemberID: dummyMember.id,
+                SkillName: faker.name.jobArea()
             });
 
             const dummyIncome = await models.Income.create({
+                MemberID: dummyMember.id,
                 Source: faker.finance.transactionDescription(),
                 Amount: faker.finance.amount(),
                 Frequency: 'Monthly',
@@ -55,6 +49,7 @@ const createDummyData = async (sequelize, models) => {
             });
 
             const dummyExpense = await models.Expense.create({
+                MemberID: dummyMember.id,
                 Category: faker.commerce.department(),
                 Amount: faker.finance.amount(),
                 Frequency: 'Weekly',
@@ -62,44 +57,21 @@ const createDummyData = async (sequelize, models) => {
                 EndDate: faker.date.future()
             });
 
-            await models.Savings.create({
-                amount: faker.finance.amount(),
-                memberId: dummyMember.MemberID,
-                familyId: dummyFamily.FamilyID,
-                date: faker.date.recent(),
-                type: faker.finance.transactionType()
+            const dummySavings = await models.Savings.create({
+                FamilyID: dummyFamily.id,
+                Amount: faker.finance.amount(),
+                Date: faker.date.recent(),
+                Type: faker.finance.transactionType()
             });
 
-            // Create dummy join table data
-            await models.MemberRole.create({
-                MemberID: dummyMember.MemberID,
-                RoleID: dummyRole.RoleID
-            });
+            const dummyLoan = await models.Loan.create({
+                FamilyID: dummyFamily.id,
+                Amount: faker.finance.amount(),
+                StartDate: faker.date.past(),
+                EndDate: faker.date.future(),
+                InterestRate: parseFloat((1 + Math.random() * 4).toFixed(2))
 
-            await models.MemberTask.create({
-                MemberID: dummyMember.MemberID,
-                TaskID: dummyTask.TaskID
-            });
-
-            await models.MemberResource.create({
-                MemberID: dummyMember.MemberID,
-                ResourceID: dummyResource.ResourceID
-            });
-
-            await models.MemberSkill.create({
-                MemberID: dummyMember.MemberID,
-                SkillID: dummySkill.SkillID
-            });
-
-            await models.MemberIncome.create({
-                MemberID: dummyMember.MemberID,
-                IncomeID: dummyIncome.IncomeID
-            });
-
-            await models.MemberExpense.create({
-                MemberID: dummyMember.MemberID,
-                ExpenseID: dummyExpense.ExpenseID
-            });
+        });
         }
 
         console.log("Dummy data created successfully");

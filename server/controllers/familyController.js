@@ -1,57 +1,85 @@
+const { check, validationResult } = require('express-validator');
+
 module.exports = (models) => {
-    async function getAllFamilies(req, res) {
-        try {
-            const families = await models.Family.findAll();
-            res.json({ families });
-        } catch (error) {
-            console.error('Error in getAllFamilies function:', error);
-            res.status(500).json({ message: 'An error occurred while fetching data.' });
-        }
-    }
-
-    async function createFamily(req, res) {
-        try {
-            const family = await models.Family.create(req.body);
-            res.json(family);
-        } catch (error) {
-            console.error('Error in createFamily function:', error);
-            res.status(500).json({ message: 'An error occurred while creating the family.' });
-        }
-    }
-
-    async function updateFamily(req, res) {
-        try {
-            const familyId = req.params.id;
-            const family = await models.Family.findByPk(familyId);
-            if (!family) return res.status(404).json({message: 'Family not found.'});
-
-            const updatedFamily = await family.update(req.body);
-            res.json(updatedFamily);
-        } catch (error) {
-            console.error('Error in updateFamily function:', error);
-            res.status(500).json({ message: 'An error occurred while updating the family.' });
-        }
-    }
-
-
-    async function deleteFamily(req, res) {
-        try {
-            const familyId = req.params.id;
-            const family = await models.Family.findByPk(familyId);
-            if (!family) return res.status(404).json({ message: 'Family not found.' });
-            await family.destroy();
-            res.json({ message: 'Family deleted.' });
-        } catch (error) {
-            console.error('Error in deleteFamily function:', error);
-            res.status(500).json({ message: 'An error occurred while deleting the family.' });
-        }
-    }
-
-
     return {
-        getAllFamilies,
-        createFamily,
-        updateFamily,
-        deleteFamily
+        getAllFamilies: async (req, res) => {
+            try {
+                const families = await models.Family.findAll();
+                res.json(families);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        },
+
+        getOneFamily: async (req, res) => {
+            try {
+                const family = await models.Family.findByPk(req.params.id);
+                if (family) {
+                    res.json(family);
+                } else {
+                    res.status(404).json({ message: 'Family not found' });
+                }
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        },
+
+        createFamily: [
+            // Validation middleware
+            check('FamilyName').notEmpty().withMessage('Family name is required'),
+            check('Address').notEmpty().withMessage('Address is required'),
+            check('ContactNumber').isMobilePhone().withMessage('Invalid contact number'),
+
+            async (req, res) => {
+                // Check the result of the validation
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                    // If there are validation errors, send a 400 Bad Request response with the errors
+                    return res.status(400).json({ errors: errors.array() });
+                }
+
+                try {
+                    const family = await models.Family.create(req.body);
+                    res.status(201).json(family);
+                } catch (err) {
+                    // Check if the error is a Sequelize validation error
+                    if (err.name === 'SequelizeValidationError') {
+                        // If it is, send a 400 Bad Request response with the validation errors
+                        return res.status(400).json({ errors: err.errors.map(e => e.message) });
+                    }
+
+                    // If it's not a validation error, send a 500 Internal Server Error response with the error message
+                    res.status(500).json({ message: err.message });
+                }
+            }
+        ],
+
+        updateFamily: async (req, res) => {
+            try {
+                const family = await models.Family.findByPk(req.params.id);
+                if (family) {
+                    await family.update(req.body);
+                    res.json(family);
+                } else {
+                    res.status(404).json({ message: 'Family not found' });
+                }
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        },
+
+        deleteFamily: async (req, res) => {
+            try {
+                const family = await models.Family.findByPk(req.params.id);
+                if (family) {
+                    await family.destroy();
+                    res.json({ message: 'Family deleted' });
+                } else {
+                    res.status(404).json({ message: 'Family not found' });
+                }
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        }
     };
 };

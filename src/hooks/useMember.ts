@@ -4,8 +4,8 @@ import {useEffect, useState} from 'react';
 // Define interfaces for related models
 export interface MemberTask {
     id: number;
-    MemberID: number;
-    TaskID: number;
+    MemberID?: number;
+    TaskID?: number;
 }
 
 export interface Task {
@@ -89,7 +89,6 @@ export interface Member {
     Expenses?: Expense[];
     Family?: Family;
     Incomes?: Income[];
-    Roles?: Role[];
     Savings?: Savings[];
     Skills?: Skill[];
 }
@@ -106,17 +105,7 @@ export interface Resource {
     }
 }
 
-export interface Role {
-    RoleID: number;
-    RoleName: string;
-    createdAt: string;
-    updatedAt: string;
-    MemberRole: {
-        id: number;
-        MemberID: number;
-        RoleID: number;
-    }
-}
+
 export interface Skill {
     SkillID: number;
     SkillName: string;
