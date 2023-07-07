@@ -24,12 +24,17 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use((response) => {
     return response;
 }, (error) => {
-    if (error.response && error.response.status === 400) {
-        throw new Error("Email already in use.");
+    if (error.response && error.response.data && error.response.data.message) {
+        let errorMessage = error.response.data.message;
+        if (error.response.data.errors) {
+            errorMessage += ': ' + error.response.data.errors.join(', ');
+        }
+        throw new Error(errorMessage);
     } else {
         throw new Error("An error occurred while processing your request.");
     }
 });
+
 
 export async function loginMember(email, password) {
     const response = await api.post('/members/login', { email, password });
@@ -50,7 +55,6 @@ export async function getMembersByFamilyId(familyId) {
 
 export async function getAllFamilies() {
     const response = await api.get('/families/getFamilies');
-    console.log(response.data); // Add this line
     return response.data;
 }
 

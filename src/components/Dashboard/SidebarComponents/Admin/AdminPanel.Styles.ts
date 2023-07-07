@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 // Define your color scheme
 const colors = {
@@ -62,9 +62,7 @@ export const FamiliesViewStyles = makeStyles((theme) => ({
             backgroundColor: '#e0e0e0',
         },
     },
-    table: {
-        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
-    },
+
     button: {
         margin: theme.spacing(1),
         backgroundColor: colors.green,
@@ -102,7 +100,36 @@ export const FamiliesViewStyles = makeStyles((theme) => ({
     dialogActions: {
         justifyContent: 'space-between',
     },
+    createButton: {
+        margin: theme.spacing(1),
+        backgroundColor: colors.green,
+        color: colors.white,
+        '&:hover': {
+            backgroundColor: colors.darkGreen,
+        },
+    },
+
+    card: {
+        padding: theme.spacing(2),
+        minHeight: '200px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        backgroundColor: colors.white,
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
+    },
+    toggleAllCard: {
+        marginTop: theme.spacing(2),
+        padding: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'center',
+
+        '&:hover': {
+            backgroundColor: '#e0e0e0',
+        },
+    },
 }));
+
 
 export const MembersViewStyles = makeStyles((theme) => ({
     root: {
