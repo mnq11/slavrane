@@ -28,7 +28,7 @@ module.exports = (models) => {
             // Validation middleware
             check('FamilyName').notEmpty().withMessage('Family name is required'),
             check('Address').notEmpty().withMessage('Address is required'),
-            check('ContactNumber').isMobilePhone().withMessage('Invalid contact number'),
+            check('ContactNumber').notEmpty().withMessage('Contact number is required'),
 
             async (req, res) => {
                 console.log(req.body);
