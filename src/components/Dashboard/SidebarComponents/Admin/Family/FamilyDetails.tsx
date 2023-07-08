@@ -3,29 +3,26 @@
 import React, {useEffect, useState} from 'react';
 import { Button, Card, CardContent, Typography } from '@material-ui/core';
 import {Family, Member} from "../../../../../hooks/useMember";
-import {getMembersByFamilyId} from "../../../../../API/api";
-import MembersCardsView from "../member/MembersCardsView"; // Import MembersCardsView
+import {getMembersByFamilyId, updateFamily, deleteFamily} from "../../../../../API/api"; // Import updateFamily and deleteFamily
+import MembersCardsView from "../member/MembersCardsView";
+import {toast} from "react-toastify";
 
 interface FamilyDetailsProps {
     family: Family | undefined;
-    onUpdateFamily: (family: Family) => void;
-    onDeleteFamily: (familyId: number| undefined) => void;
     onBackToFamilyList: () => void;
-    onOpenUpdateDialog: (family: Family) => void;
     onSelectMember: (member: Member) => void;
     initialMembers: Member[] | undefined;
+    handleDeleteFamily: (familyId: number | undefined) => void;
 }
 
 const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                                                          family,
-                                                         onDeleteFamily,
                                                          onBackToFamilyList,
-                                                         onOpenUpdateDialog,
                                                          onSelectMember,
                                                          initialMembers,
-
+                                                         handleDeleteFamily,
                                                      }) => {
-    const [members, setMembers] = useState<Member[]>(initialMembers || []); // Use initialMembers here
+    const [members, setMembers] = useState<Member[]>(initialMembers || []);
 
     useEffect(() => {
         if (family) {
@@ -41,6 +38,18 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
         }
     }, [family, onBackToFamilyList]);
 
+    const handleUpdateFamily = async (family: Family) => {
+        try {
+            const updatedFamily = await updateFamily(family);
+            toast.success('Family updated successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update family');
+        }
+    };
+
+
+
     if (family === null) {
         return null;
     }
@@ -52,12 +61,12 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                     <Typography variant="h5">Name : {family?.FamilyName}</Typography>
                     <Typography variant="body2">Address : {family?.Address}</Typography>
                     <Typography variant="body2">ContactNumber : {family?.ContactNumber}</Typography>
-                    <Button onClick={() => family && onOpenUpdateDialog(family)}>Update</Button>
-                    <Button onClick={() => onDeleteFamily(family?.FamilyID)}>Delete</Button>
+                    <Button onClick={() => family && handleUpdateFamily(family)}>Update</Button>
+                    <Button onClick={() => handleDeleteFamily(family?.FamilyID)}>Delete</Button>
                     <Button onClick={onBackToFamilyList}>Back</Button>
                 </CardContent>
             </Card>
-            <MembersCardsView // Add MembersCardsView here
+            <MembersCardsView
                 members={members}
                 onSelectMember={onSelectMember}
             />
