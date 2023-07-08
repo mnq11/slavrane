@@ -14,7 +14,7 @@ const UserSettings: React.FC<UserSettingsProps> = ({ member }) => {
     return (
         <div>
             <Typography variant="h4">User Settings Page</Typography>
-            <Typography variant="h6">Full Name: {member.FullName}</Typography>
+            <Typography variant="h6">Full Name: {member.MemberName}</Typography>
             <Typography variant="h6">Email: {member.Email}</Typography>
             <Typography variant="h6">Email: {member.PhoneNumber}</Typography>
             <Typography variant="h6">Tasks:</Typography>

@@ -19,7 +19,7 @@ const Skill: React.FC<SkillProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Skills</h1>
+            <h1>{member.MemberName}'s Skills</h1>
             {skills.map((Skill) => (
                 <div key={Skill.SkillID}>
                     <p>Skill ID: {Skill.SkillID}</p>

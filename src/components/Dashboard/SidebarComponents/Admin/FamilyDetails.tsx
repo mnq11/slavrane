@@ -1,14 +1,15 @@
 // FamilyDetails.tsx
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { Family } from "../../../../hooks/useMember";
 import { Button, Card, CardContent, Typography } from '@material-ui/core';
 
 interface FamilyDetailsProps {
-    family: Family;
+    family: Family | null; // Allow null
     onUpdateFamily: (family: Family) => void;
     onDeleteFamily: (familyId: number| undefined) => void;
     onBackToFamilyList: () => void;
-    onOpenUpdateDialog: (family: Family) => void; // New prop
+    onOpenUpdateDialog: (family: Family) => void;
 }
 
 const FamilyDetails: React.FC<FamilyDetailsProps> = ({
@@ -16,8 +17,21 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                                                          onUpdateFamily,
                                                          onDeleteFamily,
                                                          onBackToFamilyList,
-                                                         onOpenUpdateDialog, // New prop
+                                                         onOpenUpdateDialog,
                                                      }) => {
+    // Check if family is null
+    useEffect(() => {
+        if (family === null) {
+            onBackToFamilyList();
+        }
+    }, [family, onBackToFamilyList]);
+
+    // If family is null, don't render anything
+    if (family === null) {
+
+        return null;
+    }
+
     return (
         <Card>
             <CardContent>

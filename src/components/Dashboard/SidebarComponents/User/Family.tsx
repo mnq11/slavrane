@@ -19,7 +19,7 @@ const Family: React.FC<FamilyProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Family</h1>
+            <h1>{member.MemberName}'s Family</h1>
             <p>Family ID: {family.FamilyID}</p>
             <p>Family Name: {family.FamilyName}</p>
             <p>Address: {family.Address}</p>

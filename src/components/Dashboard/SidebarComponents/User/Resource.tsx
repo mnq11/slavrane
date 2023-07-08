@@ -19,7 +19,7 @@ const Resource: React.FC<ResourceProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Resources</h1>
+            <h1>{member.MemberName}'s Resources</h1>
             {resources.map((Resource) => (
                 <div key={Resource.ResourceID}>
                     <p>Resource ID: {Resource.ResourceID}</p>

@@ -77,7 +77,7 @@ export interface Savings {
 
 export interface Member {
     MemberID?: number;
-    FullName: string;
+    MemberName: string;
     Email: string;
     PhoneNumber: string;
     FamilyID:number;

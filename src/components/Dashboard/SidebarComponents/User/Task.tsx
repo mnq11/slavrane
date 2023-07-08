@@ -15,7 +15,7 @@ const Task: React.FC<TaskProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Tasks</h1>
+            <h1>{member.MemberName}'s Tasks</h1>
             {tasks.map((task: TaskType) => (
                 <div key={task.TaskID}>
                     <p>Task ID: {task.TaskID}</p>

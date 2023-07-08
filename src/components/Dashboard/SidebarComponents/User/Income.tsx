@@ -19,7 +19,7 @@ const Income: React.FC<IncomeProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Incomes</h1>
+            <h1>{member.MemberName}'s Incomes</h1>
             {incomes.map((Income) => (
                 <div key={Income.IncomeID}>
                     <p>Income ID: {Income.IncomeID}</p>

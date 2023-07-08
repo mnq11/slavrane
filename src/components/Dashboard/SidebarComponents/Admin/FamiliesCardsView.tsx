@@ -15,7 +15,7 @@ import {
     CircularProgress,
     CardContent,
     Card,
-    Grid, CardActionArea
+    Grid
 } from '@material-ui/core';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
@@ -75,9 +75,11 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
 
-    const handleConfirmDelete = async () => {
 
+    const handleConfirmDelete = async () => {
+        onDeleteFamily(familyToUpdate?.FamilyID);
         setOpenConfirmDialog(false);
+        onSelectFamily(null);
     };
 
     const handleConfirmCreateOrUpdate = () => {
@@ -105,6 +107,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
             onCreateFamily(newFamily);
         }
         handleCloseDialog();
+        onSelectFamily(null); // Go back to family list after update or create
     };
     const handleOpenUpdateDialog = (family: Family) => {
         setFamilyToUpdate(family);

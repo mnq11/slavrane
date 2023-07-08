@@ -61,6 +61,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         try {
             await deleteFamily(familyId);
             setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
+            setSelectedFamily(null); // Set selected family to null after deletion
             toast.success('Family deleted successfully');
         } catch (error) {
             console.error(error);
@@ -73,6 +74,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
             const updatedFamily = await updateFamily(family);
             setFamilies(prevFamilies => prevFamilies.map(f => f.FamilyID === updatedFamily.FamilyID ? updatedFamily : f));
             toast.success('Family updated successfully');
+
         } catch (error) {
             console.error(error);
         }
@@ -88,7 +90,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
 
     return (
         <Container>
-            <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
+            <Typography variant="h4" component="h1">Welcome, {member.MemberName}</Typography>
             <FamiliesCardsView
                 families={families}
                 onSelectFamily={handleSelectFamily}

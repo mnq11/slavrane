@@ -19,7 +19,7 @@ const Expense: React.FC<ExpenseProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Expenses</h1>
+            <h1>{member.MemberName}'s Expenses</h1>
             {expenses.map((Expense) => (
                 <div key={Expense.ExpenseID}>
                     <p>Expense ID: {Expense.ExpenseID}</p>

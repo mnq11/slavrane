@@ -19,7 +19,7 @@ const Savings: React.FC<SavingsProps> = ({ member }) => {
 
     return (
         <div>
-            <h1>{member.FullName}'s Savings</h1>
+            <h1>{member.MemberName}'s Savings</h1>
             {savings.map((Saving) => (
                 <div key={Saving.id}>
                     <p>Savings ID: {Saving.id}</p>
