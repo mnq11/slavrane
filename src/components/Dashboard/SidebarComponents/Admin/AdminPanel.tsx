@@ -8,7 +8,7 @@ import {
     deleteFamily,
 } from "../../../../API/api";
 import {CircularProgress, Container, Typography} from '@material-ui/core';
-import FamiliesView from './FamiliesView';
+import FamiliesCardsView from './FamiliesCardsView';
 import {toast} from "react-toastify";
 
 interface AdminPanelProps {
@@ -52,7 +52,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     };
 
 
-    const handleDeleteFamily = async (familyId: number) => {
+    const handleDeleteFamily = async (familyId: number | undefined) => {
+        if (familyId === undefined) {
+            toast.error('Family ID is undefined');
+            return;
+        }
+
         try {
             await deleteFamily(familyId);
             setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
@@ -61,6 +66,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
             console.error(error);
         }
     };
+
 
     const handleUpdateFamily = async (family: Family) => {
         try {
@@ -83,7 +89,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     return (
         <Container>
             <Typography variant="h4" component="h1">Welcome, {member.FullName}</Typography>
-            <FamiliesView
+            <FamiliesCardsView
                 families={families}
                 onSelectFamily={handleSelectFamily}
                 selectedFamily={selectedFamily}
