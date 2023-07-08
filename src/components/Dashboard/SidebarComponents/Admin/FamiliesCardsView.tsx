@@ -1,4 +1,4 @@
-// FamiliesView.tsx
+// FamiliesCardsView.tsx
 import React, {useState} from 'react';
 import {Family} from "../../../../hooks/useMember";
 import {
@@ -22,29 +22,32 @@ import 'react-toastify/dist/ReactToastify.css';
 import FamilyDetails from "./FamilyDetails";
 
 
-interface FamiliesViewProps {
+interface FamiliesCardViewProps {
     families: Family[];
     selectedFamily: Family | null;
     onSelectFamily: (family: Family | null) => void;
     onCreateFamily: (family: Family) => void;
     onUpdateFamily: (family: Family) => void;
-    onDeleteFamily: (familyId: number) => void;
+    onDeleteFamily: (familyId: number| undefined) => void;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FamiliesView: React.FC<FamiliesViewProps> = ({
-                                                       families,
-                                                       selectedFamily,
-                                                       onSelectFamily,
-                                                       onUpdateFamily,
-                                                       onDeleteFamily,
-                                                   }) => {
+const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
+                                                                families,
+                                                                selectedFamily,
+                                                                onSelectFamily,
+                                                                onCreateFamily,
+                                                                onUpdateFamily,
+                                                                onDeleteFamily,
+                                                                setLoading,
+                                                            }) => {
     const classes = FamiliesViewStyles();
 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [familyToUpdate, setFamilyToUpdate] = useState<Family | null>(null);
     const [newFamilyName, setNewFamilyName] = useState('');
     const [newFamilyAddress, setNewFamilyAddress] = useState('');
+    const [newFamilyContactNumber, setNewFamilyContactNumber] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [filter, setFilter] = useState('');
@@ -74,11 +77,45 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
 
 
     const handleConfirmDelete = async () => {
-
+        onDeleteFamily(familyToUpdate?.FamilyID);
         setOpenConfirmDialog(false);
+        onSelectFamily(null);
     };
 
+    const handleConfirmCreateOrUpdate = () => {
+        if (familyToUpdate) {
+            // Logic for updating a family
+            const updatedFamily: Family = {
+                ...familyToUpdate,
+                FamilyName: newFamilyName,
+                Address: newFamilyAddress,
+                ContactNumber: newFamilyContactNumber,
 
+                // Add other fields as necessary
+            };
+            onUpdateFamily(updatedFamily);
+        } else {
+            // Logic for creating a new family
+            const newFamily: Family = {
+                FamilyID: Math.floor(Math.random() * 100000000),
+                FamilyName: newFamilyName,
+                Address: newFamilyAddress,
+                ContactNumber: newFamilyContactNumber,
+                createdAt: new Date().toISOString(), // Replace with actual creation time if necessary
+                updatedAt: new Date().toISOString(),
+            };
+            onCreateFamily(newFamily);
+        }
+        handleCloseDialog();
+        onSelectFamily(null); // Go back to family list after update or create
+    };
+    const handleOpenUpdateDialog = (family: Family) => {
+        setFamilyToUpdate(family);
+        setNewFamilyName(family.FamilyName);
+        setNewFamilyAddress(family.Address);
+        setNewFamilyContactNumber(family.ContactNumber);
+        setDialogOpen(true);
+    };
     return (
         <div className={classes.root}>
             <TextField
@@ -93,7 +130,9 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                     onUpdateFamily={onUpdateFamily}
                     onDeleteFamily={onDeleteFamily}
                     onBackToFamilyList={() => onSelectFamily(null)}
+                    onOpenUpdateDialog={handleOpenUpdateDialog}
                 />
+
 
             ) : (
                 <Grid container spacing={3}>
@@ -102,20 +141,15 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                         .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
                         .map((family) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
-                                <Button onClick={() => onSelectFamily(family)} style={{textTransform: 'none'}}>
-                                    <Card className={classes.card}>
+                                <Card className={classes.card} onClick={() => onSelectFamily(family)}>
                                         <CardContent>
-                                            <Typography variant="h6">Family ID: {family.FamilyID}</Typography>
                                             <Typography variant="h5">{family.FamilyName}</Typography>
                                             <Typography variant="body2">{family.Address}</Typography>
-                                            <Typography variant="body2">{family.ContactNumber}</Typography>
                                         </CardContent>
-                                    </Card>
-                                </Button>
+                                </Card>
                             </Grid>
                         ))}
                 </Grid>
-
             )}
 
             {!selectedFamily && (
@@ -133,7 +167,7 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                 <DialogTitle
                     className={classes.dialogTitle}>{familyToUpdate ? 'Update Family' : 'Create New Family'}</DialogTitle>
                 <DialogContent className={classes.dialogContent}>
-                    {dialogLoading && <CircularProgress />}
+                    {dialogLoading && <CircularProgress/>}
                     {dialogError && <Typography color="error">{dialogError}</Typography>}
                     <TextField
                         autoFocus
@@ -153,10 +187,22 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
                         fullWidth
                         disabled={dialogLoading}
                     />
+                    <TextField
+                        margin="dense"
+                        label="Contact Number"
+                        value={newFamilyContactNumber}
+                        onChange={(e) => setNewFamilyContactNumber(e.target.value)}
+                        fullWidth
+                        disabled={dialogLoading}
+                    />
+
                 </DialogContent>
                 <DialogActions className={classes.dialogActions}>
                     <Button onClick={handleCloseDialog} color="primary" disabled={dialogLoading}>
                         Cancel
+                    </Button>
+                    <Button onClick={handleConfirmCreateOrUpdate} color="primary" disabled={dialogLoading}>
+                        {familyToUpdate ? 'Update' : 'Create'}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -191,4 +237,4 @@ const FamiliesView: React.FC<FamiliesViewProps> = ({
     );
 };
 
-export default FamiliesView;
+export default FamiliesCardsView;

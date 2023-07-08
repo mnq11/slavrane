@@ -55,6 +55,8 @@ module.exports = (models) => {
         ],
 
         updateFamily: async (req, res) => {
+            console.log(req.body);
+
             try {
                 const family = await models.Family.findByPk(req.params.id);
                 if (family) {
