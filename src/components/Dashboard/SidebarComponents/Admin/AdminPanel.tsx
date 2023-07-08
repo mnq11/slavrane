@@ -3,7 +3,7 @@ import React, { useEffect, useState} from 'react';
 import {Family, Member} from "../../../../hooks/useMember";
 import {
     getAllFamilies,
-    createFamily, deleteFamily,
+    createFamily, deleteFamily, updateFamily,
 } from "../../../../API/api";
 import {CircularProgress, Container, Typography} from '@material-ui/core';
 import FamiliesCardsView from './Family/FamiliesCardsView';
@@ -39,6 +39,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
 
     const handleCreateFamily = async (family: Family) => {
         try {
+
             const newFamily = await createFamily(family);
             setFamilies(prevFamilies => [...prevFamilies, newFamily]);
             toast.success('Family created successfully');
@@ -47,6 +48,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
             toast.error('Failed to create family');
         }
     };
+    const handleUpdateFamily = async (updatedFamily: Family) => {
+        try {
+            const response = await updateFamily(updatedFamily);
+
+            if (response.status === 200) {
+                setFamilies(prevFamilies => prevFamilies.map(family => family.FamilyID === updatedFamily.FamilyID ? updatedFamily : family));
+                toast.success('Family updated successfully');
+                setSelectedFamily(null);
+
+            } else {
+                toast.error('Failed to update family');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update family');
+        }
+    };
+
     const handleDeleteFamily = async (familyId: number | undefined) => {
         if (familyId === undefined) {
             toast.error('Family ID is undefined');
@@ -54,10 +73,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         }
 
         try {
-            await deleteFamily(familyId);
+            const response = await deleteFamily(familyId);
+            if (response.status !== 200) {
+
+
             setFamilies(prevFamilies => prevFamilies.filter(family => family.FamilyID !== familyId));
-            setSelectedFamily(null); // Set selected family to null after deletion
+            setSelectedFamily(null);
             toast.success('Family deleted successfully');
+            } else {
+                toast.error('Failed to delete family');
+            }
         } catch (error) {
             console.error(error);
         }
@@ -85,7 +110,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
                         onBackToFamilyList={() => setSelectedFamily(null)}
                         onSelectMember={setSelectedMember}
                         initialMembers={selectedFamily.members}
-                        handleDeleteFamily={handleDeleteFamily} // Pass handleDeleteFamily here
+                        handleDeleteFamily={handleDeleteFamily}
+                        handleUpdateFamily={handleUpdateFamily}
+
                     />
 
 

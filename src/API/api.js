@@ -66,8 +66,7 @@ export async function createFamily(family) {
 
 export async function updateFamily(family) {
     const response = await api.put(`/families/${family.FamilyID}`, family);
-    return response.data;
-}
+    return response;}
 
 export async function deleteFamily(familyId) {
     const response = await api.delete(`/families/${familyId}`);
