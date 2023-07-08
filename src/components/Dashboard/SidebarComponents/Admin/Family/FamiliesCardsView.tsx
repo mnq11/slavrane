@@ -56,6 +56,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     const [dialogError, setDialogError] = useState<string | null>(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [dialogErrorMessage, setDialogErrorMessage] = useState<string | null>(null);
 
 
     const handleCloseDialog = () => {
@@ -64,6 +65,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
         setNewFamilyName('');
         setNewFamilyAddress('');
         setDialogError(null);
+        setDialogErrorMessage(null); // Add this line
     };
 
     const handlePageChange = (event: unknown, newPage: number) => {
@@ -83,28 +85,40 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
     const handleConfirmCreateOrUpdate = () => {
-        if (familyToUpdate) {
-            // Logic for updating a family
-            const updatedFamily: Family = {
-                ...familyToUpdate,
-                FamilyName: newFamilyName,
-                Address: newFamilyAddress,
-                ContactNumber: newFamilyContactNumber,
 
-                // Add other fields as necessary
-            };
-            onUpdateFamily(updatedFamily);
-        } else {
-            // Logic for creating a new family
-            const newFamily: Family = {
-                FamilyID: Math.floor(Math.random() * 100000000),
-                FamilyName: newFamilyName,
-                Address: newFamilyAddress,
-                ContactNumber: newFamilyContactNumber,
-                createdAt: new Date().toISOString(), // Replace with actual creation time if necessary
-                updatedAt: new Date().toISOString(),
-            };
-            onCreateFamily(newFamily);
+        // Check if the Contact Number is a number
+        const contactNumber = Number(newFamilyContactNumber);
+        if (isNaN(contactNumber)) {
+            setDialogErrorMessage('Contact Number must be a number');
+            return;
+        }
+        try {
+            if (familyToUpdate) {
+                // Logic for updating a family
+                const updatedFamily: Family = {
+                    ...familyToUpdate,
+                    FamilyName: newFamilyName,
+                    Address: newFamilyAddress,
+                    ContactNumber: newFamilyContactNumber,
+
+                    // Add other fields as necessary
+                };
+                onUpdateFamily(updatedFamily);
+            } else {
+                // Logic for creating a new family
+                const newFamily: Family = {
+                    FamilyID: Math.floor(Math.random() * 100000000),
+                    FamilyName: newFamilyName,
+                    Address: newFamilyAddress,
+                    ContactNumber: newFamilyContactNumber,
+                    createdAt: new Date().toISOString(), // Replace with actual creation time if necessary
+                    updatedAt: new Date().toISOString(),
+                };
+                onCreateFamily(newFamily);
+            }
+        } catch (error) {
+            // @ts-ignore
+            setDialogErrorMessage(error.message || 'An error occurred');
         }
         handleCloseDialog();
         onSelectFamily(null); // Go back to family list after update or create
@@ -134,7 +148,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                         onUpdateFamily={onUpdateFamily}
                         onDeleteFamily={onDeleteFamily}
                         onBackToFamilyList={() => onSelectFamily(null)}
-                        onOpenUpdateDialog={handleOpenUpdateDialog}
+                        onOpenUpdateDialog={handleOpenUpdateDialog} // Add this line
                         initialMembers={selectedFamily?.members}
                         onSelectMember={(member) => console.log(member)}
                     />
@@ -205,6 +219,8 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                     />
 
                 </DialogContent>
+                {dialogErrorMessage && <Typography color="error">{dialogErrorMessage}</Typography>}
+
                 <DialogActions className={classes.dialogActions}>
                     <Button onClick={handleCloseDialog} color="primary" disabled={dialogLoading}>
                         Cancel
@@ -213,6 +229,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                         {familyToUpdate ? 'Update' : 'Create'}
                     </Button>
                 </DialogActions>
+
             </Dialog>
 
             <Dialog

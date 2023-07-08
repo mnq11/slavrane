@@ -25,6 +25,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<{ message: string } | null>(null)
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [familyToUpdate, setFamilyToUpdate] = useState<Family | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -41,9 +43,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     }, []);
 
 
-    const handleSelectFamily = useCallback((family: Family | null) => { // Allow null
-        setSelectedFamily(family);
-    }, []);
 
     const handleCreateFamily = async (family: Family) => {
         try {
@@ -93,12 +92,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         return <div>Error: {error.message}</div>;
     }
 
-    function handleOpenUpdateDialog() {
-        console.log("handleOpenUpdateDialog");
-        throw new Error('Function not implemented.');
 
+        const handleOpenUpdateDialog = (family: Family) => {
+            setFamilyToUpdate(family);
+            setDialogOpen(true);
+        };
 
-    }
 
     return (
         <Container>
@@ -115,9 +114,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
                         onUpdateFamily={handleUpdateFamily}
                         onDeleteFamily={handleDeleteFamily}
                         onBackToFamilyList={() => setSelectedFamily(null)}
-                        onOpenUpdateDialog={handleOpenUpdateDialog}
                         onSelectMember={setSelectedMember}
-                        initialMembers={selectedFamily.members}/>
+                        initialMembers={selectedFamily.members}
+                        onOpenUpdateDialog={handleOpenUpdateDialog}
+                    />
+
                     <MembersCardsView
                         members={selectedFamily.members}
                         onSelectMember={(member) => setSelectedMember(member)}

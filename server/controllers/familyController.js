@@ -31,6 +31,8 @@ module.exports = (models) => {
             check('ContactNumber').isMobilePhone().withMessage('Invalid contact number'),
 
             async (req, res) => {
+                console.log(req.body);
+
                 // Check the result of the validation
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
