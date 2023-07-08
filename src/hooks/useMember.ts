@@ -23,6 +23,8 @@ export interface Family {
     Address: string;
     createdAt: string;
     updatedAt: string;
+    members?: Member[];
+
 }
 
 
@@ -53,6 +55,7 @@ export interface Lones {
     RepaymentStatus: string;
     createdAt: string;
     updatedAt: string;
+
 }
 
 
@@ -69,6 +72,14 @@ export interface Member {
     ContactNumber: string;
     createdAt: string;
     updatedAt: string;
+    expenses: Expense[];
+    incomes: Income[];
+    resources: Resource[];
+    savings: Savings[];
+    skills: Skill[];
+    tasks: Tasks[];
+
+
 }
 export interface Resource {
     ResourceID: number;

@@ -8,18 +8,23 @@ import {
     deleteFamily,
 } from "../../../../API/api";
 import {CircularProgress, Container, Typography} from '@material-ui/core';
-import FamiliesCardsView from './FamiliesCardsView';
+import FamiliesCardsView from './Family/FamiliesCardsView';
 import {toast} from "react-toastify";
+import FamilyDetails from "./Family/FamilyDetails";
+import MemberDetails from "./member/MemberDetails";
+import MembersCardsView from "./member/MembersCardsView";
 
 interface AdminPanelProps {
     member: Member;
 }
+
 
 const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
     const [families, setFamilies] = useState<Family[]>([]);
     const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<{ message: string } | null>(null)
+    const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -88,18 +93,47 @@ const AdminPanel: React.FC<AdminPanelProps> = ({member}) => {
         return <div>Error: {error.message}</div>;
     }
 
+    function handleOpenUpdateDialog() {
+        console.log("handleOpenUpdateDialog");
+        throw new Error('Function not implemented.');
+
+
+    }
+
     return (
         <Container>
             <Typography variant="h4" component="h1">Welcome, {member.MemberName}</Typography>
-            <FamiliesCardsView
-                families={families}
-                onSelectFamily={handleSelectFamily}
-                selectedFamily={selectedFamily}
-                onCreateFamily={handleCreateFamily}
-                onUpdateFamily={handleUpdateFamily}
-                onDeleteFamily={handleDeleteFamily}
-                setLoading={setLoading}
-            />
+            {selectedMember ? (
+                <MemberDetails
+                    member={selectedMember}
+                    onBackToFamilyDetails={() => setSelectedMember(null)}
+                />
+            ) : selectedFamily ? (
+                <>
+                    <FamilyDetails
+                        family={selectedFamily}
+                        onUpdateFamily={handleUpdateFamily}
+                        onDeleteFamily={handleDeleteFamily}
+                        onBackToFamilyList={() => setSelectedFamily(null)}
+                        onOpenUpdateDialog={handleOpenUpdateDialog}
+                        onSelectMember={setSelectedMember}
+                        initialMembers={selectedFamily.members}/>
+                    <MembersCardsView
+                        members={selectedFamily.members}
+                        onSelectMember={(member) => setSelectedMember(member)}
+                    />
+                </>
+            ) : (
+                <FamiliesCardsView
+                    families={families}
+                    selectedFamily={selectedFamily} // Add this line
+                    onSelectFamily={setSelectedFamily}
+                    onCreateFamily={handleCreateFamily}
+                    onUpdateFamily={handleUpdateFamily}
+                    onDeleteFamily={handleDeleteFamily}
+                    setLoading={setLoading}
+                />
+            )}
         </Container>
     );
 };

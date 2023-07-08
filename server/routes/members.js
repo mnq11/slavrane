@@ -8,7 +8,7 @@ module.exports = (models) => {
 
     router.post('/', memberController.createMember);
     router.post('/login', memberController.loginMember);
-    router.get('/', memberController.getAllMembersByFamilyId);
+    router.get('/families/:familyId', memberController.getAllMembersByFamilyId); // <-- Here's the change
     router.get('/:id', memberController.getOneMemberHisID);
     router.put('/:id', memberController.updateMember);
     router.delete('/:id', memberController.deleteMember);

@@ -1,6 +1,6 @@
 // FamiliesCardsView.tsx
 import React, {useState} from 'react';
-import {Family} from "../../../../hooks/useMember";
+import {Family} from "../../../../../hooks/useMember";
 import {
     Typography,
     Button,
@@ -17,8 +17,9 @@ import {
     Card,
     Grid
 } from '@material-ui/core';
-import {FamiliesViewStyles} from "./AdminPanel.Styles";
+import {FamiliesViewStyles} from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
+import MembersCardsView from "../member/MembersCardsView";
 import FamilyDetails from "./FamilyDetails";
 
 
@@ -28,7 +29,7 @@ interface FamiliesCardViewProps {
     onSelectFamily: (family: Family | null) => void;
     onCreateFamily: (family: Family) => void;
     onUpdateFamily: (family: Family) => void;
-    onDeleteFamily: (familyId: number| undefined) => void;
+    onDeleteFamily: (familyId: number | undefined) => void;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -75,7 +76,6 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
 
-
     const handleConfirmDelete = async () => {
         onDeleteFamily(familyToUpdate?.FamilyID);
         setOpenConfirmDialog(false);
@@ -109,12 +109,15 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
         handleCloseDialog();
         onSelectFamily(null); // Go back to family list after update or create
     };
-    const handleOpenUpdateDialog = (family: Family) => {
-        setFamilyToUpdate(family);
-        setNewFamilyName(family.FamilyName);
-        setNewFamilyAddress(family.Address);
-        setNewFamilyContactNumber(family.ContactNumber);
-        setDialogOpen(true);
+
+    const handleOpenUpdateDialog = (family: Family | undefined) => {
+        if (family) {
+            setFamilyToUpdate(family);
+            setNewFamilyName(family.FamilyName);
+            setNewFamilyAddress(family.Address);
+            setNewFamilyContactNumber(family.ContactNumber);
+            setDialogOpen(true);
+        }
     };
     return (
         <div className={classes.root}>
@@ -125,15 +128,21 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
             />
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
             {selectedFamily ? (
-                <FamilyDetails
-                    family={selectedFamily}
-                    onUpdateFamily={onUpdateFamily}
-                    onDeleteFamily={onDeleteFamily}
-                    onBackToFamilyList={() => onSelectFamily(null)}
-                    onOpenUpdateDialog={handleOpenUpdateDialog}
-                />
-
-
+                <>
+                    <FamilyDetails
+                        family={selectedFamily}
+                        onUpdateFamily={onUpdateFamily}
+                        onDeleteFamily={onDeleteFamily}
+                        onBackToFamilyList={() => onSelectFamily(null)}
+                        onOpenUpdateDialog={handleOpenUpdateDialog}
+                        initialMembers={selectedFamily?.members}
+                        onSelectMember={(member) => console.log(member)}
+                    />
+                    <MembersCardsView
+                        members={selectedFamily.members}
+                        onSelectMember={(member) => console.log(member)}
+                    />
+                </>
             ) : (
                 <Grid container spacing={3}>
                     {families
@@ -142,16 +151,15 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                         .map((family) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
                                 <Card className={classes.card} onClick={() => onSelectFamily(family)}>
-                                        <CardContent>
-                                            <Typography variant="h5">{family.FamilyName}</Typography>
-                                            <Typography variant="body2">{family.Address}</Typography>
-                                        </CardContent>
+                                    <CardContent>
+                                        <Typography variant="h5">{family.FamilyName}</Typography>
+                                        <Typography variant="body2">{family.Address}</Typography>
+                                    </CardContent>
                                 </Card>
                             </Grid>
                         ))}
                 </Grid>
             )}
-
             {!selectedFamily && (
                 <TablePagination
                     component="div"

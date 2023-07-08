@@ -56,7 +56,8 @@ module.exports = (models) => {
             console.error(err);
             res.status(500).json({ message: 'Error logging in' });
         }
-    };    const getAllMembersByFamilyId = async (req, res) => {
+    };
+    const getAllMembersByFamilyId = async (req, res) => {
         try {
             const members = await models.Member.findAll({
                 where: {
