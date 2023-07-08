@@ -8,6 +8,7 @@ interface FamilyDetailsProps {
     onUpdateFamily: (family: Family) => void;
     onDeleteFamily: (familyId: number| undefined) => void;
     onBackToFamilyList: () => void;
+    onOpenUpdateDialog: (family: Family) => void; // New prop
 }
 
 const FamilyDetails: React.FC<FamilyDetailsProps> = ({
@@ -15,6 +16,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                                                          onUpdateFamily,
                                                          onDeleteFamily,
                                                          onBackToFamilyList,
+                                                         onOpenUpdateDialog, // New prop
                                                      }) => {
     return (
         <Card>
@@ -22,7 +24,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                 <Typography variant="h5">{family.FamilyName}</Typography>
                 <Typography variant="body2">{family.Address}</Typography>
                 <Typography variant="body2">{family.ContactNumber}</Typography>
-                <Button onClick={() => onUpdateFamily(family)}>Update</Button>
+                <Button onClick={() => onOpenUpdateDialog(family)}>Update</Button>
                 <Button onClick={() => onDeleteFamily(family.FamilyID)}>Delete</Button>
                 <Button onClick={onBackToFamilyList}>Back</Button>
             </CardContent>

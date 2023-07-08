@@ -15,7 +15,7 @@ import {
     CircularProgress,
     CardContent,
     Card,
-    CardActions, Grid
+    Grid, CardActionArea
 } from '@material-ui/core';
 import {FamiliesViewStyles} from "./AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
@@ -106,7 +106,13 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
         }
         handleCloseDialog();
     };
-
+    const handleOpenUpdateDialog = (family: Family) => {
+        setFamilyToUpdate(family);
+        setNewFamilyName(family.FamilyName);
+        setNewFamilyAddress(family.Address);
+        setNewFamilyContactNumber(family.ContactNumber);
+        setDialogOpen(true);
+    };
     return (
         <div className={classes.root}>
             <TextField
@@ -121,7 +127,9 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                     onUpdateFamily={onUpdateFamily}
                     onDeleteFamily={onDeleteFamily}
                     onBackToFamilyList={() => onSelectFamily(null)}
+                    onOpenUpdateDialog={handleOpenUpdateDialog}
                 />
+
 
             ) : (
                 <Grid container spacing={3}>
@@ -130,14 +138,11 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                         .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
                         .map((family) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
-                                <Card className={classes.card}>
-                                    <CardContent>
-                                        <Typography variant="h5">{family.FamilyName}</Typography>
-                                        <Typography variant="body2">{family.Address}</Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small" onClick={() => onSelectFamily(family)}>View</Button>
-                                    </CardActions>
+                                <Card className={classes.card} onClick={() => onSelectFamily(family)}>
+                                        <CardContent>
+                                            <Typography variant="h5">{family.FamilyName}</Typography>
+                                            <Typography variant="body2">{family.Address}</Typography>
+                                        </CardContent>
                                 </Card>
                             </Grid>
                         ))}
