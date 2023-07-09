@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, CircularProgress } from '@material-ui/core';
-import { toast } from 'react-toastify';
 import FamiliesCardsView from './Family/FamiliesCardsView';
 import FamilyDetails from './Family/FamilyDetails';
 import MemberDetails from './member/MemberDetails';
@@ -24,15 +23,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
     }, []);
 
     const handleCreateFamily = async (family: Family) => {
-        createNewFamily(family, setFamilies);
+        await createNewFamily(family, setFamilies);
     };
 
     const handleUpdateFamily = async (updatedFamily: Family) => {
-        modifyFamily(updatedFamily, setFamilies, setSelectedFamily);
+        await modifyFamily(updatedFamily, setFamilies, setSelectedFamily);
     };
 
     const handleDeleteFamily = async (familyId: number | undefined) => {
-        removeFamily(familyId, setFamilies, setSelectedFamily);
+        await removeFamily(familyId, setFamilies, setSelectedFamily);
     };
 
     if (loading) {
