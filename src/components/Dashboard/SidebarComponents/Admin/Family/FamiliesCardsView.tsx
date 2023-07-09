@@ -1,7 +1,7 @@
 // FamiliesCardsView.tsx
 
-import React, { useState } from 'react';
-import { Family } from "../../../../../hooks/useMember";
+import React, {useEffect, useState} from 'react';
+import {Family} from "../../../../../hooks/useMember";
 import {
     Typography,
     Button,
@@ -11,31 +11,44 @@ import {
     Card,
     Grid, TextField
 } from '@material-ui/core';
-import { FamiliesViewStyles } from "../AdminPanel.Styles";
+import {FamiliesViewStyles} from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
 import {FamilyForm} from "../Forms/FamilyForm";
+import {fetchAllFamilies, createNewFamily, modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';
 
 interface FamiliesCardViewProps {
-    families: Family[];
     onSelectFamily: (family: Family | null) => void;
-    onCreateFamily: (family: Family) => void;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
-                                                                families,
                                                                 onSelectFamily,
-                                                                onCreateFamily,
                                                                 setLoading,
                                                             }) => {
     const classes = FamiliesViewStyles();
-
+    const [families, setFamilies] = useState<Family[]>([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [filter, setFilter] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
 
+    const handleCreateFamily = async (family: Family) => {
+        await createNewFamily(family);
+    };
+
+
+    useEffect(() => {
+        setLoading(true);
+        fetchAllFamilies()
+            .then(data => {
+                setFamilies(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setLoading(false);
+            });
+    }, []);
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -80,10 +93,10 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                 <FamilyForm
                     title="Create New Family"
                     family={undefined}
-                    onSubmit={onCreateFamily}
+                    onSubmit={handleCreateFamily}
                     onCancel={() => setDialogOpen(false)}
-
                 />
+
             )}
             <Snackbar
                 open={openSnackbar}
