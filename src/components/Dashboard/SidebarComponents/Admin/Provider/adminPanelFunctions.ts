@@ -1,6 +1,6 @@
 import {toast} from 'react-toastify';
-import {createFamily, deleteFamily, getAllFamilies, updateFamily} from '../../../../../API/api';
-import {Family} from "../../../../../hooks/useMember";
+import {createFamily, createMember, deleteFamily, getAllFamilies, updateFamily} from '../../../../../API/api';
+import {Family, Member} from "../../../../../hooks/useMember";
 
 export const fetchAllFamilies = async () => {
     try {
@@ -13,7 +13,7 @@ export const fetchAllFamilies = async () => {
 
 export const createNewFamily = async (Family: Family) => {
     try {
-        const newFamily = await createFamily(Family);
+        await createFamily(Family);
         toast.success('Family created successfully');
     } catch (error) {
         console.error(error);
@@ -53,5 +53,15 @@ export const removeFamily = async (familyId: number | undefined) => {
         }
     } catch (error) {
         console.error(error);
+    }
+};
+export const createNewMember = async (member: Member) => {
+    try {
+        const newMember = await createMember(member);
+        toast.success('Member created successfully');
+        return newMember;  // return the newly created member
+    } catch (error) {
+        console.error(error);
+        toast.error('Failed to create member');
     }
 };

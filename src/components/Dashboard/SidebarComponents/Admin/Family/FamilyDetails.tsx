@@ -24,7 +24,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
 
     const [members, setMembers] = useState<Member[]>(initialMembers || []);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [familyData, setFamilyData] = useState<Family | undefined>(family);
+    const [, setFamilyData] = useState<Family | undefined>(family);
 
     // add these functions
     const handleUpdateFamily = async (updatedFamily: Family) => {
@@ -79,6 +79,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
             <MembersCardsView
                 members={members}
                 onSelectMember={onSelectMember}
+                selectedFamily={family?.FamilyID}
             />
             {dialogOpen && (
                 <FamilyForm

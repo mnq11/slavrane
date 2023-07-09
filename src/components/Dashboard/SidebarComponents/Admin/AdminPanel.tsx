@@ -1,6 +1,6 @@
 // AdminPanel.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Typography, CircularProgress } from '@material-ui/core';
 import FamiliesCardsView from './Family/FamiliesCardsView';
 import FamilyDetails from './Family/FamilyDetails';
@@ -14,7 +14,7 @@ interface AdminPanelProps {
 const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
     const [selectedFamily, setSelectedFamily] = useState<Family | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<{ message: string } | null>(null);
+    const [error] = useState<{ message: string } | null>(null);
     const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
     if (loading) {

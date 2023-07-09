@@ -6,7 +6,7 @@ module.exports = (models) => {
 
     const createMember = async (req, res) => {
         try {
-            const { FamilyID, RoleID, FullName, DateOfBirth, Email, PhoneNumber, Password } = req.body;
+            const { FamilyID, MemberName, Role, score, DateOfBirth, Gender, Email, Password, ContactNumber } = req.body;
 
             // Hash the password
             const saltRounds = 10;
@@ -14,12 +14,14 @@ module.exports = (models) => {
 
             const newMember = await models.Member.create({
                 FamilyID,
-                RoleID,
-                FullName,
+                Role,
+                MemberName,
                 DateOfBirth,
+                Gender,
                 Email,
-                PhoneNumber,
-                Password: hashedPassword
+                Password: hashedPassword,
+                ContactNumber,
+                score
             });
 
             res.status(201).json(newMember);
@@ -28,6 +30,7 @@ module.exports = (models) => {
             res.status(500).json({ message: 'Error creating new member' });
         }
     };
+
 
     const loginMember = async (req, res) => {
         console.log(req.body);

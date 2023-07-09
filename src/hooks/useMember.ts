@@ -70,14 +70,14 @@ export interface Member {
     Email: string;
     Password: string;
     ContactNumber: string;
-    createdAt: string;
-    updatedAt: string;
-    expenses: Expense[];
-    incomes: Income[];
-    resources: Resource[];
-    savings: Savings[];
-    skills: Skill[];
-    tasks: Tasks[];
+    createdAt?: string;
+    updatedAt?: string;
+    expenses?: Expense[];
+    incomes?: Income[];
+    resources?: Resource[];
+    savings?: Savings[];
+    skills?: Skill[];
+    tasks?: Tasks[];
 
 
 }

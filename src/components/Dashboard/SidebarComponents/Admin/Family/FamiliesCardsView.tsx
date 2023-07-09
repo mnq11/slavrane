@@ -14,7 +14,7 @@ import {
 import {FamiliesViewStyles} from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
 import {FamilyForm} from "../Forms/FamilyForm";
-import {fetchAllFamilies, createNewFamily, modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';
+import {fetchAllFamilies, createNewFamily} from '../Provider/adminPanelFunctions';
 
 interface FamiliesCardViewProps {
     onSelectFamily: (family: Family | null) => void;
@@ -45,7 +45,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                 setFamilies(data);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch(() => {
                 setLoading(false);
             });
     }, []);
