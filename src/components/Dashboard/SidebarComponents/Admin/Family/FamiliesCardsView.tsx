@@ -1,24 +1,20 @@
 // FamiliesCardsView.tsx
-import React, {useState} from 'react';
-import {Family} from "../../../../../hooks/useMember";
+
+import React, { useState } from 'react';
+import { Family } from "../../../../../hooks/useMember";
 import {
     Typography,
     Button,
-    Dialog,
-    DialogTitle,
-    TextField,
-    DialogContent,
-    DialogActions,
     TablePagination,
     Snackbar,
-    DialogContentText,
     CircularProgress,
     CardContent,
     Card,
-    Grid
+    Grid, TextField
 } from '@material-ui/core';
-import {FamiliesViewStyles} from "../AdminPanel.Styles";
+import { FamiliesViewStyles } from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
+import {FamilyForm} from "../Forms/FamilyForm";
 
 interface FamiliesCardViewProps {
     families: Family[];
@@ -36,24 +32,10 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     const classes = FamiliesViewStyles();
 
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [newFamilyName, setNewFamilyName] = useState('');
-    const [newFamilyAddress, setNewFamilyAddress] = useState('');
-    const [newFamilyContactNumber, setNewFamilyContactNumber] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [filter, setFilter] = useState('');
-    const [dialogLoading] = useState(false);
-    const [dialogError, setDialogError] = useState<string | null>(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
-    const [dialogErrorMessage, setDialogErrorMessage] = useState<string | null>(null);
-
-    const handleCloseDialog = () => {
-        setDialogOpen(false);
-        setNewFamilyName('');
-        setNewFamilyAddress('');
-        setDialogError(null);
-        setDialogErrorMessage(null);
-    };
 
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -62,23 +44,6 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-    };
-
-    const handleConfirmCreate = () => {
-        try {
-            const newFamily: Family = {
-                FamilyID: Math.floor(Math.random() * 100000000),
-                FamilyName: newFamilyName,
-                Address: newFamilyAddress,
-                ContactNumber: newFamilyContactNumber,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            };
-            onCreateFamily(newFamily);
-        } catch (error) {
-            setDialogErrorMessage('An error occurred');
-        }
-        handleCloseDialog();
     };
 
     return (
@@ -112,47 +77,15 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
-            <Dialog open={dialogOpen} onClose={handleCloseDialog} className={classes.dialog}>
-                <DialogTitle className={classes.dialogTitle}>Create New Family</DialogTitle>
-                <DialogContent className={classes.dialogContent}>
-                    {dialogLoading && <CircularProgress/>}
-                    {dialogError && <Typography color="error">{dialogError}</Typography>}
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Family Name"
-                        value={newFamilyName}
-                        onChange={(e) => setNewFamilyName(e.target.value)}
-                        fullWidth
-                        disabled={dialogLoading}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Address"
-                        value={newFamilyAddress}
-                        onChange={(e) => setNewFamilyAddress(e.target.value)}
-                        fullWidth
-                        disabled={dialogLoading}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Contact Number"
-                        value={newFamilyContactNumber}
-                        onChange={(e) => setNewFamilyContactNumber(e.target.value)}
-                        fullWidth
-                        disabled={dialogLoading}
-                    />
-                </DialogContent>
-                {dialogErrorMessage && <Typography color="error">{dialogErrorMessage}</Typography>}
-                <DialogActions className={classes.dialogActions}>
-                    <Button onClick={handleCloseDialog} color="primary" disabled={dialogLoading}>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleConfirmCreate} color="primary" disabled={dialogLoading}>
-                        Create
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {dialogOpen && (
+                <FamilyForm
+                    title="Create New Family"
+                    family={undefined}
+                    onSubmit={onCreateFamily}
+                    onCancel={() => setDialogOpen(false)}
+
+                />
+            )}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={6000}

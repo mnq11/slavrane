@@ -17,12 +17,12 @@ export interface Expense {
 }
 
 export interface Family {
-    FamilyID: number;
+    FamilyID?: number;
     FamilyName: string;
     ContactNumber: string;
     Address: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     members?: Member[];
 
 }

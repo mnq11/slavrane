@@ -1,11 +1,11 @@
 // FamilyDetails.tsx
 
-import React, {useEffect, useState} from 'react';
-import { Button, Card, CardContent, Typography, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@material-ui/core';
-import {Family, Member} from "../../../../../hooks/useMember";
-import {getMembersByFamilyId} from "../../../../../API/api"; // Import updateFamily and deleteFamily
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardContent, Typography } from '@material-ui/core';
+import { Family, Member } from "../../../../../hooks/useMember";
+import { getMembersByFamilyId } from "../../../../../API/api";
 import MembersCardsView from "../member/MembersCardsView";
-import {toast} from "react-toastify";
+import {FamilyForm} from "../Forms/FamilyForm";
 
 interface FamilyDetailsProps {
     family: Family | undefined;
@@ -13,7 +13,7 @@ interface FamilyDetailsProps {
     onSelectMember: (member: Member) => void;
     initialMembers: Member[] | undefined;
     handleDeleteFamily: (familyId: number | undefined) => void;
-    handleUpdateFamily: (family: Family) => void; // Add this line
+    handleUpdateFamily: (family: Family) => void;
 }
 
 const FamilyDetails: React.FC<FamilyDetailsProps> = ({
@@ -22,14 +22,11 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                                                          onSelectMember,
                                                          initialMembers,
                                                          handleDeleteFamily,
-                                                         handleUpdateFamily, // Add this line
+                                                         handleUpdateFamily,
                                                      }) => {
 
     const [members, setMembers] = useState<Member[]>(initialMembers || []);
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [updatedFamilyName, setUpdatedFamilyName] = useState('');
-    const [updatedFamilyAddress, setUpdatedFamilyAddress] = useState('');
-    const [updatedFamilyContactNumber, setUpdatedFamilyContactNumber] = useState('');
 
     useEffect(() => {
         if (family) {
@@ -45,25 +42,10 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
         }
     }, [family, onBackToFamilyList]);
 
-    const handleOpenUpdateDialog = () => {
-        setUpdatedFamilyName(family?.FamilyName || '');
-        setUpdatedFamilyAddress(family?.Address || '');
-        setUpdatedFamilyContactNumber(family?.ContactNumber || '');
-        setDialogOpen(true);
+    const handleConfirmUpdate = (updatedFamily: Family) => {
+        handleUpdateFamily(updatedFamily);
+        setDialogOpen(false);
     };
-    const handleConfirmUpdate = () => {
-        if (family) {
-            const updatedFamily = {
-                ...family,
-                FamilyName: updatedFamilyName,
-                Address: updatedFamilyAddress,
-                ContactNumber: updatedFamilyContactNumber,
-            };
-            handleUpdateFamily(updatedFamily);
-            setDialogOpen(false);
-        }
-    };
-
 
     if (family === null) {
         return null;
@@ -76,7 +58,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                     <Typography variant="h5">Name : {family?.FamilyName}</Typography>
                     <Typography variant="body2">Address : {family?.Address}</Typography>
                     <Typography variant="body2">ContactNumber : {family?.ContactNumber}</Typography>
-                    <Button onClick={handleOpenUpdateDialog}>Update</Button>
+                    <Button onClick={() => setDialogOpen(true)}>Update</Button>
                     <Button onClick={() => handleDeleteFamily(family?.FamilyID)}>Delete</Button>
                     <Button onClick={onBackToFamilyList}>Back</Button>
                 </CardContent>
@@ -85,41 +67,14 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
                 members={members}
                 onSelectMember={onSelectMember}
             />
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-                <DialogTitle>Update Family</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Family Name"
-                        value={updatedFamilyName}
-                        onChange={(e) => setUpdatedFamilyName(e.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Address"
-                        value={updatedFamilyAddress}
-                        onChange={(e) => setUpdatedFamilyAddress(e.target.value)}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Contact Number"
-                        value={updatedFamilyContactNumber}
-                        onChange={(e) => setUpdatedFamilyContactNumber(e.target.value)}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDialogOpen(false)} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleConfirmUpdate} color="primary">
-                        Update
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {dialogOpen && (
+                <FamilyForm
+                    title="Update Family"
+                    family={family}
+                    onSubmit={handleConfirmUpdate}
+                    onCancel={() => setDialogOpen(false)}
+                />
+            )}
         </div>
     );
 };
