@@ -1,7 +1,7 @@
 // FormInput.tsx
 import React from 'react';
 import { TextField, FormControl, FormHelperText } from '@material-ui/core';
-import {MemberFormStyles} from "../Dashboard/SidebarComponents/Admin/member/AdminMember.Styles";
+import {MemberFormStyles} from "../Dashboard/SidebarComponents/Admin/member/Styling/AdminMember.Styles";
 
 interface FormInputProps {
     label: string;

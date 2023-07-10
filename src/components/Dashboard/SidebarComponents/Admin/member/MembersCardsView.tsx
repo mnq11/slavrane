@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography, TextField, TablePagination } from '@material-ui/core';
 import { Member } from "../../../../../hooks/useMember";
 import {createNewMember} from "../Provider/adminPanelFunctions";
-import {MembersCardsViewStyles} from "./AdminMember.Styles";
+import {MembersCardsViewStyles} from "./Styling/AdminMember.Styles";
 import MemberForm from "./ MemberForm";
 
 interface MembersCardsViewProps {

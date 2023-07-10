@@ -12,7 +12,7 @@ import {
     MenuItem, CircularProgress, FormHelperText
 } from '@material-ui/core';
 import {Member} from "../../../../../hooks/useMember";
-import {MemberFormStyles} from "./AdminMember.Styles";
+import {MemberFormStyles} from "./Styling/AdminMember.Styles";
 
 interface MemberFormProps {
     title: string;
