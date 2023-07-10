@@ -91,10 +91,11 @@ module.exports = (models) => {
     };
 
     const updateMember = async (req, res) => {
+        console.log(req.body);
         try {
             const updated = await models.Member.update(req.body, {
                 where: {
-                    id: req.params.id
+                    MemberID: req.params.id
                 }
             });
             if (updated) {
@@ -108,10 +109,11 @@ module.exports = (models) => {
     };
 
     const deleteMember = async (req, res) => {
+        console.log(req.params.id);
         try {
             const deleted = await models.Member.destroy({
                 where: {
-                    id: req.params.id
+                    MemberID: req.params.id
                 }
             });
             if (deleted) {
@@ -120,9 +122,11 @@ module.exports = (models) => {
                 res.status(404).json({ message: 'Member not found' });
             }
         } catch (error) {
+            console.error(error); // Log the error for debugging
             res.status(500).json({ message: 'Error deleting member', error });
         }
     };
+
 
     return {
         createMember,

@@ -36,7 +36,8 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
 
     const validateInput = () => {
         setError("");
-        if (name === "" || email === "" || password === "" || contactNumber === "" || dob === "" || !familyId || !role || !score || !gender) {
+        setError("");
+        if (name === "" || email === "" || password === "" || contactNumber === "" || dob === "" || !score || !gender) {
             setError("All fields are required");
             return false;
         }
@@ -72,6 +73,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
     const handleSubmit = () => {
         if (validateInput()) {
             onSubmit({
+                MemberID: member ? member.MemberID : undefined,  // add MemberID here to identify which member is being updated
                 FamilyID: familyIdState,
                 MemberName: name,
                 Role: role,
@@ -84,7 +86,6 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
             });
         }
     };
-
     return (
         <Dialog open onClose={onCancel}>
             <DialogTitle>{title}</DialogTitle>
@@ -101,7 +102,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 />
                 <TextField
                     label="Password"
-                    type="password"
+                    type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

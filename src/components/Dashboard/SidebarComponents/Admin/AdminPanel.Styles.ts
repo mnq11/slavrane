@@ -115,7 +115,6 @@ export const FamiliesViewStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: colors.white,
         boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
     },
     toggleAllCard: {

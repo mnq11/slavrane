@@ -36,6 +36,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ member }) => {
                     onBackToFamilyDetails={() => setSelectedMember(null)}
                 />
 
+
             ) : selectedFamily ? (
                 <>
                     <FamilyDetails

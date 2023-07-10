@@ -34,13 +34,8 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
                     <Grid item xs={12} sm={6} md={4} lg={3} key={member.MemberID}>
                         <Card onClick={() => onSelectMember(member)}>
                             <CardContent>
-                                <Typography variant="h5">MemberName {member.MemberName}</Typography>
-                                <Typography variant="body2">Email {member.Email}</Typography>
-                                <Typography variant="body2">ContactNumber {member.ContactNumber}</Typography>
-                                <Typography variant="body2">DateOfBirth {member.DateOfBirth}</Typography>
-                                <Typography variant="body2">Score {member.score}</Typography>
-                                <Typography variant="body2">ContactNumber {member.ContactNumber}</Typography>
-                            </CardContent>
+                                <Typography variant="h5">{member.MemberName}</Typography>
+                                 </CardContent>
                         </Card>
                     </Grid>
                 ))}

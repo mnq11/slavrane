@@ -91,23 +91,28 @@ export async function updateMember(member) {
 
 export async function deleteMember(memberId) {
     const response = await api.delete(`/members/${memberId}`);
+    console.log('Api log :for delete Member' ,response.data);
     return response.data;
 }
 export async function createTask(task) {
     const response = await api.post('/tasks', task);
+    console.log('Api log :for create Task' ,response.data);
     return response.data;
 }
 
 export async function updateTask(task) {
     const response = await api.put(`/tasks/${task.TaskID}`, task);
+    console.log('Api log :for update Task' ,response.data);
     return response.data;
 }
 
 export async function deleteTask(taskId) {
     const response = await api.delete(`/tasks/${taskId}`);
+    console.log('Api log :for delete Task' ,response.data);
     return response.data;
 }
 export const getTasksForMember = async (memberId) => {
     const response = await api.get(`/members/${memberId}/tasks`);
+    console.log('Api log :for getTasksForMember' ,response.data);
     return response.data;
 };
