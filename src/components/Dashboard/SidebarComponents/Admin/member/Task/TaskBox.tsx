@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, FormControlLabel, Dialog, DialogTitle
-    , DialogContent, TextField, DialogActions, Button } from '@material-ui/core';
+import {
+    Checkbox, FormControlLabel, Dialog, DialogTitle
+    , DialogContent, TextField, DialogActions, Button, InputLabel, Select, MenuItem, FormHelperText
+} from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
@@ -21,22 +23,33 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
     const { enqueueSnackbar } = useSnackbar();
 
     const validationSchema = Yup.object({
+        TaskName: Yup.string().required("Required"),
         Description: Yup.string().required("Required"),
         DueDate: Yup.date().required("Required"),
-        Status: Yup.string().required("Required"),
+        TaskStatus: Yup.string().oneOf(['Not Started', 'Pending', 'In Progress', 'Completed'], 'Invalid status').required("Required"),
         Priority: Yup.string().required("Required")
     });
 
     const formik = useFormik({
         initialValues: {
+            MemberID: member.MemberID,
+            TaskName: '',
             Description: '',
             DueDate: '',
-            Status: '',
+            TaskStatus: 'Not Started',
             Priority: ''
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            createTask({values: values, memberId: member.MemberID})
+            const taskData = {
+                MemberID: member.MemberID,
+                TaskName: values.TaskName,
+                Description: values.Description,
+                DueDate: values.DueDate,
+                TaskStatus: values.TaskStatus, // Renamed from values.Status to values.TaskStatus
+                Priority: values.Priority
+            };
+            createTask(taskData)
                 .then(newTask => {
                     setTasks([newTask, ...tasks]);
                     setOpen(false);
@@ -76,13 +89,24 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
             />
             {checked && (
                 <div>
-                    <h4>Tasks</h4>
+                    <h4>Tasks {member.MemberID}</h4>
+
                     <Button variant="contained" color="primary" onClick={handleNewTask}>Create New Task</Button>
 
                     <Dialog open={open} onClose={() => setOpen(false)}>
                         <DialogTitle>Create New Task</DialogTitle>
                         <DialogContent>
                             <form onSubmit={formik.handleSubmit}>
+                                <TextField
+                                    fullWidth
+                                    id="TaskName"
+                                    name="TaskName"
+                                    label="Task Name"
+                                    value={formik.values.TaskName}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.TaskName && Boolean(formik.errors.TaskName)}
+                                    helperText={formik.touched.TaskName && formik.errors.TaskName}
+                                />
                                 <TextField
                                     fullWidth
                                     id="Description"
@@ -107,16 +131,24 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                     error={formik.touched.DueDate && Boolean(formik.errors.DueDate)}
                                     helperText={formik.touched.DueDate && formik.errors.DueDate}
                                 />
-                                <TextField
-                                    fullWidth
-                                    id="Status"
-                                    name="Status"
-                                    label="Status"
-                                    value={formik.values.Status}
+                                <InputLabel id="Status-label">Status</InputLabel>
+                                <Select
+                                    labelId="TaskStatus-label"
+                                    id="TaskStatus"
+                                    name="TaskStatus"
+                                    value={formik.values.TaskStatus}
                                     onChange={formik.handleChange}
-                                    error={formik.touched.Status && Boolean(formik.errors.Status)}
-                                    helperText={formik.touched.Status && formik.errors.Status}
-                                />
+                                    error={formik.touched.TaskStatus && Boolean(formik.errors.TaskStatus)}
+                                >
+                                    <MenuItem value="Not Started">Not Started</MenuItem>
+                                    <MenuItem value="Pending">Pending</MenuItem>
+                                    <MenuItem value="In Progress">In Progress</MenuItem>
+                                    <MenuItem value="Completed">Completed</MenuItem>
+                                </Select>
+                                {formik.touched.TaskStatus && formik.errors.TaskStatus &&
+                                    <FormHelperText>{formik.errors.TaskStatus}</FormHelperText>
+                                }
+
                                 <TextField
                                     fullWidth
                                     id="Priority"

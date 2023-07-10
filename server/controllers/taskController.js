@@ -4,19 +4,24 @@ const Joi = require('joi');
 const createTaskSchema = Joi.object({
     Description: Joi.string().required(),
     DueDate: Joi.date().required(),
-    Status: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').required(),
+    TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').required(),
     MemberID: Joi.number().integer().required(),
+    TaskName: Joi.string().required(),
+    Priority: Joi.string().required(),
     // Add validation for other fields as needed
 });
 
 const updateTaskSchema = Joi.object({
     TaskID: Joi.number().integer().optional(),
+    TaskName: Joi.string().optional(),
     Description: Joi.string().optional(),
+    MemberID: Joi.number().integer().required(),
+
     DueDate: Joi.date().optional(),
-    Status: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').optional(),
+    TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').optional(),
+    Priority: Joi.string().optional(),
     createdAt: Joi.date().optional(),
     updatedAt: Joi.date().optional(),
-    MemberID: Joi.number().integer().optional(),
     // Add validation for other fields as needed
 });
 
@@ -31,17 +36,12 @@ module.exports = (models) => {
             const { error, value } = createTaskSchema.validate(req.body);
             if (error) throw { status: 400, message: error.details[0].message };
 
-            // Destructure the request body
-            const { MemberID, ...taskFields } = value;
+            const { MemberID } = value;
 
             const member = await Member.findByPk(MemberID);
             if (!member) return res.status(404).json({message: 'Member not found.'});
 
-            const task = await Task.create(taskFields);
-
-            // Associate the task with the member
-            await member.addTask(task);
-
+            const task = await Task.create(value);
             console.log('Task created:', task);
             res.json(task);
         } catch (error) {
@@ -60,6 +60,12 @@ module.exports = (models) => {
             const task = await Task.findByPk(taskId);
             if (!task) return res.status(404).json({message: 'Task not found.'});
 
+            // Only check if the member exists if a new MemberID was provided in the request
+            if (value.MemberID) {
+                const member = await Member.findByPk(value.MemberID);
+                if (!member) return res.status(404).json({message: 'Member not found.'});
+            }
+
             await task.update(value);
 
             console.log('Task updated:', task);
@@ -69,7 +75,6 @@ module.exports = (models) => {
             res.status(500).json({message: 'An error occurred while updating the task.'});
         }
     }
-
     async function deleteTask(req, res) {
         console.log('deleteTask function called.', req.params);
         try {
