@@ -33,6 +33,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
             // @ts-ignore
             setFamilyData(modifiedFamily);
             setDialogOpen(false);
+            onBackToFamilyList();
         } else {
             console.error("Failed to update family.");
         }
@@ -41,6 +42,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
 
     const handleDeleteFamily = async (familyId: number | undefined) => {
         await removeFamily(familyId);
+        onBackToFamilyList();
     };
 
     useEffect(() => {
