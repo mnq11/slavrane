@@ -8,6 +8,7 @@ import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
 import TaskBox from './Task/TaskBox';
 import {MemberDetailsStyles} from "./Styling/AdminMember.Styles";
+import SkillBox from "./Skill/SkillBox";
 
 interface MemberDetailsProps {
     member: Member;
@@ -20,7 +21,9 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                                                          onBackToFamilyDetails,
                                                      }) => {
     const [editDialogOpen, setUpdateDialogOpen] = useState(false);
-    const [isComponentVisible, setComponentVisible] = useState(false);
+    const [isTaskComponentVisible, setTaskComponentVisible] = useState(false);
+    const [isSkillComponentVisible, setSkillComponentVisible] = useState(false);
+
     const classes = MemberDetailsStyles();
 
     const handleDelete = async () => {
@@ -48,8 +51,12 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     };
 
     const handleCheckboxChange = () => {
-        setComponentVisible(prev => !prev);
+        setTaskComponentVisible(prev => !prev);
     }
+    const handleSkillCheckboxChange = () => {
+        setSkillComponentVisible(prev => !prev);
+    };
+
 
     return (
         <div>
@@ -87,10 +94,17 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
             </Card>
             <TaskBox
                 label="Show Component"
-                checked={isComponentVisible}
+                checked={isTaskComponentVisible}
                 onChange={handleCheckboxChange}
                 member={member}
             />
+            <SkillBox
+                label="Show Skill Component"
+                checked={isSkillComponentVisible}
+                onChange={handleSkillCheckboxChange}
+                member={member}
+            />
+
         </div>
     );
 };

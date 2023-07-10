@@ -1,13 +1,12 @@
 const express = require('express');
-const router = express.Router();
-
 module.exports = (models) => {
-    router.get('/', async (req, res) => {
-        const skills = await models.Skill.findAll();
-        res.json(skills);
-    });
+    const router = require('express').Router();
+    const skillController = require('../controllers/skillController')(models);
 
-    // Add other routes as needed
+    router.post('/createSkill', skillController.createSkill);
+    router.put('/updateSkill/:id', skillController.updateSkill);
+    router.delete('/deleteSkill/:id', skillController.deleteSkill);
+    router.get('/member/:id', skillController.getSkillsForMember);
 
     return router;
 };

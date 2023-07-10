@@ -78,7 +78,7 @@ module.exports = (models) => {
     async function deleteTask(req, res) {
         console.log('deleteTask function called.', req.params);
         try {
-            const taskId = req.params.id;
+            const taskId = req.paraams.id;
             const task = await Task.findByPk(taskId);
             if (!task) return res.status(404).json({message: 'Task not found.'});
 

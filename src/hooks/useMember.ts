@@ -105,7 +105,7 @@ export interface Savings {
 
 export interface Skill {
     SkillID: number;
-    MemberID: number;
+    MemberID?: number | undefined;
     SkillName: string;
     SkillLevel: string;
     DateAcquired: string;

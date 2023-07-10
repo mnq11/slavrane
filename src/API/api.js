@@ -1,6 +1,5 @@
-// api.js
 import axios from 'axios';
-import {Member} from "../hooks/useMember";
+import { Member } from "../hooks/useMember";
 
 // Create a custom axios instance
 const api = axios.create({
@@ -36,18 +35,15 @@ api.interceptors.response.use((response) => {
     }
 });
 
-
 export async function loginMember(email, password) {
-    const response = await api.post('/members/login', {email, password});
+    const response = await api.post('/members/login', { email, password });
     return response.data;
 }
-
 
 export async function registerMember(values) {
     const response = await api.post('/members', values);
     return response.data;
 }
-
 
 export async function getMembersByFamilyId(familyId) {
     const response = await api.get(`/members/families/${familyId}`);
@@ -58,7 +54,6 @@ export async function getAllFamilies() {
     const response = await api.get('/families/getFamilies');
     return response.data;
 }
-
 
 export async function createFamily(family) {
     const response = await api.post('/families', family);
@@ -80,45 +75,66 @@ export async function createMember(member) {
         ...member,
         FamilyID: parseInt(member.FamilyID), // ensure FamilyID is an integer
     });
-    console.log('Api log :for create Member', response.data);
+    console.log('Api log: for create Member', response.data);
     return response.data;
 }
 
-
 export async function updateMember(member) {
     const response = await api.put(`/members/${member.MemberID}`, member);
-    console.log('Api log :for update Member', response.data);
-
+    console.log('Api log: for update Member', response.data);
     return response.data;
 }
 
 export async function deleteMember(memberId) {
     const response = await api.delete(`/members/${memberId}`);
-    console.log('Api log :for delete Member', response.data);
+    console.log('Api log: for delete Member', response.data);
     return response.data;
 }
 
 export async function createTask(task) {
     const response = await api.post('/tasks/createTask', task);
-    // console.log('Api log :for create Task', response.data);
-    console.log('Api log : Task', task);
+    console.log('Api log: for create Task', response.data);
     return response.data;
 }
 
 export async function updateTask(task) {
     const response = await api.put(`/tasks/updateTask/${task.TaskID}`, task);
-    console.log('Api log :for update Task', response.data);
+    console.log('Api log: for update Task', response.data);
     return response.data;
 }
 
 export async function deleteTask(taskId) {
     const response = await api.delete(`/tasks/deleteTask/${taskId}`);
-    console.log('Api log :for delete Task', response.data);
+    console.log('Api log: for delete Task', response.data);
     return response.data;
 }
 
-export const getTasksForMember = async (memberId) => {
+export async function getTasksForMember(memberId) {
     const response = await api.get(`/tasks/member/${memberId}`);
-    console.log('Api log :for getTasksForMember', response.data);
+    console.log('Api log: for getTasksForMember', response.data);
     return response.data;
-};
+}
+
+export async function createSkill(skill) {
+    const response = await api.post('/skills/createSkill', skill);
+    console.log('Api log: for create Skill', response.data);
+    return response.data;
+}
+
+export async function updateSkill(skill) {
+    const response = await api.put(`/skills/updateSkill/${skill.SkillID}`, skill);
+    console.log('Api log: for update Skill', response.data);
+    return response.data;
+}
+
+export async function deleteSkill(skillId) {
+    const response = await api.delete(`/skills/deleteSkill/${skillId}`);
+    console.log('Api log: for delete Skill', response.data);
+    return response.data;
+}
+
+export async function getSkillsForMember(memberId) {
+    const response = await api.get(`/skills/member/${memberId}`);
+    console.log('Api log: for getSkillsForMember', response.data);
+    return response.data;
+}

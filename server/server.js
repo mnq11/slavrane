@@ -60,6 +60,8 @@ initializeDatabase().then(async (db) => {
 
     const taskRoutes = require('./routes/tasks')(models);
     app.use('/tasks', taskRoutes);
+    const skillRoutes = require('./routes/skills')(models);
+    app.use('/skills', skillRoutes);
 
 
     app.listen(port, () => {
