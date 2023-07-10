@@ -1,4 +1,4 @@
-// TableComponent.tsx
+// TasksTableComponent.tsx
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
 import { Tasks } from "../../../../../../hooks/useMember";
@@ -7,7 +7,7 @@ interface TableComponentProps {
     tasks: Tasks[];
 }
 
-const TableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
+const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -38,4 +38,4 @@ const TableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
     );
 };
 
-export default TableComponent;
+export default TasksTableComponent;

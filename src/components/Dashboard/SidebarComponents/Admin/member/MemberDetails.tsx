@@ -6,7 +6,7 @@ import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core';
 import MemberForm from "./ MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
-import CheckboxComponent from './Task/CheckboxComponent';
+import TaskBox from './Task/TaskBox';
 import {MemberDetailsStyles} from "./Styling/AdminMember.Styles";
 
 interface MemberDetailsProps {
@@ -85,7 +85,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                     />
                 )}
             </Card>
-            <CheckboxComponent
+            <TaskBox
                 label="Show Component"
                 checked={isComponentVisible}
                 onChange={handleCheckboxChange}
