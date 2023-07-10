@@ -9,9 +9,10 @@ import {
     DialogActions,
     Button,
     Select,
-    MenuItem
+    MenuItem, CircularProgress, FormHelperText
 } from '@material-ui/core';
 import {Member} from "../../../../../hooks/useMember";
+import {MemberFormStyles} from "./AdminMember.Styles";
 
 interface MemberFormProps {
     title: string;
@@ -33,6 +34,8 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
     const [score, setScore] = useState(member ? member.score : 50);
     const [gender, setGender] = useState(member ? member.Gender : "Male");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const classes = MemberFormStyles();
 
     const validateInput = () => {
         setError("");
@@ -70,20 +73,28 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
         return true;
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateInput()) {
-            onSubmit({
-                MemberID: member ? member.MemberID : undefined,  // add MemberID here to identify which member is being updated
-                FamilyID: familyIdState,
-                MemberName: name,
-                Role: role,
-                score: score,
-                DateOfBirth: dob,
-                Gender: gender,
-                Email: email,
-                Password: password,
-                ContactNumber: contactNumber
-            });
+            setLoading(true);
+            try {
+                await onSubmit({
+                    MemberID: member ? member.MemberID : undefined,
+                    FamilyID: familyIdState,
+                    MemberName: name,
+                    Role: role,
+                    score: score,
+                    DateOfBirth: dob,
+                    Gender: gender,
+                    Email: email,
+                    Password: password,
+                    ContactNumber: contactNumber
+                });
+                onCancel();
+            } catch (error) {
+                setError('Failed to submit the form. Please try again.');
+            } finally {
+                setLoading(false);
+            }
         }
     };
     return (
@@ -91,27 +102,32 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <TextField
+                    className={classes.textField}
                     label="Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <TextField
+                    className={classes.textField}
                     label="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
+                    className={classes.textField}
                     label="Password"
                     type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <TextField
+                    className={classes.textField}
                     label="Contact Number"
                     value={contactNumber}
                     onChange={(e) => setContactNumber(e.target.value)}
                 />
                 <TextField
+                    className={classes.textField}
                     label="Date of Birth"
                     type="date"
                     value={dob}
@@ -137,16 +153,19 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                     <MenuItem value={"Female"}>Female</MenuItem>
                 </Select>
                 <TextField
+                    className={classes.textField}
                     label="Score"
                     type="number"
                     value={score}
                     onChange={(e) => setScore(Number(e.target.value))}
                 />
-                {error && <p>{error}</p>}
+                {error && <FormHelperText error>{error}</FormHelperText>}
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleSubmit}>Submit</Button>
-                <Button onClick={onCancel}>Cancel</Button>
+                <Button className={classes.button} disabled={loading} onClick={handleSubmit}>
+                    {loading ? <CircularProgress size={24} /> : 'Submit'}
+                </Button>
+                <Button className={classes.button} onClick={onCancel}>Cancel</Button>
             </DialogActions>
         </Dialog>
     );

@@ -1,6 +1,8 @@
 // DialogComponent.tsx
+
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@material-ui/core';
+import {DialogComponentStyles} from "./Family/AdminFamily.Styles";
 
 interface DialogComponentProps {
     open: boolean;
@@ -23,13 +25,15 @@ const DialogComponent: React.FC<DialogComponentProps> = ({
                                                              handleInputChange,
                                                              inputLabel,
                                                              inputValue,
-                                                             confirmButtonText = 'Confirm'
+                                                             confirmButtonText = 'Confirm',
                                                          }) => {
+    const classes = DialogComponentStyles();
+
     return (
-        <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
-                {content}
+        <Dialog open={open} onClose={handleClose} className={classes.dialog}>
+            <DialogTitle className={classes.title}>{title}</DialogTitle>
+            <DialogContent className={classes.content}>
+                <p>{content}</p>
                 {handleInputChange && inputLabel && (
                     <TextField
                         autoFocus
@@ -38,14 +42,15 @@ const DialogComponent: React.FC<DialogComponentProps> = ({
                         value={inputValue}
                         onChange={handleInputChange}
                         fullWidth
+                        className={classes.textField}
                     />
                 )}
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="primary">
+            <DialogActions className={classes.actions}>
+                <Button onClick={handleClose} color="primary" className={classes.cancelButton}>
                     Cancel
                 </Button>
-                <Button onClick={handleConfirm} color="secondary">
+                <Button onClick={handleConfirm} color="secondary" className={classes.confirmButton}>
                     {confirmButtonText}
                 </Button>
             </DialogActions>

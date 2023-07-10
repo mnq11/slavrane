@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 import {Family} from "../../../../../hooks/useMember";
+import {FamilyFormStyles} from "./AdminFamily.Styles";
 
 interface FamilyFormProps {
     title: string;
@@ -13,6 +14,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ title, family, onSubmit,
     const [familyName, setFamilyName] = useState(family?.FamilyName || '');
     const [address, setAddress] = useState(family?.Address || '');
     const [contactNumber, setContactNumber] = useState(family?.ContactNumber || '');
+    const classes = FamilyFormStyles ();
 
     const handleSubmit = () => {
         const updatedFamily: Family = {

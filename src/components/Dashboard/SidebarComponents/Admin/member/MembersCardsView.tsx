@@ -1,9 +1,10 @@
 // MembersCardsView.tsx
 
 import React, { useState } from 'react';
-import { Button, Card, CardContent, Grid, Typography } from '@material-ui/core';
+import { Button, Card, CardContent, Grid, Typography, TextField, TablePagination } from '@material-ui/core';
 import { Member } from "../../../../../hooks/useMember";
 import {createNewMember} from "../Provider/adminPanelFunctions";
+import {MembersCardsViewStyles} from "./AdminMember.Styles";
 import MemberForm from "./ MemberForm";
 
 interface MembersCardsViewProps {
@@ -12,8 +13,12 @@ interface MembersCardsViewProps {
     selectedFamily: number | undefined;
 }
 
-const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMember,selectedFamily }) => {
+const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMember, selectedFamily }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [filter, setFilter] = useState('');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const classes = MembersCardsViewStyles();
 
     const handleCreateMember = async (newMember: Member) => {
         const createdMember = await createNewMember(newMember);
@@ -26,21 +31,48 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
         }
     };
 
+    const handlePageChange = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     return (
-        <div>
-            <h1>MembersCardsView</h1>
-            <Button onClick={() => setDialogOpen(true)}>Create New Member</Button>
+        <div className={classes.root}>
+            <TextField
+                className={classes.textField}
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                label="Filter members"
+            />
+            <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Member</Button>
             <Grid container spacing={3}>
-                {members?.map((member) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={member.MemberID}>
-                        <Card onClick={() => onSelectMember(member)}>
-                            <CardContent>
-                                <Typography variant="h5">{member.MemberName}</Typography>
-                                 </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
+                {members
+                    ?.filter((member) => member.MemberName.includes(filter))
+                    .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+                    .map((member) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={member.MemberID}>
+                            <Card className={classes.card} onClick={() => onSelectMember(member)}>
+                                <CardContent className={classes.cardContent}>
+                                    <Typography variant="h5">{member.MemberName}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
             </Grid>
+            <div className={classes.pagination}>
+                <TablePagination
+                    component="div"
+                    count={members?.length || 0}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                />
+            </div>
             {dialogOpen && (
                 <MemberForm
                     title="Create New Member"

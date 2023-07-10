@@ -11,10 +11,10 @@ import {
     Card,
     Grid, TextField
 } from '@material-ui/core';
-import {FamiliesViewStyles} from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
 import {FamilyForm} from "./FamilyForm";
 import {fetchAllFamilies, createNewFamily} from '../Provider/adminPanelFunctions';
+import {FamiliesViewStyles} from "./AdminFamily.Styles";
 
 interface FamiliesCardViewProps {
     onSelectFamily: (family: Family | null) => void;
@@ -25,7 +25,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                                                                 onSelectFamily,
                                                                 setLoading,
                                                             }) => {
-    const classes = FamiliesViewStyles();
+    const classes = FamiliesViewStyles ();
     const [families, setFamilies] = useState<Family[]>([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -68,6 +68,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     return (
         <div className={classes.root}>
             <TextField
+                    className={classes.textField}
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 label="Filter families"

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { Member } from "../../../../../hooks/useMember";
-import { Button, Card, CardContent, Typography } from '@material-ui/core';
+import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core';
 import MemberForm from "./ MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
+import {MemberDetailsStyles, MembersCardsViewStyles} from "./AdminMember.Styles";
 
 interface MemberDetailsProps {
     member: Member;
@@ -18,6 +19,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                                                          onBackToFamilyDetails,
                                                      }) => {
     const [editDialogOpen, setUpdateDialogOpen] = useState(false);
+    const classes = MemberDetailsStyles   ();
 
     const handleDelete = async () => {
         try {
@@ -45,19 +47,24 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
 
 
     return (
-        <Card>
+        <Card className={classes.card}>
             <CardContent>
-                <Typography variant="h5">MemberName : {member.MemberName}</Typography>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5">MemberName: {member.MemberName}</Typography>
+                        <Typography variant="body2">Email: {member.Email}</Typography>
+                        <Typography variant="body2">ContactNumber: {member.ContactNumber}</Typography>
+                        <Typography variant="body2">DateOfBirth: {member.DateOfBirth}</Typography>
+                        <Typography variant="body2">Score: {member.score}</Typography>
+                        <Typography variant="body2">ContactNumber: {member.ContactNumber}</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button className={classes.backButton} variant="contained" color="primary" onClick={onBackToFamilyDetails}>Back</Button>
+                        <Button className={classes.updateButton} variant="contained" color="primary" onClick={() => setUpdateDialogOpen(true)}>Update</Button>
+                        <Button className={classes.deleteButton} variant="contained" color="secondary" onClick={handleDelete}>Delete</Button>
 
-                <Typography variant="body2">Email {member.Email}</Typography>
-                <Typography variant="body2">ContactNumber {member.ContactNumber}</Typography>
-                <Typography variant="body2">DateOfBirth {member.DateOfBirth}</Typography>
-                <Typography variant="body2">Score {member.score}</Typography>
-                <Typography variant="body2">ContactNumber {member.ContactNumber}</Typography>
-
-                <Button onClick={onBackToFamilyDetails}>Back</Button>
-                <Button onClick={handleDelete}>Delete</Button>
-                <Button onClick={() => setUpdateDialogOpen(true)}>Update</Button>
+                    </Grid>
+                </Grid>
             </CardContent>
             {editDialogOpen && (
                 <MemberForm

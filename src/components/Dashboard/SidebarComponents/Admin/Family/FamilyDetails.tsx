@@ -6,7 +6,8 @@ import {Family, Member} from "../../../../../hooks/useMember";
 import {getMembersByFamilyId} from "../../../../../API/api";
 import MembersCardsView from "../member/MembersCardsView";
 import {FamilyForm} from "./FamilyForm";
-import {modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';  // add this
+import {modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';
+import {FamilyDetailsStyles} from "./AdminFamily.Styles";
 
 interface FamilyDetailsProps {
     family: Family | undefined;
@@ -25,6 +26,8 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
     const [members, setMembers] = useState<Member[]>(initialMembers || []);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [, setFamilyData] = useState<Family | undefined>(family);
+    const classes = FamilyDetailsStyles ();
+
 
     // add these functions
     const handleUpdateFamily = async (updatedFamily: Family) => {
@@ -67,15 +70,14 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
 
     return (
         <div>
-            <Card>
+            <Card className={classes.card}>
                 <CardContent>
                     <Typography variant="h5">Name : {family?.FamilyName}</Typography>
                     <Typography variant="body2">Address : {family?.Address}</Typography>
                     <Typography variant="body2">ContactNumber : {family?.ContactNumber}</Typography>
-                    <Button onClick={onBackToFamilyList}>Back</Button>
-                    <Button onClick={() => setDialogOpen(true)}>Update Family</Button>
-                    <Button onClick={() => handleDeleteFamily(family?.FamilyID)}>Delete</Button>
-
+                    <Button className={classes.backButton} onClick={onBackToFamilyList}>Back</Button>
+                    <Button className={classes.updateButton} onClick={() => setDialogOpen(true)}>Update Family</Button>
+                    <Button className={classes.deleteButton} onClick={() => handleDeleteFamily(family?.FamilyID)}>Delete</Button>
                 </CardContent>
             </Card>
             <MembersCardsView
