@@ -112,7 +112,7 @@ export async function deleteTask(taskId) {
     return response.data;
 }
 export const getTasksForMember = async (memberId) => {
-    const response = await api.get(`/members/${memberId}/tasks`);
+    const response = await api.get(`/tasks/member/${memberId}`);
     console.log('Api log :for getTasksForMember' ,response.data);
     return response.data;
 };

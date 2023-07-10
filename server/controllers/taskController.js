@@ -86,11 +86,27 @@ module.exports = (models) => {
             res.status(500).json({message: 'An error occurred while deleting the task.'});
         }
     }
+    async function getTasksForMember(req, res) {
+        console.log('getTasksForMember function called.', req.params);
+        try {
+            const memberId = req.params.id;
+            const tasks = await Task.findAll({ where: { MemberID: memberId } });
+            if (!tasks) return res.status(404).json({message: 'Tasks not found.'});
+            res.json(tasks);
+        } catch (error) {
+            console.error('Error in getTasksForMember function:', error);
+            res.status(500).json({message: 'An error occurred while getting tasks for the member.'});
+        }
+    }
+
+
+
 
     return {
         createTask,
         updateTask,
         deleteTask,
+        getTasksForMember,
         // Add other task controller methods as needed
     };
 };

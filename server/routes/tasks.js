@@ -6,6 +6,6 @@ module.exports = (models) => {
     router.post('/', taskController.createTask);
     router.put('/:id', taskController.updateTask);
     router.delete('/:id', taskController.deleteTask);
-
+    router.get('/member/:id', taskController.getTasksForMember);
     return router;
 };

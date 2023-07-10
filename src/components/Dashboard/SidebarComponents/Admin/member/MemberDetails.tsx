@@ -6,7 +6,7 @@ import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core';
 import MemberForm from "./ MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
-import CheckboxComponent from './components/CheckboxComponent';
+import CheckboxComponent from './Task/CheckboxComponent';
 import {MemberDetailsStyles} from "./Styling/AdminMember.Styles";
 
 interface MemberDetailsProps {
@@ -14,9 +14,6 @@ interface MemberDetailsProps {
     onBackToFamilyDetails: () => void;
 }
 
-const CheckedComponent: React.FC = () => {
-    return <div>The checkbox is checked!</div>;
-}
 
 const MemberDetails: React.FC<MemberDetailsProps> = ({
                                                          member,
@@ -94,11 +91,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 onChange={handleCheckboxChange}
                 member={member}
             />
-            {isComponentVisible && (
-                <CheckedComponent/>
-            )}
         </div>
-
     );
 };
 
