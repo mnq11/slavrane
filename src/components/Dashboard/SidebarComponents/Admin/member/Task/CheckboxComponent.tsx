@@ -43,8 +43,9 @@ const CheckboxComponent: React.FC<CheckboxProps> = ({ label, checked, onChange, 
             {checked && (
                 <div> {/* Here is the missing opening div tag */}
                     <h4>Tasks:</h4>
-                    <TableComponent tasks={tasks} />
                     <Button variant="contained" color="primary" onClick={handleNewTask}>Create New Task</Button>
+
+                    <TableComponent tasks={tasks} />
                 </div>
             )}
         </>
