@@ -127,6 +127,13 @@ export const FamiliesViewStyles = makeStyles((theme) => ({
             backgroundColor: '#e0e0e0',
         },
     },
+
+    pagination: {
+        marginTop: theme.spacing(2),
+        padding: theme.spacing(1),
+        borderRadius: '5px',
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .2)',
+    },
 }));
 
 

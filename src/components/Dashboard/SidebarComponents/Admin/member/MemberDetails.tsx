@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Member } from "../../../../../hooks/useMember";
 import { Button, Card, CardContent, Typography } from '@material-ui/core';
-import MemberForm from "../Forms/ MemberForm";
+import MemberForm from "./ MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
 

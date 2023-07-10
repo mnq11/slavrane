@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import {FamiliesViewStyles} from "../AdminPanel.Styles";
 import 'react-toastify/dist/ReactToastify.css';
-import {FamilyForm} from "../Forms/FamilyForm";
+import {FamilyForm} from "./FamilyForm";
 import {fetchAllFamilies, createNewFamily} from '../Provider/adminPanelFunctions';
 
 interface FamiliesCardViewProps {
@@ -33,22 +33,29 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
 
-    const handleCreateFamily = async (family: Family) => {
-        await createNewFamily(family);
+
+    const fetchFamilies = async () => {
+        try {
+            setLoading(true);
+            const data = await fetchAllFamilies();
+            setFamilies(data);
+        } catch (error) {
+        } finally {
+            setLoading(false);
+        }
     };
 
+    const handleCreateFamily = async (family: Family) => {
+        const newFamily = await createNewFamily(family);
+        if (newFamily) {
+            await fetchFamilies();
+        }
+    };
 
     useEffect(() => {
-        setLoading(true);
-        fetchAllFamilies()
-            .then(data => {
-                setFamilies(data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
+        fetchFamilies(); // Fetch families on component mount
     }, []);
+
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -81,14 +88,16 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                         </Grid>
                     ))}
             </Grid>
-            <TablePagination
-                component="div"
-                count={families.length}
-                page={page}
-                onPageChange={handlePageChange}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleRowsPerPageChange}
-            />
+            <div className={classes.pagination}>
+                <TablePagination
+                    component="div"
+                    count={families.length}
+                    page={page}
+                    onPageChange={handlePageChange}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                />
+            </div>
             {dialogOpen && (
                 <FamilyForm
                     title="Create New Family"

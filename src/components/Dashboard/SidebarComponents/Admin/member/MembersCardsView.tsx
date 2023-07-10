@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography } from '@material-ui/core';
 import { Member } from "../../../../../hooks/useMember";
 import {createNewMember} from "../Provider/adminPanelFunctions";
-import MemberForm from "../Forms/ MemberForm";
+import MemberForm from "./ MemberForm";
 
 interface MembersCardsViewProps {
     members: Member[] | undefined;
@@ -20,6 +20,7 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
         if (createdMember) {
             setDialogOpen(false);
             // Update the members list with the new member...
+            members?.push(createdMember);
         } else {
             console.error("Failed to create member.");
         }

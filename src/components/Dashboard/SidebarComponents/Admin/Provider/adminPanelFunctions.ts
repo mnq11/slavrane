@@ -15,6 +15,7 @@ export const createNewFamily = async (Family: Family) => {
     try {
         await createFamily(Family);
         toast.success('Family created successfully');
+        return Family;
     } catch (error) {
         console.error(error);
         toast.error('Failed to create family');

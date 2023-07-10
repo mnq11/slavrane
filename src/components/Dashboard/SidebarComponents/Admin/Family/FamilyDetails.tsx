@@ -5,7 +5,7 @@ import {Button, Card, CardContent, Typography} from '@material-ui/core';
 import {Family, Member} from "../../../../../hooks/useMember";
 import {getMembersByFamilyId} from "../../../../../API/api";
 import MembersCardsView from "../member/MembersCardsView";
-import {FamilyForm} from "../Forms/FamilyForm";
+import {FamilyForm} from "./FamilyForm";
 import {modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';  // add this
 
 interface FamilyDetailsProps {
