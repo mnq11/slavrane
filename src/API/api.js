@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Member } from "../hooks/useMember";
 
 // Create a custom axios instance
 const api = axios.create({

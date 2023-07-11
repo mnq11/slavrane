@@ -23,8 +23,8 @@ const headCells: HeadCell[] = [
 ];
 
 const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => {
-    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Expense>('Date');
+    const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+    const [orderBy, setOrderBy] = useState<keyof Expense>('ExpenseID');
 
     const handleSortRequest = (cellId: keyof Expense) => {
         const isAsc = orderBy === cellId && order === 'asc';
@@ -34,14 +34,32 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
 
     // This function starts sorting
     const sortedExpenses = [...expenses].sort((a, b) => {
-        if (a[orderBy] < b[orderBy]) {
+        let aVal = a[orderBy];
+        let bVal = b[orderBy];
+
+        if(orderBy === 'Date') {
+            aVal = new Date(aVal).getTime();
+            bVal = new Date(bVal).getTime();
+        } else if(orderBy === 'Amount') {
+            if (typeof aVal === "string") {
+                aVal = parseFloat(aVal);
+            }
+            if (typeof bVal === "string") {
+                bVal = parseFloat(bVal);
+            }
+        }
+
+        if(aVal < bVal) {
             return order === 'asc' ? -1 : 1;
         }
-        if (a[orderBy] > b[orderBy]) {
+        if(aVal > bVal) {
             return order === 'asc' ? 1 : -1;
         }
+
         return 0;
     });
+
+
 
     return (
         <TableContainer component={Paper}>
@@ -69,7 +87,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
                             <TableCell>{expense.MemberID}</TableCell>
                             <TableCell>{expense.Category}</TableCell>
                             <TableCell>{expense.Amount}</TableCell>
-                            <TableCell>{expense.Date}</TableCell>
+                            <TableCell>{expense.Date ? new Date(expense.Date).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{expense.Recurring}</TableCell>
                             <TableCell>{expense.Frequency}</TableCell>
                         </TableRow>
