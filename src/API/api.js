@@ -236,6 +236,11 @@ export async function getResourcesForFamily(familyId) {
     console.log('Api log: for getResourcesForFamily', response.data);
     return response.data;
 }
+export async function getResourcesForMember(memberId) {
+    const response = await api.get(`/resources/member/${memberId}`);
+    console.log('Api log: for getResourcesForMember', response.data);
+    return response.data;
+}
 
 export async function createResource(resource) {
     const response = await api.post('/resources/createResource', resource);

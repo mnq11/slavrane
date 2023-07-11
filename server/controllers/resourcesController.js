@@ -1,11 +1,12 @@
 const Joi = require('joi');
 
 const createResourceSchema = Joi.object({
-    FamilyID: Joi.number().integer().required(),
+    FamilyID: Joi.number().required(),
+    MemberID: Joi.number().required(),
     ResourceName: Joi.string().required(),
     ResourceValue: Joi.number().required(),
-    ResourceDescription: Joi.string().optional(),
-    DateAcquired: Joi.date().required(),
+    ResourceDescription: Joi.string().required(),
+    DateAcquired: Joi.date().iso().required(),
 });
 
 const updateResourceSchema = Joi.object({

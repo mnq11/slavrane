@@ -84,13 +84,14 @@ export interface Member {
 }
 export interface Resource {
     ResourceID: number;
+    MemberID: number;
     FamilyID: string;
     ResourceName: string;
     ResourceValue: number;
     ResourceDescription: string;
     DateAcquired: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 export interface Savings {
     SavingsID: number;
