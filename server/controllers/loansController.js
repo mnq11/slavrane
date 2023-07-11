@@ -59,11 +59,25 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while getting loans for the family.' });
         }
     }
+    async function getLoansForMember(req, res) {
+        console.log('getLoansForMember function called.', req.params);
+        try {
+            const { id: memberId } = req.params; // update this line
+            const loans = await Loan.findAll({ where: { MemberID: memberId } });
+            if (!loans) return res.status(404).json({ message: 'Loans not found.' });
+            res.json(loans);
+        } catch (error) {
+            console.error('Error in getLoansForMember function:', error);
+            res.status(500).json({ message: 'An error occurred while getting loans for the member.' });
+        }
+    }
+
 
     return {
         createLoan,
         updateLoan,
         deleteLoan,
-        getLoansForFamily
+        getLoansForFamily,
+        getLoansForMember
     };
 };

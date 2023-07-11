@@ -60,8 +60,7 @@ export async function createFamily(family) {
 }
 
 export async function updateFamily(family) {
-    const response = await api.put(`/families/${family.FamilyID}`, family);
-    return response;
+    return await api.put(`/families/${family.FamilyID}`, family);
 }
 
 export async function deleteFamily(familyId) {
@@ -168,4 +167,90 @@ export async function getExpensesForMember(memberId) {
     return response.data;
 }
 
+export async function getIncomesForMember(memberId) {
+    const response = await api.get(`/incomes/member/${memberId}`);
+    console.log('Api log: for getIncomesForMember', response.data);
+    return response.data;
+}
 
+export async function createIncome(income) {
+    const response = await api.post('/incomes/createIncome', income);
+    console.log('Api log: for create Income', response.data);
+    return response.data;
+}
+export async function getLoansForFamily(memberId) {
+    const response = await api.get(`/loans/family/${memberId}`);
+    console.log('Api log: for getLoansForMember', response.data);
+    return response.data;
+}
+
+export async function getLoansForMember(memberId) {
+    const response = await api.get(`/loans/member/${memberId}`);
+    console.log('Api log: for getLoansForMember', response.data);
+    return response.data;
+}
+export async function createLoan(loan) {
+    const response = await api.post('/loans/createLoan', loan);
+    console.log('Api log: for create Loan', response.data);
+    return response.data;
+}
+
+export async function updateLoan(loan) {
+    const response = await api.put(`/loans/updateLoan/${loan.LoanID}`, loan);
+    console.log('Api log: for update Loan', response.data);
+    return response.data;
+}
+
+export async function deleteLoan(loanId) {
+    const response = await api.delete(`/loans/deleteLoan/${loanId}`);
+    console.log('Api log: for delete Loan', response.data);
+    return response.data;
+}
+
+export async function getSavingsForMember(memberId) {
+    const response = await api.get(`/savings/member/${memberId}`);
+    console.log('Api log: for getSavingsForMember', response.data);
+    return response.data;
+}
+
+export async function createSaving(saving) {
+    const response = await api.post('/savings/createSaving', saving);
+    console.log('Api log: for create Saving', response.data);
+    return response.data;
+}
+
+export async function updateSaving(saving) {
+    const response = await api.put(`/savings/updateSaving/${saving.SavingID}`, saving);
+    console.log('Api log: for update Saving', response.data);
+    return response.data;
+}
+
+export async function deleteSaving(savingId) {
+    const response = await api.delete(`/savings/deleteSaving/${savingId}`);
+    console.log('Api log: for delete Saving', response.data);
+    return response.data;
+}
+
+export async function getResourcesForFamily(familyId) {
+    const response = await api.get(`/resources/family/${familyId}`);
+    console.log('Api log: for getResourcesForFamily', response.data);
+    return response.data;
+}
+
+export async function createResource(resource) {
+    const response = await api.post('/resources/createResource', resource);
+    console.log('Api log: for create Resource', response.data);
+    return response.data;
+}
+
+export async function updateResource(resource) {
+    const response = await api.put(`/resources/updateResource/${resource.ResourceID}`, resource);
+    console.log('Api log: for update Resource', response.data);
+    return response.data;
+}
+
+export async function deleteResource(resourceId) {
+    const response = await api.delete(`/resources/deleteResource/${resourceId}`);
+    console.log('Api log: for delete Resource', response.data);
+    return response.data;
+}

@@ -74,6 +74,9 @@ initializeDatabase().then(async (db) => {
     const expensesRoutes = require('./routes/expenses')(models);
     app.use('/expenses', expensesRoutes);
 
+    const incomesRoutes = require('./routes/incomes')(models);
+    app.use('/incomes', incomesRoutes);
+
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
     });

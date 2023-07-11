@@ -42,7 +42,7 @@ export interface Income {
 
 }
 
-export interface Lones {
+export interface Loan {
 
     LoanID: number;
     FamilyID: number;

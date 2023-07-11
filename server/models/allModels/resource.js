@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
+        memberID: DataTypes.INTEGER,
         FamilyID: DataTypes.INTEGER,
         ResourceName: DataTypes.STRING,
         ResourceValue: DataTypes.DECIMAL,

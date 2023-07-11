@@ -10,6 +10,8 @@ import TaskBox from './Task/TaskBox';
 import {MemberDetailsStyles} from "./Styling/AdminMember.Styles";
 import SkillBox from "./Skill/SkillBox";
 import ExpenseBox from "./Expenses/ExpenseBox";
+import IncomeBox from "./Incomes/IncomeBox";
+import LoanBox from "./Lone/LoanBox";
 
 interface MemberDetailsProps {
     member: Member;
@@ -25,6 +27,9 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const [isTaskComponentVisible, setTaskComponentVisible] = useState(false);
     const [isSkillComponentVisible, setSkillComponentVisible] = useState(false);
     const [isExpenseComponentVisible, setExpenseComponentVisible] = useState(false);
+    const [isIncomeComponentVisible, setIncomeComponentVisible] = useState(false);
+    const [isLoanComponentVisible, setLoanComponentVisible] = useState(false);
+
     const classes = MemberDetailsStyles();
 
     const handleDelete = async () => {
@@ -60,6 +65,13 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const handleExpenseCheckboxChange = () => {
         setExpenseComponentVisible(prev => !prev);
     };
+    const handleIncomeCheckboxChange = () => {
+        setIncomeComponentVisible(prev => !prev);
+    }
+    const handleLoanCheckboxChange = () => {
+        setLoanComponentVisible(prev => !prev);
+    };
+
 
     return (
         <div>
@@ -95,10 +107,16 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                     />
                 )}
             </Card>
-            <TaskBox
-                label="Tasks"
-                checked={isTaskComponentVisible}
-                onChange={handleCheckboxChange}
+            <ExpenseBox
+                label="Expenses"
+                checked={isExpenseComponentVisible}
+                onChange={handleExpenseCheckboxChange}
+                member={member}
+            />
+            <IncomeBox
+                label="Income"
+                checked={isIncomeComponentVisible}
+                onChange={handleIncomeCheckboxChange}
                 member={member}
             />
             <SkillBox
@@ -107,12 +125,18 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 onChange={handleSkillCheckboxChange}
                 member={member}
             />
-            <ExpenseBox
-                label="Expenses"
-                checked={isExpenseComponentVisible}
-                onChange={handleExpenseCheckboxChange}
-                member={member}/>
-
+            <TaskBox
+                label="Tasks"
+                checked={isTaskComponentVisible}
+                onChange={handleCheckboxChange}
+                member={member}
+            />
+            <LoanBox
+                label="Loans"
+                checked={isLoanComponentVisible}
+                onChange={handleLoanCheckboxChange}
+                member={member}
+            />
 
         </div>
     );
