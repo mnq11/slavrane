@@ -62,7 +62,17 @@ initializeDatabase().then(async (db) => {
     app.use('/tasks', taskRoutes);
     const skillRoutes = require('./routes/skills')(models);
     app.use('/skills', skillRoutes);
+    const savingsRoutes = require('./routes/savings')(models);
+    app.use('/savings', savingsRoutes);
 
+    const resourcesRoutes = require('./routes/resources')(models);
+    app.use('/resources', resourcesRoutes);
+
+    const loansRoutes = require('./routes/loans')(models);
+    app.use('/loans', loansRoutes);
+
+    const expensesRoutes = require('./routes/expenses')(models);
+    app.use('/expenses', expensesRoutes);
 
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);

@@ -1,4 +1,4 @@
-const express = require('express');
+require('express');
 module.exports = (models) => {
     const router = require('express').Router();
     const skillController = require('../controllers/skillController')(models);

@@ -1,13 +1,14 @@
-const express = require('express');
-const router = express.Router();
 
+require('express');
 module.exports = (models) => {
-    router.get('/', async (req, res) => {
-        const resources = await models.Resource.findAll();
-        res.json(resources);
-    });
+    const router = require('express').Router();
+    const resourcesController = require('../controllers/resourcesController')(models);
 
-    // Add other routes as needed
+    router.post('/createResource', resourcesController.createResource);
+    router.put('/updateResource/:id', resourcesController.updateResource);
+    router.delete('/deleteResource/:id', resourcesController.deleteResource);
+    router.get('/member/:id', resourcesController.getResourcesForFamily);
 
     return router;
 };
+

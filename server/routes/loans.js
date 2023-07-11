@@ -1,13 +1,12 @@
-const express = require('express');
-const router = express.Router();
-
+require('express');
 module.exports = (models) => {
-    router.get('/', async (req, res) => {
-        const loans = await models.Loan.findAll();
-        res.json(loans);
-    });
+    const router = require('express').Router();
+    const loansController = require('../controllers/loansController')(models);
 
-    // Add other routes as needed
+    router.post('/createLoan', loansController.createLoan);
+    router.put('/updateLoan/:id', loansController.updateLoan);
+    router.delete('/deleteLoan/:id', loansController.deleteLoan);
+    router.get('/member/:id', loansController.getLoansForFamily);
 
     return router;
 };

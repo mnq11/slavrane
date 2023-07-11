@@ -1,13 +1,12 @@
-const express = require('express');
-const router = express.Router();
-
+require('express');
 module.exports = (models) => {
-    router.get('/', async (req, res) => {
-        const savings = await models.Savings.findAll();
-        res.json(savings);
-    });
+    const router = require('express').Router();
+    const savingsController = require('../controllers/savingsController')(models);
 
-    // Add other routes as needed
+    router.post('/createSavings', savingsController.createSavings);
+    router.put('/updateSavings/:id', savingsController.updateSavings);
+    router.delete('/deleteSavings/:id', savingsController.deleteSavings);
+    router.get('/member/:id', savingsController.getSavingsForFamily);
 
     return router;
 };
