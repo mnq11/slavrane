@@ -7,14 +7,24 @@ interface LoansTableComponentProps {
     loans: Loan[];
 }
 
-const headCells: { id: keyof Loan; label: string }[] = [
+interface HeadCell {
+    id: keyof Loan;
+    label: string;
+}
+
+const headCells: HeadCell[] = [
     { id: 'LoanID', label: 'Loan ID' },
-    { id: 'Amount', label: 'Amount' },
+    { id: 'MemberID', label: 'Member ID' },
+    { id: 'FamilyID', label: 'Family ID' },
+    { id: 'Amount', label: 'Loan Amount' },
+    { id: 'InterestRate', label: 'Interest Rate' },
     { id: 'StartDate', label: 'Start Date' },
-    { id: 'DUEDate', label: 'Due Date' },
-    { id: 'Interest', label: 'Interest Rate' },
+    { id: 'DueDate', label: 'Due Date' },
+    { id: 'Lender', label: 'Lender' },
+    { id: 'LoanPurpose', label: 'Loan Purpose' },
     { id: 'RepaymentStatus', label: 'Repayment Status' },
 ];
+
 
 const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -27,26 +37,27 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
     };
 
     const sortedLoans = [...loans].sort((a, b) => {
-        let aVal = a[orderBy] || '';
-        let bVal = b[orderBy] || '';
+        let aVal: string | number = a[orderBy] || '';
+        let bVal: string | number = b[orderBy] || '';
 
-        if(orderBy === 'StartDate' || orderBy === 'DUEDate') {
+        if(orderBy === 'StartDate' || orderBy === 'DueDate') {
             aVal = new Date(aVal as string).getTime();
             bVal = new Date(bVal as string).getTime();
         } else if(typeof aVal === 'number' && typeof bVal === 'number') {
             aVal = parseFloat(aVal.toString());
             bVal = parseFloat(bVal.toString());
+        } else {
+            aVal = aVal.toString();
+            bVal = bVal.toString();
         }
 
-        if(aVal < bVal) {
-            return order === 'asc' ? -1 : 1;
+        if(typeof aVal === 'string' && typeof bVal === 'string') {
+            return aVal.localeCompare(bVal) * (order === 'asc' ? 1 : -1);
+        } else {
+            return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
-        if(aVal > bVal) {
-            return order === 'asc' ? 1 : -1;
-        }
-
-        return 0;
     });
+
 
     return (
         <TableContainer component={Paper}>
@@ -70,10 +81,14 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
                     {sortedLoans.map((loan) => (
                         <TableRow key={loan.LoanID}>
                             <TableCell>{loan.LoanID}</TableCell>
+                            <TableCell>{loan.MemberID}</TableCell>
+                            <TableCell>{loan.FamilyID}</TableCell>
                             <TableCell>{loan.Amount}</TableCell>
+                            <TableCell>{loan.InterestRate}</TableCell>
                             <TableCell>{loan.StartDate ? new Date(loan.StartDate).toLocaleDateString() : ''}</TableCell>
-                            <TableCell>{loan.DUEDate ? new Date(loan.DUEDate).toLocaleDateString() : ''}</TableCell>
-                            <TableCell>{loan.Interest}</TableCell>
+                            <TableCell>{loan.DueDate ? new Date(loan.DueDate).toLocaleDateString() : ''}</TableCell>
+                            <TableCell>{loan.Lender}</TableCell>
+                            <TableCell>{loan.LoanPurpose}</TableCell>
                             <TableCell>{loan.RepaymentStatus}</TableCell>
                         </TableRow>
                     ))}

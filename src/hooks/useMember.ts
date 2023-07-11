@@ -45,11 +45,12 @@ export interface Income {
 export interface Loan {
 
     LoanID: number;
+    MemberID: number;
     FamilyID: number;
     Amount: number;
-    Interest: number;
+    InterestRate: number;
     StartDate: string;
-    DUEDate: string;
+    DueDate: string;
     Lender: string;
     LoanPurpose: string;
     RepaymentStatus: string;
