@@ -96,19 +96,19 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 )}
             </Card>
             <TaskBox
-                label="Show Component"
+                label="Tasks"
                 checked={isTaskComponentVisible}
                 onChange={handleCheckboxChange}
                 member={member}
             />
             <SkillBox
-                label="Show Skill Component"
+                label="Skill"
                 checked={isSkillComponentVisible}
                 onChange={handleSkillCheckboxChange}
                 member={member}
             />
             <ExpenseBox
-                label="Show Skill Component"
+                label="Expenses"
                 checked={isExpenseComponentVisible}
                 onChange={handleExpenseCheckboxChange}
                 member={member}/>

@@ -1,33 +1,68 @@
-// ExpensesTableComponent.tsx
-import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
 import { Expense } from "../../../../../../hooks/useMember";
 
 interface TableComponentProps {
     expenses: Expense[];
 }
 
+interface HeadCell {
+    id: keyof Expense;
+    label: string;
+}
+
+const headCells: HeadCell[] = [
+    { id: 'ExpenseID', label: 'Expense ID' },
+    { id: 'FamilyID', label: 'Family ID' },
+    { id: 'MemberID', label: 'Member ID' },
+    { id: 'Category', label: 'Category' },
+    { id: 'Amount', label: 'Amount' },
+    { id: 'Date', label: 'Date' },
+    { id: 'Recurring', label: 'Recurring' },
+    { id: 'Frequency', label: 'Frequency' },
+];
+
 const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => {
+    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+    const [orderBy, setOrderBy] = useState<keyof Expense>('Date');
+
+    const handleSortRequest = (cellId: keyof Expense) => {
+        const isAsc = orderBy === cellId && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(cellId);
+    };
+
+    // This function starts sorting
+    const sortedExpenses = [...expenses].sort((a, b) => {
+        if (a[orderBy] < b[orderBy]) {
+            return order === 'asc' ? -1 : 1;
+        }
+        if (a[orderBy] > b[orderBy]) {
+            return order === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
+
     return (
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
-
-                        <TableCell>Expense ID</TableCell>
-                        <TableCell>Family ID</TableCell>
-                        <TableCell>Member ID</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell>Amount</TableCell>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Recurring</TableCell>
-                        <TableCell>Frequency</TableCell>
-
-
+                        {headCells.map((cell) => (
+                            <TableCell key={cell.id}>
+                                <TableSortLabel
+                                    active={orderBy === cell.id}
+                                    direction={orderBy === cell.id ? order : 'asc'}
+                                    onClick={() => handleSortRequest(cell.id)}
+                                >
+                                    {cell.label}
+                                </TableSortLabel>
+                            </TableCell>
+                        ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {expenses.map((expense) => (
+                    {sortedExpenses.map((expense) => (
                         <TableRow key={expense.ExpenseID}>
                             <TableCell>{expense.ExpenseID}</TableCell>
                             <TableCell>{expense.FamilyID}</TableCell>

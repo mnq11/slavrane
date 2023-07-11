@@ -26,7 +26,7 @@ const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member})
     const validationSchema = Yup.object({
         Category: Yup.string().required("Required"),
         Date: Yup.date().required("Required"),
-        Price: Yup.number().required("Required"),
+        Amount: Yup.number().required("Required"),
         Recurring: Yup.boolean(),
         Frequency: Yup.string().required("Required")
     });
@@ -37,7 +37,7 @@ const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member})
             MemberID: member.MemberID,
             Category: 'Default Category',
             Date: new Date().toISOString().split('T')[0],
-            Price: '0',
+            Amount: '0',
             Recurring: false,
             Frequency: 'One-time'
         },
@@ -47,7 +47,7 @@ const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member})
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Category: values.Category,
-                Price: values.Price,
+                Amount: values.Amount,
                 Date: values.Date,
                 Recurring: values.Recurring,
                 Frequency: values.Frequency
@@ -135,13 +135,13 @@ const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member})
                                 />
                                 <TextField
                                     fullWidth
-                                    id="Price"
-                                    name="Price"
-                                    label="Price"
-                                    value={formik.values.Price}
+                                    id="Amount"
+                                    name="Amount"
+                                    label="Amount"
+                                    value={formik.values.Amount}
                                     onChange={formik.handleChange}
-                                    error={formik.touched.Price && Boolean(formik.errors.Price)}
-                                    helperText={formik.touched.Price && formik.errors.Price}
+                                    error={formik.touched.Amount && Boolean(formik.errors.Amount)}
+                                    helperText={formik.touched.Amount && formik.errors.Amount}
                                 />
                                 <FormControlLabel
                                     control={
