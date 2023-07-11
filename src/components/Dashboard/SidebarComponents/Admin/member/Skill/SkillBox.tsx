@@ -15,6 +15,7 @@ import { useSnackbar } from 'notistack';
 import { Member, Skill } from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
 import { getSkillsForMember, createSkill } from '../../../../../../API/api';
+import {toast} from "react-toastify";
 
 interface CheckboxProps {
     label: string;
@@ -76,6 +77,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
 
     const handleNewSkill = () => {
         setOpen(true);
+        toast.info('Create New Skill')
     };
 
     return (
