@@ -1,28 +1,21 @@
 // LoanBox.tsx
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    Checkbox,
-    FormControlLabel,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    TextField,
-    DialogActions,
-    Button,
-    FormControl,
-    IconButton
+    Checkbox, FormControlLabel, Dialog, DialogTitle
+    , DialogContent, TextField, DialogActions, Button,
+    FormControl, IconButton, Select, MenuItem, InputLabel
 } from '@material-ui/core';
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { useSnackbar } from 'notistack';
-import { Member, Loan } from '../../../../../../hooks/useMember';
+import {useSnackbar} from 'notistack';
+import {Member, Loan} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
 import {createLoan, getLoansForMember} from '../../../../../../API/api';
 import {toast} from "react-toastify";
-import {Rating} from "semantic-ui-react";
 import {useLoanBoxStyles} from "./LoanBox.styles";
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+
 interface CheckboxProps {
     label: string;
     checked: boolean;
@@ -30,22 +23,22 @@ interface CheckboxProps {
     member: Member;
 }
 
-const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
+const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [loans, setLoans] = useState<Loan[]>([]);
     const [open, setOpen] = useState(false);
-    const { enqueueSnackbar } = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
     const classes = useLoanBoxStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
             LoanAmount: 100, // set initial value to 100
-            StartDate: new Date().toISOString().slice(0,10),
-            DueDate: new Date().toISOString().slice(0,10),
+            StartDate: new Date().toISOString().slice(0, 10),
+            DueDate: new Date().toISOString().slice(0, 10),
             InterestRate: 1,
             Lender: '',
             LoanPurpose: '',
-            RepaymentStatus: 0,
+            RepaymentStatus: 'Pending',
         },
         validationSchema: Yup.object({
             LoanAmount: Yup.number().required('Required'),
@@ -54,7 +47,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
             InterestRate: Yup.number().required('Required'),
             Lender: Yup.string().required('Required'),
             LoanPurpose: Yup.string().required('Required'),
-            RepaymentStatus: Yup.number().required('Required').min(0).max(5),
+            RepaymentStatus: Yup.string().required('Required').oneOf(['Paid', 'Compromised', 'Pending', 'Overdue', 'Defaulted']),
         }),
         onSubmit: (values) => {
             const loanData = {
@@ -72,10 +65,10 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                 .then((newLoan) => {
                     setLoans([newLoan, ...loans]);
                     setOpen(false);
-                    enqueueSnackbar('Loan created successfully', { variant: 'success' });
+                    enqueueSnackbar('Loan created successfully', {variant: 'success'});
                 })
                 .catch((error) => {
-                    enqueueSnackbar('Failed to create loan: ' + error.message, { variant: 'error' });
+                    enqueueSnackbar('Failed to create loan: ' + error.message, {variant: 'error'});
                 });
         },
     });
@@ -85,7 +78,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
             getLoansForMember(member.MemberID)
                 .then((loans) => setLoans(loans))
                 .catch((error) => {
-                    enqueueSnackbar('Failed to fetch loans: ' + error.message, { variant: 'error' });
+                    enqueueSnackbar('Failed to fetch loans: ' + error.message, {variant: 'error'});
                 });
         }
     }, [checked, member.MemberID, enqueueSnackbar]);
@@ -103,7 +96,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
     return (
         <>
             <FormControlLabel
-                control={<Checkbox checked={checked} onChange={onChange} color="primary" />}
+                control={<Checkbox checked={checked} onChange={onChange} color="primary"/>}
                 label={label}
             />
             {checked && (
@@ -121,7 +114,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                 <FormControl fullWidth className={classes.formControl}>
                                     <div>
                                         <IconButton onClick={() => handleLoanAmountChange(-100)}>
-                                            <RemoveIcon /> {/* Use Remove Icon */}
+                                            <RemoveIcon/> {/* Use Remove Icon */}
                                         </IconButton>
                                         <TextField
                                             id="LoanAmount"
@@ -132,18 +125,11 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                             onChange={formik.handleChange}
                                         />
                                         <IconButton onClick={() => handleLoanAmountChange(100)}>
-                                            <AddIcon />
+                                            <AddIcon/>
                                         </IconButton>
                                     </div>
                                 </FormControl>
-                                <Rating
-                                    name="RepaymentStatus"
-                                    label="Repayment Status"
-                                    value={formik.values.RepaymentStatus}
-                                    onChange={(event: React.ChangeEvent<{}>, newValue: number | null) => {
-                                        formik.setFieldValue('RepaymentStatus', newValue);
-                                    }}
-                                />
+
                                 <FormControl fullWidth className={classes.formControl}>
                                     <TextField
                                         id="StartDate"
@@ -154,7 +140,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth className={classes.formControl}>
                                     <TextField
                                         id="DueDate"
                                         name="DueDate"
@@ -164,7 +150,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-                                <FormControl fullWidth>
+                                <FormControl fullWidth className={classes.formControl}>
                                     <TextField
                                         id="Lender"
                                         name="Lender"
@@ -175,7 +161,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                     />
                                 </FormControl>
 
-                                <FormControl fullWidth>
+                                <FormControl fullWidth className={classes.formControl}>
                                     <TextField
                                         id="LoanPurpose"
                                         name="LoanPurpose"
@@ -185,7 +171,22 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-
+                                <FormControl fullWidth className={classes.formControl}>
+                                    <InputLabel id="RepaymentStatus-label">Repayment Status</InputLabel>
+                                    <Select
+                                        labelId="RepaymentStatus-label"
+                                        id="RepaymentStatus"
+                                        name="RepaymentStatus"
+                                        value={formik.values.RepaymentStatus}
+                                        onChange={formik.handleChange}
+                                    >
+                                        <MenuItem value="Paid">Paid</MenuItem>
+                                        <MenuItem value="Compromised">Compromised</MenuItem>
+                                        <MenuItem value="Pending">Pending</MenuItem>
+                                        <MenuItem value="Overdue">Overdue</MenuItem>
+                                        <MenuItem value="Defaulted">Defaulted</MenuItem>
+                                    </Select>
+                                </FormControl>
                                 <DialogActions>
                                     <Button color="primary" type="submit">
                                         Save
@@ -198,7 +199,7 @@ const LoanBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                         </DialogContent>
                     </Dialog>
 
-                    <LoansTableComponent loans={loans} />
+                    <LoansTableComponent loans={loans}/>
                 </div>
             )}
         </>
