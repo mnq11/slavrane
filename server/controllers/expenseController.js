@@ -63,7 +63,7 @@ module.exports = (models) => {
     async function getExpensesForMember(req, res) {
         console.log('getExpensesForMember function called.', req.params);
         try {
-            const { memberId } = req.params;
+            const memberId = req.params.id;
             const expenses = await Expense.findAll({ where: { MemberID: memberId } });
             if (!expenses) return res.status(404).json({ message: 'Expenses not found.' });
             res.json(expenses);
@@ -72,6 +72,7 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while getting expenses for the member.' });
         }
     }
+
 
     return {
         createExpense,

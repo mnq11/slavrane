@@ -8,7 +8,6 @@ import {
     TextField,
     DialogActions,
     Button,
-
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -32,7 +31,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
     const validationSchema = Yup.object({
         SkillName: Yup.string().required('Required'),
         SkillLevel: Yup.string().required('Required'),
-        DateAcquired: Yup.string().required('Required'),
+        DateAcquired: Yup.date().required('Required'),
         Certification: Yup.string().required('Required'),
     });
 

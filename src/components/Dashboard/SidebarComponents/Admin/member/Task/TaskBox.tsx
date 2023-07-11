@@ -5,7 +5,8 @@ import {
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSnackbar } from 'notistack';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {Member, Tasks} from "../../../../../../hooks/useMember";
 import TasksTableComponent from "./TasksTableComponent";
 import {getTasksForMember, createTask} from "../../../../../../API/api";
@@ -20,7 +21,6 @@ interface CheckboxProps {
 const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [tasks, setTasks] = useState<Tasks[]>([]);
     const [open, setOpen] = useState(false);
-    const { enqueueSnackbar } = useSnackbar();
 
     const validationSchema = Yup.object({
         TaskName: Yup.string().required("Required"),
@@ -46,17 +46,17 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                 TaskName: values.TaskName,
                 Description: values.Description,
                 DueDate: values.DueDate,
-                TaskStatus: values.TaskStatus, // Renamed from values.Status to values.TaskStatus
+                TaskStatus: values.TaskStatus,
                 Priority: values.Priority
             };
             createTask(taskData)
                 .then(newTask => {
                     setTasks([newTask, ...tasks]);
                     setOpen(false);
-                    enqueueSnackbar('Task created successfully', { variant: 'success' });
+                    toast.success('Task created successfully');
                 })
                 .catch(error => {
-                    enqueueSnackbar('Failed to create task: ' + error.message, { variant: 'error' });
+                    toast.error('Failed to create task: ' + error.message);
                 });
         },
     });
@@ -66,13 +66,14 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
             getTasksForMember(member.MemberID)
                 .then(tasks => setTasks(tasks))
                 .catch(error => {
-                    enqueueSnackbar('Failed to fetch tasks: ' + error.message, { variant: 'error' });
+                    toast.error('Failed to fetch tasks: ' + error.message);
                 });
         }
-    }, [checked, member.MemberID, enqueueSnackbar]);
+    }, [checked, member.MemberID]);
 
     const handleNewTask = () => {
         setOpen(true);
+        toast.info('Creating a new task');
     }
 
     return (
@@ -93,7 +94,10 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
 
                     <Button variant="contained" color="primary" onClick={handleNewTask}>Create New Task</Button>
 
-                    <Dialog open={open} onClose={() => setOpen(false)}>
+                    <Dialog open={open} onClose={() => {
+                        setOpen(false);
+                        toast.info('Task creation cancelled');
+                    }}>
                         <DialogTitle>Create New Task</DialogTitle>
                         <DialogContent>
                             <form onSubmit={formik.handleSubmit}>
@@ -160,7 +164,10 @@ const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) 
                                     helperText={formik.touched.Priority && formik.errors.Priority}
                                 />
                                 <DialogActions>
-                                    <Button onClick={() => setOpen(false)} color="primary">Cancel</Button>
+                                    <Button onClick={() => {
+                                        setOpen(false);
+                                        toast.info('Task creation cancelled');
+                                    }} color="primary">Cancel</Button>
                                     <Button type="submit" color="primary">Save</Button>
                                 </DialogActions>
                             </form>

@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 import TaskBox from './Task/TaskBox';
 import {MemberDetailsStyles} from "./Styling/AdminMember.Styles";
 import SkillBox from "./Skill/SkillBox";
+import ExpenseBox from "./Expenses/ExpenseBox";
 
 interface MemberDetailsProps {
     member: Member;
@@ -23,7 +24,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const [editDialogOpen, setUpdateDialogOpen] = useState(false);
     const [isTaskComponentVisible, setTaskComponentVisible] = useState(false);
     const [isSkillComponentVisible, setSkillComponentVisible] = useState(false);
-
+    const [isExpenseComponentVisible, setExpenseComponentVisible] = useState(false);
     const classes = MemberDetailsStyles();
 
     const handleDelete = async () => {
@@ -56,7 +57,9 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const handleSkillCheckboxChange = () => {
         setSkillComponentVisible(prev => !prev);
     };
-
+    const handleExpenseCheckboxChange = () => {
+        setExpenseComponentVisible(prev => !prev);
+    };
 
     return (
         <div>
@@ -104,6 +107,12 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 onChange={handleSkillCheckboxChange}
                 member={member}
             />
+            <ExpenseBox
+                label="Show Skill Component"
+                checked={isExpenseComponentVisible}
+                onChange={handleExpenseCheckboxChange}
+                member={member}/>
+
 
         </div>
     );

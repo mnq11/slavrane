@@ -138,3 +138,35 @@ export async function getSkillsForMember(memberId) {
     console.log('Api log: for getSkillsForMember', response.data);
     return response.data;
 }
+
+export async function createExpense(expense) {
+    const response = await api.post('/expenses/createExpense', expense);
+    console.log('Api log: for create Expense', response.data);
+    return response.data;
+}
+
+export async function updateExpense(expense) {
+    const response = await api.put(`/expenses/updateExpense/${expense.ExpenseID}`, expense);
+    console.log('Api log: for update Expense', response.data);
+    return response.data;
+}
+
+export async function deleteExpense(expenseId) {
+    const response = await api.delete(`/expenses/deleteExpense/${expenseId}`);
+    console.log('Api log: for delete Expense', response.data);
+    return response.data;
+}
+
+
+export async function getExpensesForFamily(familyId) {
+    const response = await api.get(`/expenses/family/${familyId}`);
+    console.log('Api log: for getExpensesForFamily', response.data);
+    return response.data;
+}
+export async function getExpensesForMember(memberId) {
+    const response = await api.get(`/expenses/member/${memberId}`);
+    console.log('Api log: for getExpensesForMember', response.data);
+    return response.data;
+}
+
+
