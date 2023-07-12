@@ -32,7 +32,7 @@ app.use(compression());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+    max: 1000 // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
 
 initializeDatabase().then(async (db) => {
     const { sequelize, models } = db;
-    // await createDummyData(sequelize, models);
+    await createDummyData(sequelize, models);
 
     app.use((req, res, next) => {
         console.log(`Incoming request: ${req.method} ${req.path}`);

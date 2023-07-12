@@ -13,6 +13,7 @@ import ExpenseBox from "./Expenses/ExpenseBox";
 import IncomeBox from "./Incomes/IncomeBox";
 import LoanBox from "./Lone/LoanBox";
 import ResourceBox from "./Resource/ResourceBox";
+import SavingsBox from "./Savings/SavingsBox";
 
 interface MemberDetailsProps {
     member: Member;
@@ -31,6 +32,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const [isIncomeComponentVisible, setIncomeComponentVisible] = useState(false);
     const [isLoanComponentVisible, setLoanComponentVisible] = useState(false);
     const [isResourceComponentVisible, setResourceComponentVisible] = useState(false);
+    const [isSavingsComponentVisible, setSavingsComponentVisible] = useState(false);
 
     const classes = MemberDetailsStyles();
 
@@ -76,7 +78,9 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const handleResourceCheckboxChange = () => {
         setResourceComponentVisible(prev => !prev);
     };
-
+    const handleSavingsCheckboxChange = () => {
+        setSavingsComponentVisible(prev => !prev);
+    };
     return (
         <div>
             <Card className={classes.card}>
@@ -145,6 +149,12 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 label="Resources"
                 checked={isResourceComponentVisible}
                 onChange={handleResourceCheckboxChange}
+                member={member}
+            />
+            <SavingsBox
+                label="Savings"
+                checked={isSavingsComponentVisible}
+                onChange={handleSavingsCheckboxChange}
                 member={member}
             />
         </div>

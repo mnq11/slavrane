@@ -6,7 +6,8 @@ module.exports = (models) => {
     router.post('/createSavings', savingsController.createSavings);
     router.put('/updateSavings/:id', savingsController.updateSavings);
     router.delete('/deleteSavings/:id', savingsController.deleteSavings);
-    router.get('/member/:id', savingsController.getSavingsForFamily);
+    router.get('/member/:id', savingsController.getSavingsForMember);
+    router.get('/family/:id', savingsController.getSavingsForFamily);
 
     return router;
 };

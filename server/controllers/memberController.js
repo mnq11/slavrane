@@ -111,19 +111,15 @@ module.exports = (models) => {
     const deleteMember = async (req, res) => {
         console.log(req.params.id);
         try {
-            const deleted = await models.Member.destroy({
-                where: {
-                    MemberID: req.params.id
-                }
-            });
-            if (deleted) {
-                res.status(200).json({ message: 'Member deleted' });
+            const member = await models.Member.findByPk(req.params.id);
+            if (member) {
+                await member.destroy();
+                res.json({ message: 'Member deleted' });
             } else {
                 res.status(404).json({ message: 'Member not found' });
             }
-        } catch (error) {
-            console.error(error); // Log the error for debugging
-            res.status(500).json({ message: 'Error deleting member', error });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
         }
     };
 
