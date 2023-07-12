@@ -91,11 +91,7 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                     <Switch
                         checked={checked}
                         onChange={onChange}
-                        classes={{
-                            switchBase: classes.switchBase,
-                            checked: classes.checked,
-                            track: classes.track,
-                        }}
+
                         color="primary"
                     />
                 }

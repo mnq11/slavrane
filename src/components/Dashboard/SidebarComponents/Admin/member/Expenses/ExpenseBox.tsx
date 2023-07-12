@@ -1,7 +1,7 @@
 // ExpenseBox.tsx
 import React, {useState, useEffect} from 'react';
 import {
-    Switch, FormControlLabel, Drawer, DialogTitle,
+    Switch, FormControlLabel, DialogTitle,
     DialogContent, TextField, DialogActions, Button, Select, MenuItem, Dialog, Checkbox
 } from '@material-ui/core';
 import {useFormik} from 'formik';
@@ -93,11 +93,6 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                     <Switch
                         checked={checked}
                         onChange={onChange}
-                        classes={{
-                            switchBase: classes.switchBase,
-                            checked: classes.checked,
-                            track: classes.track,
-                        }}
                         color="primary"
                     />
                 }
