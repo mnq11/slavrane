@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TableSortLabel,
+    TablePagination
+} from '@material-ui/core';
 import { Expense } from "../../../../../../hooks/useMember";
 
 interface TableComponentProps {
@@ -25,7 +35,8 @@ const headCells: HeadCell[] = [
 const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [orderBy, setOrderBy] = useState<keyof Expense>('ExpenseID');
-
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleSortRequest = (cellId: keyof Expense) => {
         const isAsc = orderBy === cellId && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -60,6 +71,14 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
     });
 
 
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     return (
         <TableContainer component={Paper}>
@@ -80,7 +99,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sortedExpenses.map((expense) => (
+                    {sortedExpenses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((expense) => (
                         <TableRow key={expense.ExpenseID}>
                             <TableCell>{expense.ExpenseID}</TableCell>
                             <TableCell>{expense.FamilyID}</TableCell>
@@ -94,6 +113,15 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
                     ))}
                 </TableBody>
             </Table>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={expenses.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </TableContainer>
     );
 };

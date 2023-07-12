@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TableSortLabel,
+    TableFooter,
+    TablePagination
+} from '@material-ui/core';
 import { Savings} from '../../../../../../hooks/useMember';
 
 interface SavingsTableComponentProps {
@@ -23,7 +34,8 @@ const headCells: HeadCell[] = [
 const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Savings>('SavingsID');
-
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const handleSortRequest = (cellId: keyof Savings) => {
         const isAsc = orderBy === cellId && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -37,7 +49,7 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }
         if(orderBy === 'Date' || orderBy === 'TargetDate') {
             aVal = new Date(aVal as string).getTime();
             bVal = new Date(bVal as string).getTime();
-        } else if(typeof aVal === 'number' && typeof bVal === 'number') {
+        } else if(orderBy === 'Amount') {
             aVal = parseFloat(aVal.toString());
             bVal = parseFloat(bVal.toString());
         } else {
@@ -51,6 +63,9 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
     });
+
+
+
 
     return (
         <TableContainer component={Paper}>
@@ -71,12 +86,35 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sortedSavings.map((saving) => (
+                    {sortedSavings.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((saving) => (
                         <TableRow key={saving.SavingsID}>
-                            {/* savings cells here */}
+                            <TableCell>{saving.SavingsID}</TableCell>
+                            <TableCell>{saving.FamilyID}</TableCell>
+                            <TableCell>{saving.Amount}</TableCell>
+                            <TableCell>{new Date(saving.Date).toISOString().slice(0,10)}</TableCell>
+                            <TableCell>{saving.SavingsGoal}</TableCell>
+                            <TableCell>{new Date(saving.TargetDate).toISOString().slice(0,10)}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
+                <TableFooter>
+                    <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            count={savings.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={(event, newPage) => {
+                                setPage(newPage);
+                            }}
+                            onRowsPerPageChange={(event) => {
+                                setRowsPerPage(parseInt(event.target.value, 10));
+                                setPage(0);
+                            }}
+                        />
+                    </TableRow>
+                </TableFooter>
+
             </Table>
         </TableContainer>
     );

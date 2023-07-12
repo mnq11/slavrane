@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog,
+     FormControlLabel, Dialog,
     DialogTitle, DialogContent, TextField,
-    DialogActions, Button, FormControl, FormHelperText
+    DialogActions, Button, FormControl, FormHelperText, Switch
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -10,6 +10,7 @@ import {Member, Savings} from '../../../../../../hooks/useMember';
 import SavingsTableComponent from './SavingsTableComponent';
 import {createSaving, getSavingsForMember} from '../../../../../../API/api';
 import {toast} from "react-toastify";
+import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
 interface SavingsBoxProps {
     label: string;
@@ -21,9 +22,11 @@ interface SavingsBoxProps {
 const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member}) => {
     const [savings, setSavings] = useState<Savings[]>([]);
     const [open, setOpen] = useState(false);
+    const classes = useSliderSwitchStyles();
     const formik = useFormik({
         initialValues: {
             MemberID: member.MemberID,
+            FamilyID: member.FamilyID,
             Amount: 0,
             Date: new Date().toISOString().slice(0, 10),
             SavingsGoal: '',
@@ -32,9 +35,10 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
         validationSchema: Yup.object({
             Amount: Yup.number().required('Required'),
             Date: Yup.date().required('Required'),
-            SavingsGoal: Yup.string().required('Required'),
+            SavingsGoal: Yup.number().required('Required'),
             TargetDate: Yup.date().required('Required')
         }),
+
         onSubmit: (values) => {
             const savingsData = {
                 FamilyID: member.FamilyID,
@@ -69,7 +73,18 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
     return (
         <>
             <FormControlLabel
-                control={<Checkbox checked={checked} onChange={onChange} color="primary"/>}
+                control={
+                    <Switch
+                        checked={checked}
+                        onChange={onChange}
+                        classes={{
+                            switchBase: classes.switchBase,
+                            checked: classes.checked,
+                            track: classes.track,
+                        }}
+                        color="primary"
+                    />
+                }
                 label={label}
             />
             {checked && (
@@ -114,14 +129,20 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                                     </FormControl>
 
                                     <FormControl fullWidth error={formik.touched.SavingsGoal && Boolean(formik.errors.SavingsGoal)}>
-                                        <TextField
-                                            id="SavingsGoal"
-                                            name="SavingsGoal"
-                                            label="Savings Goal"
-                                            type="text"
-                                            value={formik.values.SavingsGoal}
-                                            onChange={formik.handleChange}
-                                        />
+                                        <FormControl fullWidth error={formik.touched.SavingsGoal && Boolean(formik.errors.SavingsGoal)}>
+                                            <TextField
+                                                id="SavingsGoal"
+                                                name="SavingsGoal"
+                                                label="Savings Goal"
+                                                type="number"
+                                                value={formik.values.SavingsGoal}
+                                                onChange={formik.handleChange}
+                                            />
+                                            {formik.touched.SavingsGoal && formik.errors.SavingsGoal && (
+                                                <FormHelperText>{formik.errors.SavingsGoal}</FormHelperText>
+                                            )}
+                                        </FormControl>
+
                                         {formik.touched.SavingsGoal && formik.errors.SavingsGoal && (
                                             <FormHelperText>{formik.errors.SavingsGoal}</FormHelperText>
                                         )}

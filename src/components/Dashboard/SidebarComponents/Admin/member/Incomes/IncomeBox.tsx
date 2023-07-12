@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Checkbox, FormControlLabel, Dialog, DialogTitle,
-    DialogContent, TextField, DialogActions, Button, Select, MenuItem
+    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Member, Income } from "../../../../../../hooks/useMember";
 import IncomesTableComponent from "./IncomesTableComponent";
 import { getIncomesForMember, createIncome } from "../../../../../../API/api";
+import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
 interface CheckboxProps {
     label: string;
@@ -22,6 +23,7 @@ interface CheckboxProps {
 const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [open, setOpen] = useState(false);
+    const classes = useSliderSwitchStyles();
 
     const validationSchema = Yup.object({
         Source: Yup.string().required("Required"),
@@ -86,9 +88,14 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
         <>
             <FormControlLabel
                 control={
-                    <Checkbox
+                    <Switch
                         checked={checked}
                         onChange={onChange}
+                        classes={{
+                            switchBase: classes.switchBase,
+                            checked: classes.checked,
+                            track: classes.track,
+                        }}
                         color="primary"
                     />
                 }

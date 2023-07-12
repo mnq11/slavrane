@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog,
+    FormControlLabel, Dialog,
     DialogTitle, DialogContent, TextField,
-    DialogActions, Button, FormControl, FormHelperText
+    DialogActions, Button, FormControl, FormHelperText, Switch
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -10,6 +10,7 @@ import {Resource, Member} from '../../../../../../hooks/useMember';
 import ResourcesTableComponent from './ResourcesTableComponent';
 import {createResource, getResourcesForMember} from '../../../../../../API/api';
 import {toast} from "react-toastify";
+import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
 interface CheckboxProps {
     label: string;
@@ -21,6 +22,7 @@ interface CheckboxProps {
 const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [resources, setResources] = useState<Resource[]>([]);
     const [open, setOpen] = useState(false);
+    const classes = useSliderSwitchStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
@@ -71,7 +73,18 @@ const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}
     return (
         <>
             <FormControlLabel
-                control={<Checkbox checked={checked} onChange={onChange} color="primary"/>}
+                control={
+                    <Switch
+                        checked={checked}
+                        onChange={onChange}
+                        classes={{
+                            switchBase: classes.switchBase,
+                            checked: classes.checked,
+                            track: classes.track,
+                        }}
+                        color="primary"
+                    />
+                }
                 label={label}
             />
             {checked && (

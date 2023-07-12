@@ -1,20 +1,22 @@
 const Joi = require('joi');
 
 const createSavingsSchema = Joi.object({
-    FamilyID: Joi.number().integer().required(),
+    FamilyID: Joi.number().required(),
+    MemberID: Joi.number().required(),
     Amount: Joi.number().required(),
     Date: Joi.date().required(),
     SavingsGoal: Joi.number().required(),
-    TargetDate: Joi.date().optional(),
+    TargetDate: Joi.date().required(),
 });
 
+
 const updateSavingsSchema = Joi.object({
-    SavingsID: Joi.number().integer().optional(),
-    FamilyID: Joi.number().integer().required(),
-    Amount: Joi.number().required(),
-    Date: Joi.date().required(),
-    SavingsGoal: Joi.number().required(),
-    TargetDate: Joi.date().optional(),
+    FamilyID: Joi.number(),
+    MemberID: Joi.number(),
+    Amount: Joi.number(),
+    Date: Joi.date(),
+    SavingsGoal: Joi.number(),
+    TargetDate: Joi.date(),
 });
 
 module.exports = (models) => {

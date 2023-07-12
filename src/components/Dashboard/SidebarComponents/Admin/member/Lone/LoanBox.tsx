@@ -1,9 +1,9 @@
 // LoanBox.tsx
 import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog, DialogTitle
+    FormControlLabel, Dialog, DialogTitle
     , DialogContent, TextField, DialogActions, Button,
-    FormControl, IconButton, Select, MenuItem, InputLabel
+    FormControl, IconButton, Select, MenuItem, InputLabel, Switch
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -12,7 +12,7 @@ import {Member, Loan} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
 import {createLoan, getLoansForMember} from '../../../../../../API/api';
 import {toast} from "react-toastify";
-import {useLoanBoxStyles} from "./LoanBox.styles";
+import { useSliderSwitchStyles} from "./LoanBox.styles";
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
@@ -27,7 +27,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
     const [loans, setLoans] = useState<Loan[]>([]);
     const [open, setOpen] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
-    const classes = useLoanBoxStyles();
+    const classes = useSliderSwitchStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
@@ -96,7 +96,18 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
     return (
         <>
             <FormControlLabel
-                control={<Checkbox checked={checked} onChange={onChange} color="primary"/>}
+                control={
+                    <Switch
+                        checked={checked}
+                        onChange={onChange}
+                        classes={{
+                            switchBase: classes.switchBase,
+                            checked: classes.checked,
+                            track: classes.track,
+                        }}
+                        color="primary"
+                    />
+                }
                 label={label}
             />
             {checked && (
@@ -111,7 +122,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                         <DialogTitle>Create New Loan</DialogTitle>
                         <DialogContent>
                             <form onSubmit={formik.handleSubmit}>
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <div>
                                         <IconButton onClick={() => handleLoanAmountChange(-100)}>
                                             <RemoveIcon/> {/* Use Remove Icon */}
@@ -130,7 +141,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                     </div>
                                 </FormControl>
 
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <TextField
                                         id="StartDate"
                                         name="StartDate"
@@ -140,7 +151,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <TextField
                                         id="DueDate"
                                         name="DueDate"
@@ -150,7 +161,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <TextField
                                         id="Lender"
                                         name="Lender"
@@ -161,7 +172,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                     />
                                 </FormControl>
 
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <TextField
                                         id="LoanPurpose"
                                         name="LoanPurpose"
@@ -171,7 +182,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                         onChange={formik.handleChange}
                                     />
                                 </FormControl>
-                                <FormControl fullWidth className={classes.formControl}>
+                                <FormControl fullWidth >
                                     <InputLabel id="RepaymentStatus-label">Repayment Status</InputLabel>
                                     <Select
                                         labelId="RepaymentStatus-label"

@@ -62,25 +62,82 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
 
     const handleCheckboxChange = () => {
         setTaskComponentVisible(prev => !prev);
+        if (!isTaskComponentVisible) {
+            setSkillComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setLoanComponentVisible(false);
+            setResourceComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     }
     const handleSkillCheckboxChange = () => {
         setSkillComponentVisible(prev => !prev);
+        if (!isSkillComponentVisible) {
+            setTaskComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setLoanComponentVisible(false);
+            setResourceComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     };
     const handleExpenseCheckboxChange = () => {
         setExpenseComponentVisible(prev => !prev);
+        if (!isExpenseComponentVisible) {
+            setTaskComponentVisible(false);
+            setSkillComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setLoanComponentVisible(false);
+            setResourceComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     };
     const handleIncomeCheckboxChange = () => {
         setIncomeComponentVisible(prev => !prev);
+        if (!isIncomeComponentVisible) {
+            setTaskComponentVisible(false);
+            setSkillComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setLoanComponentVisible(false);
+            setResourceComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     }
     const handleLoanCheckboxChange = () => {
         setLoanComponentVisible(prev => !prev);
+        if (!isLoanComponentVisible) {
+            setTaskComponentVisible(false);
+            setSkillComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setResourceComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     };
     const handleResourceCheckboxChange = () => {
         setResourceComponentVisible(prev => !prev);
+        if (!isResourceComponentVisible) {
+            setTaskComponentVisible(false);
+            setSkillComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setLoanComponentVisible(false);
+            setSavingsComponentVisible(false);
+        }
     };
     const handleSavingsCheckboxChange = () => {
         setSavingsComponentVisible(prev => !prev);
+        if (!isSavingsComponentVisible) {
+            setTaskComponentVisible(false);
+            setSkillComponentVisible(false);
+            setExpenseComponentVisible(false);
+            setIncomeComponentVisible(false);
+            setLoanComponentVisible(false);
+            setResourceComponentVisible(false);
+        }
     };
+
     return (
         <div>
             <Card className={classes.card}>

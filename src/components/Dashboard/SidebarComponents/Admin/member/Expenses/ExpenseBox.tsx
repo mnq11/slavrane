@@ -1,8 +1,8 @@
 // ExpenseBox.tsx
 import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog, DialogTitle,
-    DialogContent, TextField, DialogActions, Button, Select, MenuItem
+    Switch, FormControlLabel, Drawer, DialogTitle,
+    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Dialog, Checkbox
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -11,17 +11,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import {Member, Expense} from "../../../../../../hooks/useMember";
 import ExpensesTableComponent from "./ExpensesTableComponent";
 import {getExpensesForMember, createExpense} from "../../../../../../API/api";
+import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
-interface CheckboxProps {
+interface SwitchProps {
     label: string;
     checked: boolean;
     onChange: () => void;
     member: Member;
 }
 
-const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
+const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [open, setOpen] = useState(false);
+    const classes = useSliderSwitchStyles();
 
     const validationSchema = Yup.object({
         Category: Yup.string().required("Required"),
@@ -88,9 +90,14 @@ const ExpenseBox: React.FC<CheckboxProps> = ({label, checked, onChange, member})
         <>
             <FormControlLabel
                 control={
-                    <Checkbox
+                    <Switch
                         checked={checked}
                         onChange={onChange}
+                        classes={{
+                            switchBase: classes.switchBase,
+                            checked: classes.checked,
+                            track: classes.track,
+                        }}
                         color="primary"
                     />
                 }
