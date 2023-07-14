@@ -1,5 +1,3 @@
-// MemberForm.tsx
-
 import React, {useState} from 'react';
 import {
     Dialog,
@@ -7,12 +5,23 @@ import {
     DialogContent,
     TextField,
     DialogActions,
-    Button,
     Select,
-    MenuItem, CircularProgress, FormHelperText
+    MenuItem,
+    FormControl,
+    InputLabel,
+    CircularProgress,
+    FormHelperText,
+    InputAdornment
 } from '@material-ui/core';
 import {Member} from "../../../../../hooks/useMember";
 import {MemberFormStyles} from "./Styling/AdminMember.Styles";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import SaveIcon from '@material-ui/icons/Save';
+import EmailIcon from '@material-ui/icons/Email';
+import LockIcon from '@material-ui/icons/Lock';
+import PhoneIcon from '@material-ui/icons/Phone';
+import CakeIcon from '@material-ui/icons/Cake';
 
 interface MemberFormProps {
     title: string;
@@ -20,7 +29,6 @@ interface MemberFormProps {
     onSubmit: (member: Member) => void;
     onCancel: () => void;
     familyId?: number;
-
 }
 
 const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCancel, familyId}) => {
@@ -33,44 +41,84 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
     const [role, setRole] = useState<'normal' | 'moderator' | 'admin' | 'analyst' | undefined>(member ? member.Role : 'normal');
     const [score, setScore] = useState(member ? member.score : 50);
     const [gender, setGender] = useState(member ? member.Gender : "Male");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const [nameError, setNameError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [contactNumberError, setContactNumberError] = useState("");
+    const [dobError, setDobError] = useState("");
+    const [scoreError, setScoreError] = useState("");
+    const [genderError, setGenderError] = useState("");
+
     const classes = MemberFormStyles();
 
     const validateInput = () => {
-        setError("");
-        setError("");
-        if (name === "" || email === "" || password === "" || contactNumber === "" || dob === "" || !score || !gender) {
-            setError("All fields are required");
-            return false;
+        let isValid = true;
+
+        if (name === "") {
+            setNameError("Name is required");
+            isValid = false;
+        } else {
+            setNameError("");
         }
 
-        // Email validation
         const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(email)) {
-            setError("Invalid email format");
-            return false;
+        if (email === "") {
+            setEmailError("Email is required");
+            isValid = false;
+        } else if (!emailRegex.test(email)) {
+            setEmailError("Invalid email format");
+            isValid = false;
+        } else {
+            setEmailError("");
         }
 
-        // Password validation
-        if (password.length < 6) {
-            setError("Password must be at least 6 characters long");
-            return false;
+        if (password === "") {
+            setPasswordError("Password is required");
+            isValid = false;
+        } else if (password.length < 6) {
+            setPasswordError("Password must be at least 6 characters long");
+            isValid = false;
+        } else {
+            setPasswordError("");
         }
 
-        // ContactNumber validation - make sure it is a number
-        if (isNaN(Number(contactNumber))) {
-            setError("Contact number must be a number");
-            return false;
+        if (contactNumber === "") {
+            setContactNumberError("Contact number is required");
+            isValid = false;
+        } else if (isNaN(Number(contactNumber))) {
+            setContactNumberError("Contact number must be a number");
+            isValid = false;
+        } else {
+            setContactNumberError("");
         }
 
-        // Score validation - make sure it is a number
-        if (isNaN(score)) {
-            setError("Score must be a number");
-            return false;
+        if (dob === "") {
+            setDobError("Date of Birth is required");
+            isValid = false;
+        } else {
+            setDobError("");
         }
 
-        return true;
+        if (!score) {
+            setScoreError("Score is required");
+            isValid = false;
+        } else if (isNaN(score)) {
+            setScoreError("Score must be a number");
+            isValid = false;
+        } else {
+            setScoreError("");
+        }
+
+        if (!gender) {
+            setGenderError("Gender is required");
+            isValid = false;
+        } else {
+            setGenderError("");
+        }
+
+        return isValid;
     }
 
     const handleSubmit = async () => {
@@ -91,84 +139,149 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 });
                 onCancel();
             } catch (error) {
-                setError('Failed to submit the form. Please try again.');
+                console.log('Failed to submit the form. Please try again.');
             } finally {
                 setLoading(false);
             }
         }
     };
+
     return (
         <Dialog open onClose={onCancel}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <TextField
                     className={classes.textField}
-                    label="Name"
+                    label="Full Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    variant="outlined"
+                    error={Boolean(nameError)}
+                    helperText={nameError}
                 />
                 <TextField
                     className={classes.textField}
-                    label="Email"
+                    label="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <EmailIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    error={Boolean(emailError)}
+                    helperText={emailError}
                 />
                 <TextField
                     className={classes.textField}
-                    label="Password"
+                    label="Create a Password"
                     type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <LockIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    error={Boolean(passwordError)}
+                    helperText={passwordError}
                 />
                 <TextField
                     className={classes.textField}
-                    label="Contact Number"
+                    label="Phone Number"
                     value={contactNumber}
                     onChange={(e) => setContactNumber(e.target.value)}
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <PhoneIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    error={Boolean(contactNumberError)}
+                    helperText={contactNumberError}
                 />
                 <TextField
                     className={classes.textField}
-                    label="Date of Birth"
+                    label="Birth Date"
                     type="date"
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <CakeIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    error={Boolean(dobError)}
+                    helperText={dobError}
                 />
+                <FormControl variant="outlined" className={classes.select}>
+                    <InputLabel id="gender-select-label">Gender</InputLabel>
+                    <Select
+                        labelId="gender-select-label"
+                        id="gender-select"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value as string)}
+                        label="Gender"
+                        error={Boolean(genderError)}
+                    >
+                        <MenuItem value={'Male'}>Male</MenuItem>
+                        <MenuItem value={'Female'}>Female</MenuItem>
+                        <MenuItem value={'Other'}>Other</MenuItem>
+                    </Select>
+                    <FormHelperText error>{genderError}</FormHelperText>
+                </FormControl>
 
-                <Select
-                    label="Role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as 'normal' | 'moderator' | 'admin' | 'analyst')}
-                >
-                    <MenuItem value={"normal"}>Normal</MenuItem>
-                    <MenuItem value={"moderator"}>Moderator</MenuItem>
-                    <MenuItem value={"admin"}>Admin</MenuItem>
-                    <MenuItem value={"analyst"}>Analyst</MenuItem>
-                </Select>
-                <Select
-                    label="Gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value as string)}
-                >
-                    <MenuItem value={"Male"}>Male</MenuItem>
-                    <MenuItem value={"Female"}>Female</MenuItem>
-                </Select>
+                <FormControl variant="outlined" className={classes.select}>
+                    <InputLabel id="role-select-label">Role</InputLabel>
+                    <Select
+                        labelId="role-select-label"
+                        id="role-select"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value as 'normal' | 'moderator' | 'admin' | 'analyst')}
+                        label="Role"
+                    >
+                        <MenuItem value={'normal'}>Normal</MenuItem>
+                        <MenuItem value={'moderator'}>Moderator</MenuItem>
+                        <MenuItem value={'admin'}>Admin</MenuItem>
+                        <MenuItem value={'analyst'}>Analyst</MenuItem>
+                    </Select>
+                </FormControl>
+
                 <TextField
                     className={classes.textField}
                     label="Score"
                     type="number"
                     value={score}
                     onChange={(e) => setScore(Number(e.target.value))}
+                    variant="outlined"
+                    error={Boolean(scoreError)}
+                    helperText={scoreError}
                 />
-                {error && <FormHelperText error>{error}</FormHelperText>}
             </DialogContent>
             <DialogActions>
-                <Button className={classes.button} disabled={loading} onClick={handleSubmit}>
-                    {loading ? <CircularProgress size={24} /> : 'Submit'}
-                </Button>
-                <Button className={classes.button} onClick={onCancel}>Cancel</Button>
+                <IconButton color="primary" disabled={loading} onClick={handleSubmit}>
+                    {loading ? <CircularProgress size={24} /> : <SaveIcon />}
+                </IconButton>
+                <IconButton color="secondary" onClick={onCancel}>
+                    <CloseIcon />
+                </IconButton>
             </DialogActions>
         </Dialog>
     );
-};
+}
 
 export default MemberForm;

@@ -2,7 +2,7 @@
 
 import React, {useState} from 'react';
 import {Member} from "../../../../../hooks/useMember";
-import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core';
+import { Card, CardContent, Grid, IconButton, Typography} from '@material-ui/core';
 import MemberForm from "./ MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
@@ -14,27 +14,35 @@ import IncomeBox from "./Incomes/IncomeBox";
 import LoanBox from "./Lone/LoanBox";
 import ResourceBox from "./Resource/ResourceBox";
 import SavingsBox from "./Savings/SavingsBox";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 interface MemberDetailsProps {
     member: Member;
     onBackToFamilyDetails: () => void;
 }
 
-
+const BOXES = {
+    TASK: 'task',
+    SKILL: 'skill',
+    EXPENSE: 'expense',
+    INCOME: 'income',
+    LOAN: 'loan',
+    RESOURCE: 'resource',
+    SAVINGS: 'savings',
+};
 const MemberDetails: React.FC<MemberDetailsProps> = ({
                                                          member,
                                                          onBackToFamilyDetails,
                                                      }) => {
     const [editDialogOpen, setUpdateDialogOpen] = useState(false);
-    const [isTaskComponentVisible, setTaskComponentVisible] = useState(false);
-    const [isSkillComponentVisible, setSkillComponentVisible] = useState(false);
-    const [isExpenseComponentVisible, setExpenseComponentVisible] = useState(false);
-    const [isIncomeComponentVisible, setIncomeComponentVisible] = useState(false);
-    const [isLoanComponentVisible, setLoanComponentVisible] = useState(false);
-    const [isResourceComponentVisible, setResourceComponentVisible] = useState(false);
-    const [isSavingsComponentVisible, setSavingsComponentVisible] = useState(false);
+    const [activeBox, setActiveBox] = useState<string | null>(null);
 
     const classes = MemberDetailsStyles();
+    const handleCheckboxChange = (box: string) => {
+        setActiveBox(prev => prev !== box ? box : null);
+    };
 
     const handleDelete = async () => {
         try {
@@ -60,83 +68,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
         }
     };
 
-    const handleCheckboxChange = () => {
-        setTaskComponentVisible(prev => !prev);
-        if (!isTaskComponentVisible) {
-            setSkillComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setLoanComponentVisible(false);
-            setResourceComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    }
-    const handleSkillCheckboxChange = () => {
-        setSkillComponentVisible(prev => !prev);
-        if (!isSkillComponentVisible) {
-            setTaskComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setLoanComponentVisible(false);
-            setResourceComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    };
-    const handleExpenseCheckboxChange = () => {
-        setExpenseComponentVisible(prev => !prev);
-        if (!isExpenseComponentVisible) {
-            setTaskComponentVisible(false);
-            setSkillComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setLoanComponentVisible(false);
-            setResourceComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    };
-    const handleIncomeCheckboxChange = () => {
-        setIncomeComponentVisible(prev => !prev);
-        if (!isIncomeComponentVisible) {
-            setTaskComponentVisible(false);
-            setSkillComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setLoanComponentVisible(false);
-            setResourceComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    }
-    const handleLoanCheckboxChange = () => {
-        setLoanComponentVisible(prev => !prev);
-        if (!isLoanComponentVisible) {
-            setTaskComponentVisible(false);
-            setSkillComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setResourceComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    };
-    const handleResourceCheckboxChange = () => {
-        setResourceComponentVisible(prev => !prev);
-        if (!isResourceComponentVisible) {
-            setTaskComponentVisible(false);
-            setSkillComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setLoanComponentVisible(false);
-            setSavingsComponentVisible(false);
-        }
-    };
-    const handleSavingsCheckboxChange = () => {
-        setSavingsComponentVisible(prev => !prev);
-        if (!isSavingsComponentVisible) {
-            setTaskComponentVisible(false);
-            setSkillComponentVisible(false);
-            setExpenseComponentVisible(false);
-            setIncomeComponentVisible(false);
-            setLoanComponentVisible(false);
-            setResourceComponentVisible(false);
-        }
-    };
+
 
     return (
         <div>
@@ -153,12 +85,16 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
 
                         </Grid>
                         <Grid item xs={12}>
-                            <Button className={classes.backButton} variant="contained" color="primary"
-                                    onClick={onBackToFamilyDetails}>Back</Button>
-                            <Button className={classes.updateButton} variant="contained" color="primary"
-                                    onClick={() => setUpdateDialogOpen(true)}>Update</Button>
-                            <Button className={classes.deleteButton} variant="contained" color="secondary"
-                                    onClick={handleDelete}>Delete</Button>
+                            <IconButton className={classes.backButton} onClick={onBackToFamilyDetails}>
+                                <ArrowBackIcon fontSize="large" />
+                            </IconButton>
+                            <IconButton className={classes.updateButton} onClick={() => setUpdateDialogOpen(true)}>
+                                <EditIcon fontSize="large" />
+                            </IconButton>
+                            <IconButton className={classes.deleteButton} onClick={handleDelete}>
+                                <DeleteIcon fontSize="large" />
+                            </IconButton>
+
                         </Grid>
                     </Grid>
 
@@ -174,44 +110,45 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
             </Card>
             <ExpenseBox
                 label="Expenses"
-                checked={isExpenseComponentVisible}
-                onChange={handleExpenseCheckboxChange}
+                checked={activeBox === BOXES.EXPENSE}
+                onChange={() => handleCheckboxChange(BOXES.EXPENSE)}
                 member={member}
             />
             <IncomeBox
                 label="Income"
-                checked={isIncomeComponentVisible}
-                onChange={handleIncomeCheckboxChange}
+                checked={activeBox === BOXES.INCOME}
+                onChange={() => handleCheckboxChange(BOXES.INCOME)}
                 member={member}
             />
             <SkillBox
                 label="Skill"
-                checked={isSkillComponentVisible}
-                onChange={handleSkillCheckboxChange}
+                checked={activeBox === BOXES.SKILL}
+                onChange={() => handleCheckboxChange(BOXES.SKILL)}
                 member={member}
             />
             <TaskBox
                 label="Tasks"
-                checked={isTaskComponentVisible}
-                onChange={handleCheckboxChange}
+                checked={activeBox === BOXES.TASK}
+                onChange={() => handleCheckboxChange(BOXES.TASK)}
                 member={member}
             />
-            <LoanBox
-                label="Loans"
-                checked={isLoanComponentVisible}
-                onChange={handleLoanCheckboxChange}
-                member={member}
-            />
+
             <ResourceBox
                 label="Resources"
-                checked={isResourceComponentVisible}
-                onChange={handleResourceCheckboxChange}
+                checked={activeBox === BOXES.RESOURCE}
+                onChange={() => handleCheckboxChange(BOXES.RESOURCE)}
                 member={member}
             />
             <SavingsBox
                 label="Savings"
-                checked={isSavingsComponentVisible}
-                onChange={handleSavingsCheckboxChange}
+                checked={activeBox === BOXES.SAVINGS}
+                onChange={() => handleCheckboxChange(BOXES.SAVINGS)}
+                member={member}
+            />
+            <LoanBox
+                label="Loans"
+                checked={activeBox === BOXES.LOAN}
+                onChange={() => handleCheckboxChange(BOXES.LOAN)}
                 member={member}
             />
         </div>
