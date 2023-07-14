@@ -8,12 +8,16 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination
+    TablePagination, IconButton
 } from '@material-ui/core';
 import { Expense } from "../../../../../../hooks/useMember";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 interface TableComponentProps {
     expenses: Expense[];
+    onUpdate: (expense: Expense) => void;
+    onDelete: (expenseId: number) => void;
 }
 
 interface HeadCell {
@@ -32,7 +36,7 @@ const headCells: HeadCell[] = [
     { id: 'Frequency', label: 'Frequency' },
 ];
 
-const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => {
+const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpdate, onDelete }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [orderBy, setOrderBy] = useState<keyof Expense>('ExpenseID');
     const [page, setPage] = useState(0);
@@ -109,6 +113,14 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses }) => 
                             <TableCell>{expense.Date ? new Date(expense.Date).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{expense.Recurring}</TableCell>
                             <TableCell>{expense.Frequency}</TableCell>
+                            <TableCell>
+                                <IconButton color="primary" onClick={() => onUpdate(expense)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton color="secondary" onClick={() => onDelete(expense.ExpenseID)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

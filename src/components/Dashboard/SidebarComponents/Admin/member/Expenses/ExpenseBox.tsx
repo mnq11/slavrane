@@ -14,7 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import { Member, Expense } from "../../../../../../hooks/useMember";
 import ExpensesTableComponent from "./ExpensesTableComponent";
-import { getExpensesForMember, createExpense } from "../../../../../../API/api";
+import {getExpensesForMember, createExpense, deleteExpense, updateExpense} from "../../../../../../API/api";
 
 interface SwitchProps {
     label: string;
@@ -114,6 +114,28 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
         setOpen(true);
         toast.info('Creating a new expense');
     };
+    const handleUpdateExpense = (expense: Expense ) => {
+        updateExpense(expense)
+            .then((updatedExpense) => {
+                // update the local state or fetch expenses again here
+                toast.success('Expense updated successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to update expense: ${error.message}`);
+            });
+    };
+
+    const handleDeleteExpense = (expenseId: number) => {
+        deleteExpense(expenseId)
+            .then(() => {
+                // update the local state or fetch expenses again here
+                toast.success('Expense deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete expense: ${error.message}`);
+            });
+    };
+
 
     return (
         <div className={classes.root}>
@@ -229,7 +251,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                 </DialogContent>
                             </Dialog>
 
-                            <ExpensesTableComponent expenses={expenses} />
+                            <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense} onDelete={handleDeleteExpense} />
                         </Paper>
                     </Grid>
                 )}
