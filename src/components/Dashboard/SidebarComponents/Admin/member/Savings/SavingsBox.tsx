@@ -73,17 +73,21 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
 
     return (
         <>
-            <FormControlLabel
-                control={
-                    <Switch
-                        focusVisibleClassName={classes.focusVisible}
-                        disableRipple
-                        checked={checked}
-                        onChange={onChange}
-                    />
-                }
-                label={label}
-            />
+            <div className={classes.container}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={onChange}
+                            color="primary"
+                            className={classes.switch}
+                        />
+                    }
+                    label={label}
+                    labelPlacement="start"
+                    className={classes.label}
+                />
+            </div>
             {checked && (
                 <div>
                     <h4>Savings for Member {member.MemberID}</h4>

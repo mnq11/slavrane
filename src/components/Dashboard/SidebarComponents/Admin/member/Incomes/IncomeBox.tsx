@@ -31,6 +31,23 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
+    }, label: {
+        marginRight: theme.spacing(2),
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    container: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: theme.spacing(2),
+    },
+    switch: {
+        alignSelf: 'center',
+    },
+    dialogAction: {
+        justifyContent: 'center',
     },
 }));
 
@@ -40,11 +57,11 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     const classes = useStyles();
 
     const validationSchema = Yup.object({
-        Source: Yup.string().required("Required"),
-        Date: Yup.date().required("Required"),
-        Amount: Yup.string().required("Required"),
-        Recurring: Yup.string().required("Required"),
-        Frequency: Yup.string().required("Required")
+        Source: Yup.string().required('Required'),
+        Date: Yup.date().required('Required'),
+        Amount: Yup.string().required('Required'),
+        Recurring: Yup.string().required('Required'),
+        Frequency: Yup.string().required('Required'),
     });
 
     const formik = useFormik({
@@ -55,9 +72,9 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
             Date: new Date().toISOString().split('T')[0],
             Amount: '0',
             Recurring: 'false',
-            Frequency: 'One-time'
+            Frequency: 'One-time',
         },
-        validationSchema: validationSchema,
+        validationSchema,
         onSubmit: (values) => {
             const incomeData = {
                 FamilyID: member.FamilyID,
@@ -66,17 +83,17 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                 Amount: values.Amount,
                 Date: values.Date,
                 Recurring: values.Recurring,
-                Frequency: values.Frequency
+                Frequency: values.Frequency,
             };
             createIncome(incomeData)
-                .then(newIncome => {
+                .then((newIncome) => {
                     newIncome.Date = newIncome.Date.split('T')[0];
                     setIncomes([newIncome, ...incomes]);
                     setOpen(false);
                     toast.success('Income created successfully');
                 })
-                .catch(error => {
-                    toast.error('Failed to create income: ' + error.message);
+                .catch((error) => {
+                    toast.error(`Failed to create income: ${error.message}`);
                 });
         },
     });
@@ -84,11 +101,11 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     useEffect(() => {
         if (checked) {
             getIncomesForMember(member.MemberID)
-                .then(incomes => {
+                .then((incomes) => {
                     setIncomes(incomes);
                 })
-                .catch(error => {
-                    toast.error('Failed to fetch incomes: ' + error.message);
+                .catch((error) => {
+                    toast.error(`Failed to fetch incomes: ${error.message}`);
                 });
         }
     }, [checked, member.MemberID]);
@@ -96,23 +113,28 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     const handleNewIncome = () => {
         setOpen(true);
         toast.info('Creating a new income');
-    }
+    };
 
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={checked}
-                                    onChange={onChange}
-                                    color="primary"
-                                />
-                            }
-                            label={label}
-                        />
+                        <div className={classes.container}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={checked}
+                                        onChange={onChange}
+                                        color="primary"
+                                        className={classes.switch}
+                                    />
+                                }
+                                label={label}
+                                labelPlacement="start"
+                                className={classes.label}
+                            />
+                        </div>
                     </Paper>
                 </Grid>
                 {checked && (
@@ -187,23 +209,25 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                                             onChange={formik.handleChange}
                                             error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}
                                         >
-                                            <MenuItem value={"One-time"}>One-time</MenuItem>
-                                            <MenuItem value={"Daily"}>Daily</MenuItem>
-                                            <MenuItem value={"Weekly"}>Weekly</MenuItem>
-                                            <MenuItem value={"Monthly"}>Monthly</MenuItem>
-                                            <MenuItem value={"Annual"}>Annual</MenuItem>
+                                            <MenuItem value={'One-time'}>One-time</MenuItem>
+                                            <MenuItem value={'Daily'}>Daily</MenuItem>
+                                            <MenuItem value={'Weekly'}>Weekly</MenuItem>
+                                            <MenuItem value={'Monthly'}>Monthly</MenuItem>
+                                            <MenuItem value={'Annual'}>Annual</MenuItem>
                                         </Select>
                                         {formik.touched.Frequency && formik.errors.Frequency ? (
                                             <div>{formik.errors.Frequency}</div>
                                         ) : null}
-                                        <DialogActions>
+                                        <DialogActions className={classes.dialogAction}>
                                             <IconButton color="primary" onClick={() => {
                                                 setOpen(false);
                                                 toast.info('Income creation cancelled');
                                             }}>
                                                 <CloseIcon />
                                             </IconButton>
-                                            <Button type="submit" color="primary" startIcon={<SaveIcon />}>Save</Button>
+                                            <Button type="submit" color="primary" startIcon={<SaveIcon />}>
+                                                Save
+                                            </Button>
                                         </DialogActions>
                                     </form>
                                 </DialogContent>

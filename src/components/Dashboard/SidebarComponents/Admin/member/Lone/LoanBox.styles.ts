@@ -6,6 +6,22 @@ export const useSliderSwitchStyles = makeStyles((theme: Theme) =>
             root: {
                 flexGrow: 1,
 
+        }, container: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: theme.spacing(2),
+            backgroundColor: '#f9f9f9',
+            borderRadius: theme.spacing(1),
+            boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.1)',
+            marginBottom: theme.spacing(2),
+        },switch: {
+            alignSelf: 'center',
+        }, label: {
+            marginRight: theme.spacing(2),
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            color: '#333',
         },
         switchBase: {
             padding: 2,

@@ -1,16 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FormControlLabel, Dialog,
     DialogTitle, DialogContent, TextField,
-    DialogActions, Button, FormControl, FormHelperText, Switch
+    DialogActions, Button, FormControl, FormHelperText, Switch,
 } from '@material-ui/core';
-import {useFormik} from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {Resource, Member} from '../../../../../../hooks/useMember';
+import { Resource, Member } from '../../../../../../hooks/useMember';
 import ResourcesTableComponent from './ResourcesTableComponent';
-import {createResource, getResourcesForMember} from '../../../../../../API/api';
-import {toast} from "react-toastify";
-import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
+import { createResource, getResourcesForMember } from '../../../../../../API/api';
+import { toast } from 'react-toastify';
+import { useSliderSwitchStyles } from '../Lone/LoanBox.styles';
 
 interface CheckboxProps {
     label: string;
@@ -19,7 +19,7 @@ interface CheckboxProps {
     member: Member;
 }
 
-const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
+const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [resources, setResources] = useState<Resource[]>([]);
     const [open, setOpen] = useState(false);
     const classes = useSliderSwitchStyles();
@@ -30,13 +30,13 @@ const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}
             ResourceName: 'Default Resource Name',
             ResourceValue: 100,
             ResourceDescription: 'Default Resource Description',
-            DateAcquired: new Date().toISOString().slice(0, 10)
+            DateAcquired: new Date().toISOString().slice(0, 10),
         },
         validationSchema: Yup.object({
             ResourceName: Yup.string().required('Required'),
             ResourceValue: Yup.number().required('Required'),
             ResourceDescription: Yup.string().required('Required'),
-            DateAcquired: Yup.date().required('Required')
+            DateAcquired: Yup.date().required('Required'),
         }),
         onSubmit: (values) => {
             const resourceData = {
@@ -59,6 +59,7 @@ const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}
                 });
         },
     });
+
     useEffect(() => {
         if (checked) {
             getResourcesForMember(member.MemberID)
@@ -69,19 +70,23 @@ const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}
         }
     }, [checked, member.MemberID]);
 
-
     return (
         <>
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={checked}
-                        onChange={onChange}
-                        color="primary"
-                    />
-                }
-                label={label}
-            />
+            <div className={classes.container}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={onChange}
+                            color="primary"
+                            className={classes.switch}
+                        />
+                    }
+                    label={label}
+                    labelPlacement="start"
+                    className={classes.label}
+                />
+            </div>
             {checked && (
                 <div>
                     <h4>Resources for Member {member.MemberID}</h4>
@@ -161,11 +166,11 @@ const ResourceBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <ResourcesTableComponent resources={resources}/>
+                    <ResourcesTableComponent resources={resources} />
                 </div>
             )}
         </>
     );
-}
+};
 
 export default ResourceBox;

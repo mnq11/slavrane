@@ -1,4 +1,3 @@
-// ExpenseBox.tsx
 import React, { useState, useEffect } from 'react';
 import {
     Checkbox, FormControlLabel, Dialog, DialogTitle,
@@ -32,9 +31,25 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
-    },dialogAction: {
+    },
+    container: {
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
-    }
+        marginBottom: theme.spacing(2),
+    },
+    switch: {
+        alignSelf: 'center',
+    },
+    label: {
+        marginLeft: theme.spacing(1),
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    dialogAction: {
+        justifyContent: 'center',
+    },
 }));
 
 const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member }) => {
@@ -43,11 +58,11 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     const classes = useStyles();
 
     const validationSchema = Yup.object({
-        Category: Yup.string().required("Required"),
-        Date: Yup.date().required("Required"),
-        Amount: Yup.string().required("Required"),
-        Recurring: Yup.string().required("Required"),
-        Frequency: Yup.string().required("Required")
+        Category: Yup.string().required('Required'),
+        Date: Yup.date().required('Required'),
+        Amount: Yup.string().required('Required'),
+        Recurring: Yup.string().required('Required'),
+        Frequency: Yup.string().required('Required'),
     });
 
     const formik = useFormik({
@@ -58,7 +73,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
             Date: new Date().toISOString().split('T')[0],
             Amount: '0',
             Recurring: 'false',
-            Frequency: 'One-time'
+            Frequency: 'One-time',
         },
         validationSchema,
         onSubmit: (values) => {
@@ -69,17 +84,17 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                 Amount: values.Amount,
                 Date: values.Date,
                 Recurring: values.Recurring,
-                Frequency: values.Frequency
+                Frequency: values.Frequency,
             };
 
             createExpense(expenseData)
-                .then(newExpense => {
+                .then((newExpense) => {
                     newExpense.Date = newExpense.Date.split('T')[0];
                     setExpenses([newExpense, ...expenses]);
                     setOpen(false);
                     toast.success('Expense created successfully');
                 })
-                .catch(error => {
+                .catch((error) => {
                     toast.error(`Failed to create expense: ${error.message}`);
                 });
         },
@@ -89,7 +104,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
         if (checked) {
             getExpensesForMember(member.MemberID)
                 .then(setExpenses)
-                .catch(error => {
+                .catch((error) => {
                     toast.error(`Failed to fetch expenses: ${error.message}`);
                 });
         }
@@ -98,23 +113,28 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     const handleNewExpense = () => {
         setOpen(true);
         toast.info('Creating a new expense');
-    }
+    };
 
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={checked}
-                                    onChange={onChange}
-                                    color="primary"
-                                />
-                            }
-                            label={label}
-                        />
+                        <div className={classes.container}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={checked}
+                                        onChange={onChange}
+                                        color="primary"
+                                        className={classes.switch}
+                                    />
+                                }
+                                label={label}
+                                labelPlacement="start"
+                                className={classes.label}
+                            />
+                        </div>
                     </Paper>
                 </Grid>
                 {checked && (
@@ -131,72 +151,80 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                 <DialogTitle>Create New Expense</DialogTitle>
                                 <DialogContent>
                                     <form onSubmit={formik.handleSubmit}>
-                                <TextField
-                                    fullWidth
-                                    id="Category"
-                                    name="Category"
-                                    label="Category"
-                                    value={formik.values.Category}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.Category && Boolean(formik.errors.Category)}
-                                    helperText={formik.touched.Category && formik.errors.Category}
-                                />
-                                <TextField
-                                    fullWidth
-                                    id="Date"
-                                    name="Date"
-                                    label="Date"
-                                    type="date"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    value={formik.values.Date}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.Date && Boolean(formik.errors.Date)}
-                                    helperText={formik.touched.Date && formik.errors.Date}
-                                />
-                                <TextField
-                                    fullWidth
-                                    id="Amount"
-                                    name="Amount"
-                                    label="Amount"
-                                    value={formik.values.Amount}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.Amount && Boolean(formik.errors.Amount)}
-                                    helperText={formik.touched.Amount && formik.errors.Amount}
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={formik.values.Recurring === 'true'}
+                                        <TextField
+                                            fullWidth
+                                            id="Category"
+                                            name="Category"
+                                            label="Category"
+                                            value={formik.values.Category}
                                             onChange={formik.handleChange}
-                                            name="Recurring"
-                                            color="primary"
+                                            error={formik.touched.Category && Boolean(formik.errors.Category)}
+                                            helperText={formik.touched.Category && formik.errors.Category}
                                         />
-                                    }
-                                    label="Recurring"
-                                />
-                                <Select
-                                    fullWidth
-                                    id="Frequency"
-                                    name="Frequency"
-                                    value={formik.values.Frequency}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}
-                                >
-                                    <MenuItem value={"One-time"}>One-time</MenuItem>
-                                    <MenuItem value={"Daily"}>Daily</MenuItem>
-                                    <MenuItem value={"Weekly"}>Weekly</MenuItem>
-                                    <MenuItem value={"Monthly"}>Monthly</MenuItem>
-                                    <MenuItem value={"Annual"}>Annual</MenuItem>
-                                </Select>
-                                <DialogActions className={classes.dialogAction}>
-                                    <Button onClick={() => {
-                                        setOpen(false);
-                                        toast.info('Expense creation cancelled');
-                                    }} color="primary" startIcon={<CloseIcon />}>Cancel</Button>
-                                    <Button type="submit" color="primary" startIcon={<SaveIcon />}>Save</Button>
-                                </DialogActions>
+                                        <TextField
+                                            fullWidth
+                                            id="Date"
+                                            name="Date"
+                                            label="Date"
+                                            type="date"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            value={formik.values.Date}
+                                            onChange={formik.handleChange}
+                                            error={formik.touched.Date && Boolean(formik.errors.Date)}
+                                            helperText={formik.touched.Date && formik.errors.Date}
+                                        />
+                                        <TextField
+                                            fullWidth
+                                            id="Amount"
+                                            name="Amount"
+                                            label="Amount"
+                                            value={formik.values.Amount}
+                                            onChange={formik.handleChange}
+                                            error={formik.touched.Amount && Boolean(formik.errors.Amount)}
+                                            helperText={formik.touched.Amount && formik.errors.Amount}
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={formik.values.Recurring === 'true'}
+                                                    onChange={formik.handleChange}
+                                                    name="Recurring"
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Recurring"
+                                        />
+                                        <Select
+                                            fullWidth
+                                            id="Frequency"
+                                            name="Frequency"
+                                            value={formik.values.Frequency}
+                                            onChange={formik.handleChange}
+                                            error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}
+                                        >
+                                            <MenuItem value={'One-time'}>One-time</MenuItem>
+                                            <MenuItem value={'Daily'}>Daily</MenuItem>
+                                            <MenuItem value={'Weekly'}>Weekly</MenuItem>
+                                            <MenuItem value={'Monthly'}>Monthly</MenuItem>
+                                            <MenuItem value={'Annual'}>Annual</MenuItem>
+                                        </Select>
+                                        <DialogActions className={classes.dialogAction}>
+                                            <Button
+                                                onClick={() => {
+                                                    setOpen(false);
+                                                    toast.info('Expense creation cancelled');
+                                                }}
+                                                color="primary"
+                                                startIcon={<CloseIcon />}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button type="submit" color="primary" startIcon={<SaveIcon />}>
+                                                Save
+                                            </Button>
+                                        </DialogActions>
                                     </form>
                                 </DialogContent>
                             </Dialog>
