@@ -12,11 +12,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
-import { Member, Expense } from "../../../../../../hooks/useMember";
-import ExpensesTableComponent from "./ExpensesTableComponent";
-import {getExpensesForMember, createExpense, deleteExpense, updateExpense} from "../../../../../../API/api";
+import { Member, Income } from "../../../../../../hooks/useMember";
+import IncomesTableComponent from "./IncomesTableComponent";
+import { getIncomesForMember, createIncome } from "../../../../../../API/api";
 
-interface SwitchProps {
+interface CheckboxProps {
     label: string;
     checked: boolean;
     onChange: () => void;
@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
+    }, label: {
+        marginRight: theme.spacing(2),
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        color: '#333',
     },
     container: {
         display: 'flex',
@@ -41,24 +46,18 @@ const useStyles = makeStyles((theme) => ({
     switch: {
         alignSelf: 'center',
     },
-    label: {
-        marginLeft: theme.spacing(1),
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        color: '#333',
-    },
     dialogAction: {
         justifyContent: 'center',
     },
 }));
 
-const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member }) => {
-    const [expenses, setExpenses] = useState<Expense[]>([]);
+const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
+    const [incomes, setIncomes] = useState<Income[]>([]);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
 
     const validationSchema = Yup.object({
-        Category: Yup.string().required('Required'),
+        Source: Yup.string().required('Required'),
         Date: Yup.date().required('Required'),
         Amount: Yup.string().required('Required'),
         Recurring: Yup.string().required('Required'),
@@ -69,7 +68,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
         initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
-            Category: 'Default Category',
+            Source: 'Default Source',
             Date: new Date().toISOString().split('T')[0],
             Amount: '0',
             Recurring: 'false',
@@ -77,65 +76,44 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
         },
         validationSchema,
         onSubmit: (values) => {
-            const expenseData = {
+            const incomeData = {
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
-                Category: values.Category,
+                Source: values.Source,
                 Amount: values.Amount,
                 Date: values.Date,
                 Recurring: values.Recurring,
                 Frequency: values.Frequency,
             };
-
-            createExpense(expenseData)
-                .then((newExpense) => {
-                    newExpense.Date = newExpense.Date.split('T')[0];
-                    setExpenses([newExpense, ...expenses]);
+            createIncome(incomeData)
+                .then((newIncome) => {
+                    newIncome.Date = newIncome.Date.split('T')[0];
+                    setIncomes([newIncome, ...incomes]);
                     setOpen(false);
-                    toast.success('Expense created successfully');
+                    toast.success('Income created successfully');
                 })
                 .catch((error) => {
-                    toast.error(`Failed to create expense: ${error.message}`);
+                    toast.error(`Failed to create income: ${error.message}`);
                 });
         },
     });
 
     useEffect(() => {
         if (checked) {
-            getExpensesForMember(member.MemberID)
-                .then(setExpenses)
+            getIncomesForMember(member.MemberID)
+                .then((incomes) => {
+                    setIncomes(incomes);
+                })
                 .catch((error) => {
-                    toast.error(`Failed to fetch expenses: ${error.message}`);
+                    toast.error(`Failed to fetch incomes: ${error.message}`);
                 });
         }
     }, [checked, member.MemberID]);
 
-    const handleNewExpense = () => {
+    const handleNewIncome = () => {
         setOpen(true);
-        toast.info('Creating a new expense');
+        toast.info('Creating a new income');
     };
-    const handleUpdateExpense = (expense: Expense ) => {
-        updateExpense(expense)
-            .then((updatedExpense) => {
-                // update the local state or fetch expenses again here
-                toast.success('Expense updated successfully');
-            })
-            .catch((error) => {
-                toast.error(`Failed to update expense: ${error.message}`);
-            });
-    };
-
-    const handleDeleteExpense = (expenseId: number) => {
-        deleteExpense(expenseId)
-            .then(() => {
-                // update the local state or fetch expenses again here
-                toast.success('Expense deleted successfully');
-            })
-            .catch((error) => {
-                toast.error(`Failed to delete expense: ${error.message}`);
-            });
-    };
-
 
     return (
         <div className={classes.root}>
@@ -163,25 +141,28 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <h4>Expenses {member.MemberName}</h4>
-                                <IconButton color="primary" onClick={handleNewExpense}>
+                                <h4>Incomes {member.MemberName}</h4>
+                                <IconButton color="primary" onClick={handleNewIncome}>
                                     <AddCircleOutlineIcon />
                                 </IconButton>
                             </Box>
 
-                            <Dialog open={open} onClose={handleNewExpense}>
-                                <DialogTitle>Create New Expense</DialogTitle>
+                            <Dialog open={open} onClose={() => {
+                                setOpen(false);
+                                toast.info('Income creation cancelled');
+                            }}>
+                                <DialogTitle>Create New Income</DialogTitle>
                                 <DialogContent>
                                     <form onSubmit={formik.handleSubmit}>
                                         <TextField
                                             fullWidth
-                                            id="Category"
-                                            name="Category"
-                                            label="Category"
-                                            value={formik.values.Category}
+                                            id="Source"
+                                            name="Source"
+                                            label="Source"
+                                            value={formik.values.Source}
                                             onChange={formik.handleChange}
-                                            error={formik.touched.Category && Boolean(formik.errors.Category)}
-                                            helperText={formik.touched.Category && formik.errors.Category}
+                                            error={formik.touched.Source && Boolean(formik.errors.Source)}
+                                            helperText={formik.touched.Source && formik.errors.Source}
                                         />
                                         <TextField
                                             fullWidth
@@ -211,7 +192,9 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                             control={
                                                 <Checkbox
                                                     checked={formik.values.Recurring === 'true'}
-                                                    onChange={formik.handleChange}
+                                                    onChange={(event) => {
+                                                        formik.setFieldValue("Recurring", event.target.checked ? 'true' : 'false');
+                                                    }}
                                                     name="Recurring"
                                                     color="primary"
                                                 />
@@ -232,17 +215,16 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                             <MenuItem value={'Monthly'}>Monthly</MenuItem>
                                             <MenuItem value={'Annual'}>Annual</MenuItem>
                                         </Select>
+                                        {formik.touched.Frequency && formik.errors.Frequency ? (
+                                            <div>{formik.errors.Frequency}</div>
+                                        ) : null}
                                         <DialogActions className={classes.dialogAction}>
-                                            <Button
-                                                onClick={() => {
-                                                    setOpen(false);
-                                                    toast.info('Expense creation cancelled');
-                                                }}
-                                                color="primary"
-                                                startIcon={<CloseIcon />}
-                                            >
-                                                Cancel
-                                            </Button>
+                                            <IconButton color="primary" onClick={() => {
+                                                setOpen(false);
+                                                toast.info('Income creation cancelled');
+                                            }}>
+                                                <CloseIcon />
+                                            </IconButton>
                                             <Button type="submit" color="primary" startIcon={<SaveIcon />}>
                                                 Save
                                             </Button>
@@ -251,7 +233,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                 </DialogContent>
                             </Dialog>
 
-                            <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense} onDelete={handleDeleteExpense} />
+                            <IncomesTableComponent incomes={incomes} />
                         </Paper>
                     </Grid>
                 )}
@@ -260,4 +242,4 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     );
 };
 
-export default ExpenseBox;
+export default IncomeBox;

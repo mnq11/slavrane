@@ -32,7 +32,7 @@ app.use(compression());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+    max: 1000 // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
@@ -73,6 +73,9 @@ initializeDatabase().then(async (db) => {
 
     const expensesRoutes = require('./routes/expenses')(models);
     app.use('/expenses', expensesRoutes);
+
+    const incomesRoutes = require('./routes/incomes')(models);
+    app.use('/incomes', incomesRoutes);
 
     app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);

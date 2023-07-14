@@ -74,21 +74,25 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                 label="Filter families"
             />
             <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
-            <Grid container spacing={3}>
-                {families
-                    .filter((family) => family.FamilyName.includes(filter))
-                    .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
-                    .map((family) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
-                            <Card className={classes.card} onClick={() => onSelectFamily(family)}>
-                                <CardContent>
-                                    <Typography variant="h5">{family.FamilyName}</Typography>
-                                    <Typography variant="body2">{family.Address}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-            </Grid>
+            {!families ? (
+                <div>Loading...</div>
+            ) : (
+                <Grid container spacing={3}>
+                    {families
+                        .filter((family) => family.FamilyName.includes(filter))
+                        .slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+                        .map((family) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={family.FamilyID}>
+                                <Card className={classes.card} onClick={() => onSelectFamily(family)}>
+                                    <CardContent>
+                                        <Typography variant="h5">{family.FamilyName}</Typography>
+                                        <Typography variant="body2">{family.Address}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                </Grid>
+            )}
             <div className={classes.pagination}>
                 <TablePagination
                     component="div"

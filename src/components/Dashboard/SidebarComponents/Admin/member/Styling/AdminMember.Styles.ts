@@ -17,6 +17,10 @@ export const MemberDetailsStyles = makeStyles((theme) => ({
     card: {
         marginTop: theme.spacing(3),
         padding: theme.spacing(3),
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing(1),
+            padding: theme.spacing(1),
+        },
     },
     button: {
         margin: theme.spacing(2),
@@ -49,7 +53,6 @@ export const MemberDetailsStyles = makeStyles((theme) => ({
         color: colors.white,
         '&:hover': {
             backgroundColor: colors.lightBlue,
-
         }
     }
 }));
@@ -92,9 +95,45 @@ export const MembersCardsViewStyles = makeStyles((theme) => ({
 
 export const MemberFormStyles = makeStyles((theme) => ({
     textField: {
-        marginBottom: 10,
+        marginBottom: theme.spacing(1),
+        width: '100%',
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '15px',
+        },
+        '& .MuiInputAdornment-positionStart': {
+            marginRight: '10px',
+        },
+    },
+    select: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        width: '100%',
+        '& .MuiInputLabel-root': {
+            color: '#4a4a4a',
+            fontSize: '1.2em',
+        },
+        '& .Mui-focused .MuiInputLabel-root': {
+            color: '#00acc1',
+        },
+        '& .MuiSelect-select:focus': {
+            backgroundColor: 'transparent',
+        },
+        '& .MuiListItem-button:hover': {
+            backgroundColor: '#e0f7fa',
+        },
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '15px',
+        },
     },
     button: {
-        margin: 5,
+        margin: theme.spacing(1),
+    },
+    dialogActions: {
+        justifyContent: 'space-between',
+        padding: theme.spacing(2),
+        backgroundColor: '#e3f2fd',
+    },
+    errorText: {
+        color: 'red',
     },
 }));

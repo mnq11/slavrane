@@ -10,40 +10,42 @@ import {
     TableSortLabel,
     TablePagination
 } from '@material-ui/core';
-import { Skill } from '../../../../../../hooks/useMember';
+import { Resource } from '../../../../../../hooks/useMember';
 
-interface SkillsTableComponentProps {
-    skills: Skill[];
+interface ResourcesTableComponentProps {
+    resources: Resource[];
 }
 
 interface HeadCell {
-    id: keyof Skill;
+    id: keyof Resource;
     label: string;
 }
 
 const headCells: HeadCell[] = [
-    { id: 'SkillID', label: 'Skill ID' },
-    { id: 'SkillName', label: 'Skill Name' },
-    { id: 'SkillLevel', label: 'Skill Level' },
-    { id: 'DateAcquired', label: 'Date Acquired' },
-    { id: 'Certification', label: 'Certification' }
+    { id: 'ResourceID', label: 'Resource ID' },
+    { id: 'MemberID', label: 'Member ID' },
+    { id: 'FamilyID', label: 'Family ID' },
+    { id: 'ResourceName', label: 'Resource Name' },
+    { id: 'ResourceValue', label: 'Resource Value' },
+    { id: 'ResourceDescription', label: 'Resource Description' },
+    { id: 'DateAcquired', label: 'Date Acquired' }
 ];
 
-const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) => {
+const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Skill>('SkillID');
+    const [orderBy, setOrderBy] = useState<keyof Resource>('ResourceID');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleSortRequest = (cellId: keyof Skill) => {
+    const handleSortRequest = (cellId: keyof Resource) => {
         const isAsc = orderBy === cellId && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(cellId);
     };
 
-    const sortedSkills = [...skills].sort((a, b) => {
-        let aVal = a[orderBy] || '';
-        let bVal = b[orderBy] || '';
+    const sortedResources = [...resources].sort((a, b) => {
+        let aVal: string | number = a[orderBy] || '';
+        let bVal: string | number = b[orderBy] || '';
 
         if (orderBy === 'DateAcquired') {
             aVal = new Date(aVal as string).getTime();
@@ -51,16 +53,16 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
         } else if (typeof aVal === 'number' && typeof bVal === 'number') {
             aVal = parseFloat(aVal.toString());
             bVal = parseFloat(bVal.toString());
+        } else {
+            aVal = aVal.toString();
+            bVal = bVal.toString();
         }
 
-        if (aVal < bVal) {
-            return order === 'asc' ? -1 : 1;
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+            return aVal.localeCompare(bVal) * (order === 'asc' ? 1 : -1);
+        } else {
+            return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
-        if (aVal > bVal) {
-            return order === 'asc' ? 1 : -1;
-        }
-
-        return 0;
     });
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -72,7 +74,10 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
         setPage(0);
     };
 
-    const paginatedSkills = sortedSkills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const paginatedResources = sortedResources.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
 
     return (
         <TableContainer component={Paper}>
@@ -93,13 +98,19 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {paginatedSkills.map((skill) => (
-                        <TableRow key={skill.SkillID}>
-                            <TableCell>{skill.SkillID}</TableCell>
-                            <TableCell>{skill.SkillName}</TableCell>
-                            <TableCell>{skill.SkillLevel}</TableCell>
-                            <TableCell>{skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}</TableCell>
-                            <TableCell>{skill.Certification}</TableCell>
+                    {paginatedResources.map((resource) => (
+                        <TableRow key={resource.ResourceID}>
+                            <TableCell>{resource.ResourceID}</TableCell>
+                            <TableCell>{resource.MemberID}</TableCell>
+                            <TableCell>{resource.FamilyID}</TableCell>
+                            <TableCell>{resource.ResourceName}</TableCell>
+                            <TableCell>{resource.ResourceValue}</TableCell>
+                            <TableCell>{resource.ResourceDescription}</TableCell>
+                            <TableCell>
+                                {resource.DateAcquired
+                                    ? new Date(resource.DateAcquired).toLocaleDateString()
+                                    : ''}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -107,7 +118,7 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={sortedSkills.length}
+                count={sortedResources.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -117,4 +128,4 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
     );
 };
 
-export default SkillsTableComponent;
+export default ResourcesTableComponent;

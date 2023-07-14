@@ -42,14 +42,15 @@ export interface Income {
 
 }
 
-export interface Lones {
+export interface Loan {
 
     LoanID: number;
+    MemberID: number;
     FamilyID: number;
     Amount: number;
-    Interest: number;
+    InterestRate: number;
     StartDate: string;
-    DUEDate: string;
+    DueDate: string;
     Lender: string;
     LoanPurpose: string;
     RepaymentStatus: string;
@@ -83,13 +84,14 @@ export interface Member {
 }
 export interface Resource {
     ResourceID: number;
+    MemberID: number;
     FamilyID: string;
     ResourceName: string;
     ResourceValue: number;
     ResourceDescription: string;
     DateAcquired: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 export interface Savings {
     SavingsID: number;

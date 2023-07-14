@@ -6,7 +6,9 @@ module.exports = (models) => {
     router.post('/createLoan', loansController.createLoan);
     router.put('/updateLoan/:id', loansController.updateLoan);
     router.delete('/deleteLoan/:id', loansController.deleteLoan);
-    router.get('/member/:id', loansController.getLoansForFamily);
+    router.get('/family/:id', loansController.getLoansForFamily);
+    router.get('/member/:id', loansController.getLoansForMember);
+
 
     return router;
 };

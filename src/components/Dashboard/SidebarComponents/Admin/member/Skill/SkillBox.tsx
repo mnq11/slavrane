@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Checkbox,
     FormControlLabel,
     Dialog,
     DialogTitle,
     DialogContent,
     TextField,
     DialogActions,
-    Button,
+    Button, Switch,
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -16,6 +15,7 @@ import { Member, Skill } from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
 import { getSkillsForMember, createSkill } from '../../../../../../API/api';
 import {toast} from "react-toastify";
+import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
 interface CheckboxProps {
     label: string;
@@ -28,6 +28,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
     const [skills, setSkills] = useState<Skill[]>([]);
     const [open, setOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
+    const classes = useSliderSwitchStyles();
 
     const validationSchema = Yup.object({
         SkillName: Yup.string().required('Required'),
@@ -82,10 +83,21 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
 
     return (
         <>
-            <FormControlLabel
-                control={<Checkbox checked={checked} onChange={onChange} color="primary" />}
-                label={label}
-            />
+            <div className={classes.container}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={onChange}
+                            color="primary"
+                            className={classes.switch}
+                        />
+                    }
+                    label={label}
+                    labelPlacement="start"
+                    className={classes.label}
+                />
+            </div>
             {checked && (
                 <div>
                     <h4>Skills {member.MemberID}</h4>
