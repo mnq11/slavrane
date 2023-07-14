@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {
     FormControlLabel, Dialog, DialogTitle, DialogContent,
     TextField, DialogActions, Button, FormControl, IconButton,
-    Select, MenuItem, InputLabel, Switch, Paper
+    Select, MenuItem, InputLabel, Switch
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -11,7 +11,6 @@ import {Member, Loan} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
 import {createLoan, getLoansForMember} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
-import {useSliderSwitchStyles} from './LoanBox.styles';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import {makeStyles} from "@material-ui/core/styles";
