@@ -37,7 +37,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
         if(orderBy === 'DueDate') {
             aVal = aVal ? new Date(aVal as string).getTime() : 0;
             bVal = bVal ? new Date(bVal as string).getTime() : 0;
-        } else if (typeof aVal === 'number' && typeof bVal === 'number' || orderBy === 'Priority') {
+        } else if (!(typeof aVal !== 'number' || typeof bVal !== 'number') || orderBy === 'Priority') {
             aVal = aVal ? parseFloat(aVal.toString()) : 0;
             bVal = bVal ? parseFloat(bVal.toString()) : 0;
         }

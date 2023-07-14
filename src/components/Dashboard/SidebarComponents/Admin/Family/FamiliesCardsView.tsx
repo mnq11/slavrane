@@ -53,7 +53,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
     useEffect(() => {
-        fetchFamilies(); // Fetch families on component mount
+        fetchFamilies();
     }, []);
 
     const handlePageChange = (event: unknown, newPage: number) => {

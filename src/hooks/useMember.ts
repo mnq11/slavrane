@@ -6,8 +6,8 @@ import {useEffect, useState} from 'react';
 
 export interface Expense {
     ExpenseID: number;
-    FamilyID: number;
-    MemberID: number;
+    FamilyID?: number;
+    MemberID?: number;
     Category: string;
     Amount: number;
     Date: string;

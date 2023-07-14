@@ -11,7 +11,6 @@ export const useSliderSwitchStyles = makeStyles((theme: Theme) =>
             alignItems: 'center',
             justifyContent: 'center',
             padding: theme.spacing(2),
-            backgroundColor: '#f9f9f9',
             borderRadius: theme.spacing(1),
             boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.1)',
             marginBottom: theme.spacing(2),

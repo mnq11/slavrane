@@ -53,8 +53,8 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
         let bVal = b[orderBy];
 
         if(orderBy === 'Date') {
-            aVal = new Date(aVal).getTime();
-            bVal = new Date(bVal).getTime();
+            aVal = aVal ? new Date(aVal).getTime() : 0;
+            bVal = bVal ? new Date(bVal).getTime() : 0;
         } else if(orderBy === 'Amount') {
             if (typeof aVal === "string") {
                 aVal = parseFloat(aVal);
@@ -63,6 +63,9 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
                 bVal = parseFloat(bVal);
             }
         }
+
+        aVal = aVal ?? 0;
+        bVal = bVal ?? 0;
 
         if(aVal < bVal) {
             return order === 'asc' ? -1 : 1;

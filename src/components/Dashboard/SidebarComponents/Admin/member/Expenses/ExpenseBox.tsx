@@ -56,6 +56,8 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
+    const [mode, setMode] = useState<'create' | 'update'>('create');
+    const [updatingExpense, setUpdatingExpense] = useState<Expense | null>(null);
 
     const validationSchema = Yup.object({
         Category: Yup.string().required('Required'),
@@ -77,26 +79,48 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
         },
         validationSchema,
         onSubmit: (values) => {
-            const expenseData = {
+            const expenseData: Expense = {
+                ExpenseID: 0,
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Category: values.Category,
-                Amount: values.Amount,
+                Amount: Number(values.Amount), // Convert Amount to a number
                 Date: values.Date,
                 Recurring: values.Recurring,
-                Frequency: values.Frequency,
+                Frequency: values.Frequency
             };
 
-            createExpense(expenseData)
-                .then((newExpense) => {
-                    newExpense.Date = newExpense.Date.split('T')[0];
-                    setExpenses([newExpense, ...expenses]);
-                    setOpen(false);
-                    toast.success('Expense created successfully');
-                })
-                .catch((error) => {
-                    toast.error(`Failed to create expense: ${error.message}`);
-                });
+            if (mode === 'create') {
+                createExpense(expenseData)
+                    .then((newExpense) => {
+                        newExpense.Date = newExpense.Date.split('T')[0];
+                        setExpenses([newExpense, ...expenses]);
+                        setOpen(false);
+                        toast.success('Expense created successfully');
+                    })
+                    .catch((error) => {
+                        toast.error(`Failed to create expense: ${error.message}`);
+                    });
+            } else if (mode === 'update' && updatingExpense) {
+                expenseData['ExpenseID'] = updatingExpense.ExpenseID; // make sure to pass ExpenseID for update
+                updateExpense(expenseData)
+                    .then((updatedExpense) => {
+                        const index = expenses.findIndex((ex) => ex.ExpenseID === updatedExpense.ExpenseID);
+                        const newExpenses = [...expenses];
+                        newExpenses[index] = updatedExpense;
+                        setExpenses(newExpenses);
+                        setOpen(false);
+                        toast.success('Expense updated successfully');
+                    })
+                    .catch((error) => {
+                        // Revert the change in local state if update fails
+                        const index = expenses.findIndex((ex) => ex.ExpenseID === updatingExpense.ExpenseID);
+                        const newExpenses = [...expenses];
+                        newExpenses[index] = expenses[index];
+                        setExpenses(newExpenses);
+                        toast.error(`Failed to update expense: ${error.message}`);
+                    });
+            }
         },
     });
 
@@ -111,30 +135,47 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     }, [checked, member.MemberID]);
 
     const handleNewExpense = () => {
+        setMode('create');
         setOpen(true);
+        formik.resetForm();
         toast.info('Creating a new expense');
     };
-    const handleUpdateExpense = (expense: Expense ) => {
-        updateExpense(expense)
-            .then((updatedExpense) => {
-                // update the local state or fetch expenses again here
-                toast.success('Expense updated successfully');
-            })
-            .catch((error) => {
-                toast.error(`Failed to update expense: ${error.message}`);
-            });
+
+    const handleUpdateExpense = (expense: Expense) => {
+        setOpen(true);
+        setMode('update');
+        setUpdatingExpense(expense);
+
+        formik.setValues({
+            FamilyID: member?.FamilyID || 0,
+            MemberID: member?.MemberID || 0,
+            Category: expense.Category,
+            Date: expense.Date,
+            Amount: expense.Amount.toString(),
+            Recurring: expense.Recurring,
+            Frequency: expense.Frequency,
+        });
     };
 
+
     const handleDeleteExpense = (expenseId: number) => {
+        const index = expenses.findIndex((ex) => ex.ExpenseID === expenseId);
+        const newExpenses = expenses.filter((_, idx) => idx !== index);
+        setExpenses(newExpenses);
+
         deleteExpense(expenseId)
             .then(() => {
-                // update the local state or fetch expenses again here
                 toast.success('Expense deleted successfully');
             })
             .catch((error) => {
+                // Add the expense back in local state if deletion fails
+                newExpenses.splice(index, 0, expenses[index]);
+                setExpenses(newExpenses);
+
                 toast.error(`Failed to delete expense: ${error.message}`);
             });
     };
+
 
 
     return (
