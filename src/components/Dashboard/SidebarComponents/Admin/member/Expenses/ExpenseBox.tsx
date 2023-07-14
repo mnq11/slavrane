@@ -1,17 +1,21 @@
 // ExpenseBox.tsx
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Switch, FormControlLabel, DialogTitle,
-    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Dialog, Checkbox
+    Checkbox, FormControlLabel, Dialog, DialogTitle,
+    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch,
+    Grid, Paper, Box, IconButton
 } from '@material-ui/core';
-import {useFormik} from 'formik';
+import { makeStyles } from '@material-ui/core/styles';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Member, Expense} from "../../../../../../hooks/useMember";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import CloseIcon from '@material-ui/icons/Close';
+import SaveIcon from '@material-ui/icons/Save';
+import { Member, Expense } from "../../../../../../hooks/useMember";
 import ExpensesTableComponent from "./ExpensesTableComponent";
-import {getExpensesForMember, createExpense} from "../../../../../../API/api";
-import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
+import { getExpensesForMember, createExpense } from "../../../../../../API/api";
 
 interface SwitchProps {
     label: string;
@@ -20,16 +24,29 @@ interface SwitchProps {
     member: Member;
 }
 
-const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },dialogAction: {
+        justifyContent: 'center',
+    }
+}));
+
+const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member }) => {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [open, setOpen] = useState(false);
-    const classes = useSliderSwitchStyles();
+    const classes = useStyles();
 
     const validationSchema = Yup.object({
         Category: Yup.string().required("Required"),
         Date: Yup.date().required("Required"),
-        Amount: Yup.number().required("Required"),
-        Recurring: Yup.boolean(),
+        Amount: Yup.string().required("Required"),
+        Recurring: Yup.string().required("Required"),
         Frequency: Yup.string().required("Required")
     });
 
@@ -40,10 +57,10 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
             Category: 'Default Category',
             Date: new Date().toISOString().split('T')[0],
             Amount: '0',
-            Recurring: false,
+            Recurring: 'false',
             Frequency: 'One-time'
         },
-        validationSchema: validationSchema,
+        validationSchema,
         onSubmit: (values) => {
             const expenseData = {
                 FamilyID: member.FamilyID,
@@ -54,6 +71,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                 Recurring: values.Recurring,
                 Frequency: values.Frequency
             };
+
             createExpense(expenseData)
                 .then(newExpense => {
                     newExpense.Date = newExpense.Date.split('T')[0];
@@ -62,20 +80,17 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                     toast.success('Expense created successfully');
                 })
                 .catch(error => {
-                    toast.error('Failed to create expense: ' + error.message);
+                    toast.error(`Failed to create expense: ${error.message}`);
                 });
-
         },
     });
 
     useEffect(() => {
         if (checked) {
             getExpensesForMember(member.MemberID)
-                .then(expenses => {
-                    setExpenses(expenses);
-                })
+                .then(setExpenses)
                 .catch(error => {
-                    toast.error('Failed to fetch expenses: ' + error.message);
+                    toast.error(`Failed to fetch expenses: ${error.message}`);
                 });
         }
     }, [checked, member.MemberID]);
@@ -85,32 +100,37 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
         toast.info('Creating a new expense');
     }
 
-
     return (
-        <>
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={checked}
-                        onChange={onChange}
-                        color="primary"
-                    />
-                }
-                label={label}
-            />
-            {checked && (
-                <div>
-                    <h4>Expenses {member.MemberID}</h4>
+        <div className={classes.root}>
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={checked}
+                                    onChange={onChange}
+                                    color="primary"
+                                />
+                            }
+                            label={label}
+                        />
+                    </Paper>
+                </Grid>
+                {checked && (
+                    <Grid item xs={12}>
+                        <Paper className={classes.paper}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <h4>Expenses {member.MemberName}</h4>
+                                <IconButton color="primary" onClick={handleNewExpense}>
+                                    <AddCircleOutlineIcon />
+                                </IconButton>
+                            </Box>
 
-                    <Button variant="contained" color="primary" onClick={handleNewExpense}>Create New Expense</Button>
-
-                    <Dialog open={open} onClose={() => {
-                        setOpen(false);
-                        toast.info('Expense creation cancelled');
-                    }}>
-                        <DialogTitle>Create New Expense</DialogTitle>
-                        <DialogContent>
-                            <form onSubmit={formik.handleSubmit}>
+                            <Dialog open={open} onClose={handleNewExpense}>
+                                <DialogTitle>Create New Expense</DialogTitle>
+                                <DialogContent>
+                                    <form onSubmit={formik.handleSubmit}>
                                 <TextField
                                     fullWidth
                                     id="Category"
@@ -148,7 +168,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={formik.values.Recurring}
+                                            checked={formik.values.Recurring === 'true'}
                                             onChange={formik.handleChange}
                                             name="Recurring"
                                             color="primary"
@@ -170,21 +190,23 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                                     <MenuItem value={"Monthly"}>Monthly</MenuItem>
                                     <MenuItem value={"Annual"}>Annual</MenuItem>
                                 </Select>
-                                <DialogActions>
+                                <DialogActions className={classes.dialogAction}>
                                     <Button onClick={() => {
                                         setOpen(false);
                                         toast.info('Expense creation cancelled');
-                                    }} color="primary">Cancel</Button>
-                                    <Button type="submit" color="primary">Save</Button>
+                                    }} color="primary" startIcon={<CloseIcon />}>Cancel</Button>
+                                    <Button type="submit" color="primary" startIcon={<SaveIcon />}>Save</Button>
                                 </DialogActions>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
 
-                    <ExpensesTableComponent expenses={expenses}/>
-                </div>
-            )}
-        </>
+                            <ExpensesTableComponent expenses={expenses} />
+                        </Paper>
+                    </Grid>
+                )}
+            </Grid>
+        </div>
     );
 };
 
