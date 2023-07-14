@@ -98,9 +98,7 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
                             <TableCell>{skill.SkillID}</TableCell>
                             <TableCell>{skill.SkillName}</TableCell>
                             <TableCell>{skill.SkillLevel}</TableCell>
-                            <TableCell>
-                                {skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}
-                            </TableCell>
+                            <TableCell>{skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{skill.Certification}</TableCell>
                         </TableRow>
                     ))}

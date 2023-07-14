@@ -95,8 +95,8 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
                                 <TableCell>{loan.FamilyID}</TableCell>
                                 <TableCell>{loan.Amount}</TableCell>
                                 <TableCell>{loan.InterestRate}</TableCell>
-                                <TableCell>{loan.StartDate}</TableCell>
-                                <TableCell>{loan.DueDate}</TableCell>
+                                <TableCell>{loan.StartDate? new Date(loan.StartDate).toISOString().split('T')[0] : ''}</TableCell>
+                                <TableCell>{loan.DueDate? new Date(loan.DueDate).toISOString().split('T')[0] : ''}</TableCell>
                                 <TableCell>{loan.Lender}</TableCell>
                                 <TableCell>{loan.LoanPurpose}</TableCell>
                                 <TableCell>{loan.RepaymentStatus}</TableCell>

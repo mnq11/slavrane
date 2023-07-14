@@ -104,7 +104,7 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes }) => {
                                     {income.Source}
                                 </TableCell>
                                 <TableCell align="right">{income.Amount}</TableCell>
-                                <TableCell align="right">{income.Date}</TableCell>
+                                <TableCell align="right">{income.Date? new Date(income.Date).toISOString().split('T')[0] : ''}</TableCell>
                                 <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
                                 <TableCell align="right">{income.Frequency}</TableCell>
                             </TableRow>

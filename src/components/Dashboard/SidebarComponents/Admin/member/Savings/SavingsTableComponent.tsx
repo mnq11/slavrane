@@ -91,7 +91,7 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }
                             <TableCell>{saving.SavingsID}</TableCell>
                             <TableCell>{saving.FamilyID}</TableCell>
                             <TableCell>{saving.Amount}</TableCell>
-                            <TableCell>{new Date(saving.Date).toISOString().slice(0,10)}</TableCell>
+                            <TableCell>{saving.Date? new Date(saving.Date).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{saving.SavingsGoal}</TableCell>
                             <TableCell>{new Date(saving.TargetDate).toISOString().slice(0,10)}</TableCell>
                         </TableRow>
