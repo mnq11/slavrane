@@ -3,13 +3,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 export const useSliderSwitchStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            width: 70,
-            height: 34,
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative',
+            root: {
+                flexGrow: 1,
+
         },
         switchBase: {
             padding: 2,
@@ -58,5 +54,12 @@ export const useSliderSwitchStyles = makeStyles((theme: Theme) =>
             color: '#808080',
             fontSize: '0.8rem',
         },
+        paper: {
+            padding: theme.spacing(2),
+            textAlign: 'center',
+            color: theme.palette.text.secondary,
+        },dialogAction: {
+            justifyContent: 'center',
+        }
     })
 );

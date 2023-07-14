@@ -1,9 +1,8 @@
-// LoanBox.tsx
 import React, {useState, useEffect} from 'react';
 import {
-    FormControlLabel, Dialog, DialogTitle
-    , DialogContent, TextField, DialogActions, Button,
-    FormControl, IconButton, Select, MenuItem, InputLabel, Switch
+    FormControlLabel, Dialog, DialogTitle, DialogContent,
+    TextField, DialogActions, Button, FormControl, IconButton,
+    Select, MenuItem, InputLabel, Switch, Paper
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -11,10 +10,11 @@ import {useSnackbar} from 'notistack';
 import {Member, Loan} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
 import {createLoan, getLoansForMember} from '../../../../../../API/api';
-import {toast} from "react-toastify";
-import { useSliderSwitchStyles} from "./LoanBox.styles";
+import {toast} from 'react-toastify';
+import {useSliderSwitchStyles} from './LoanBox.styles';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import {makeStyles} from "@material-ui/core/styles";
 
 interface CheckboxProps {
     label: string;
@@ -23,11 +23,73 @@ interface CheckboxProps {
     member: Member;
 }
 
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: theme.spacing(2),
+        backgroundColor: '#f9f9f9',
+        borderRadius: theme.spacing(1),
+        boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.1)',
+        marginBottom: theme.spacing(2),
+    },
+    label: {
+        marginRight: theme.spacing(2),
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    switch: {
+        alignSelf: 'center',
+    },
+    heading: {
+        margin: theme.spacing(0, 0, 2),
+        color: '#333',
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+    },
+    button: {
+        marginBottom: theme.spacing(2),
+    },
+    dialog: {
+        '& .MuiPaper-root': {
+            borderRadius: theme.spacing(2),
+        },
+    },
+    dialogTitle: {
+        backgroundColor: '#f9f9f9',
+        padding: theme.spacing(2),
+        borderBottom: '1px solid #ccc',
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    formControl: {
+        marginBottom: theme.spacing(2),
+    },
+    loanAmountContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    loanAmountInput: {
+        flexGrow: 1,
+    },
+    icon: {
+        color: '#999',
+    },
+    paper: {
+        padding: theme.spacing(3),
+    },
+}));
 const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [loans, setLoans] = useState<Loan[]>([]);
     const [open, setOpen] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
-    const classes = useSliderSwitchStyles();
+    const classes = useStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
@@ -47,7 +109,9 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
             InterestRate: Yup.number().required('Required'),
             Lender: Yup.string().required('Required'),
             LoanPurpose: Yup.string().required('Required'),
-            RepaymentStatus: Yup.string().required('Required').oneOf(['Paid', 'Compromised', 'Pending', 'Overdue', 'Defaulted']),
+            RepaymentStatus: Yup.string()
+                .required('Required')
+                .oneOf(['Paid', 'Compromised', 'Pending', 'Overdue', 'Defaulted']),
         }),
         onSubmit: (values) => {
             const loanData = {
@@ -85,7 +149,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
 
     const handleNewLoan = () => {
         setOpen(true);
-        toast.info('Create New Loan')
+        toast.info('Create New Loan');
     };
 
     const handleLoanAmountChange = (change: number) => {
@@ -95,121 +159,128 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
 
     return (
         <>
-            <FormControlLabel
-                control={
-                    <Switch
-                        checked={checked}
-                        onChange={onChange}
-                        color="primary"
-                    />
-                }
-                label={label}
-            />
-            {checked && (
-                <div>
-                    <h4>Loans {member.MemberID}</h4>
+            <div className={classes.container}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={onChange}
+                            color="primary"
+                            className={classes.switch}
+                        />
+                    }
+                    label={label}
+                    labelPlacement="start"
+                />
+            </div>
 
-                    <Button variant="contained" color="primary" onClick={handleNewLoan}>
-                        Create New Loan
-                    </Button>
 
-                    <Dialog open={open} onClose={() => setOpen(false)}>
-                        <DialogTitle>Create New Loan</DialogTitle>
-                        <DialogContent>
-                            <form onSubmit={formik.handleSubmit}>
-                                <FormControl fullWidth >
-                                    <div>
-                                        <IconButton onClick={() => handleLoanAmountChange(-100)}>
-                                            <RemoveIcon/> {/* Use Remove Icon */}
-                                        </IconButton>
+                {checked && (
+                    <div>
+                        <h4 className={classes.heading}>Loans {member.MemberID}</h4>
+
+                        <Button variant="contained" color="primary" onClick={handleNewLoan} className={classes.button}>
+                            Create New Loan
+                        </Button>
+
+                        <Dialog open={open} onClose={() => setOpen(false)} className={classes.dialog}>
+                            <DialogTitle className={classes.dialogTitle}>Create New Loan</DialogTitle>
+                            <DialogContent>
+                                <form onSubmit={formik.handleSubmit} className={classes.form}>
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <div className={classes.loanAmountContainer}>
+                                            <IconButton onClick={() => handleLoanAmountChange(-100)}>
+                                                <RemoveIcon className={classes.icon}/>
+                                            </IconButton>
+                                            <TextField
+                                                id="LoanAmount"
+                                                name="LoanAmount"
+                                                label="Loan Amount"
+                                                type="number"
+                                                value={formik.values.LoanAmount}
+                                                onChange={formik.handleChange}
+                                                className={classes.loanAmountInput}
+                                            />
+                                            <IconButton onClick={() => handleLoanAmountChange(100)}>
+                                                <AddIcon className={classes.icon}/>
+                                            </IconButton>
+                                        </div>
+                                    </FormControl>
+
+                                    <FormControl fullWidth className={classes.formControl}>
                                         <TextField
-                                            id="LoanAmount"
-                                            name="LoanAmount"
-                                            label="Loan Amount"
-                                            type="number"
-                                            value={formik.values.LoanAmount}
+                                            id="StartDate"
+                                            name="StartDate"
+                                            label="Start Date"
+                                            type="date"
+                                            value={formik.values.StartDate}
                                             onChange={formik.handleChange}
                                         />
-                                        <IconButton onClick={() => handleLoanAmountChange(100)}>
-                                            <AddIcon/>
-                                        </IconButton>
-                                    </div>
-                                </FormControl>
+                                    </FormControl>
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <TextField
+                                            id="DueDate"
+                                            name="DueDate"
+                                            label="Due Date"
+                                            type="date"
+                                            value={formik.values.DueDate}
+                                            onChange={formik.handleChange}
+                                        />
+                                    </FormControl>
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <TextField
+                                            id="Lender"
+                                            name="Lender"
+                                            label="Lender"
+                                            type="text"
+                                            value={formik.values.Lender}
+                                            onChange={formik.handleChange}
+                                        />
+                                    </FormControl>
 
-                                <FormControl fullWidth >
-                                    <TextField
-                                        id="StartDate"
-                                        name="StartDate"
-                                        label="Start Date"
-                                        type="date"
-                                        value={formik.values.StartDate}
-                                        onChange={formik.handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth >
-                                    <TextField
-                                        id="DueDate"
-                                        name="DueDate"
-                                        label="Due Date"
-                                        type="date"
-                                        value={formik.values.DueDate}
-                                        onChange={formik.handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth >
-                                    <TextField
-                                        id="Lender"
-                                        name="Lender"
-                                        label="Lender"
-                                        type="text"
-                                        value={formik.values.Lender}
-                                        onChange={formik.handleChange}
-                                    />
-                                </FormControl>
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <TextField
+                                            id="LoanPurpose"
+                                            name="LoanPurpose"
+                                            label="Loan Purpose"
+                                            type="text"
+                                            value={formik.values.LoanPurpose}
+                                            onChange={formik.handleChange}
+                                        />
+                                    </FormControl>
+                                    <FormControl fullWidth className={classes.formControl}>
+                                        <InputLabel id="RepaymentStatus-label">Repayment Status</InputLabel>
+                                        <Select
+                                            labelId="RepaymentStatus-label"
+                                            id="RepaymentStatus"
+                                            name="RepaymentStatus"
+                                            value={formik.values.RepaymentStatus}
+                                            onChange={formik.handleChange}
+                                        >
+                                            <MenuItem value="Paid">Paid</MenuItem>
+                                            <MenuItem value="Compromised">Compromised</MenuItem>
+                                            <MenuItem value="Pending">Pending</MenuItem>
+                                            <MenuItem value="Overdue">Overdue</MenuItem>
+                                            <MenuItem value="Defaulted">Defaulted</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <DialogActions>
+                                        <Button color="primary" type="submit">
+                                            Save
+                                        </Button>
+                                        <Button onClick={() => setOpen(false)} color="primary">
+                                            Cancel
+                                        </Button>
+                                    </DialogActions>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
 
-                                <FormControl fullWidth >
-                                    <TextField
-                                        id="LoanPurpose"
-                                        name="LoanPurpose"
-                                        label="Loan Purpose"
-                                        type="text"
-                                        value={formik.values.LoanPurpose}
-                                        onChange={formik.handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth >
-                                    <InputLabel id="RepaymentStatus-label">Repayment Status</InputLabel>
-                                    <Select
-                                        labelId="RepaymentStatus-label"
-                                        id="RepaymentStatus"
-                                        name="RepaymentStatus"
-                                        value={formik.values.RepaymentStatus}
-                                        onChange={formik.handleChange}
-                                    >
-                                        <MenuItem value="Paid">Paid</MenuItem>
-                                        <MenuItem value="Compromised">Compromised</MenuItem>
-                                        <MenuItem value="Pending">Pending</MenuItem>
-                                        <MenuItem value="Overdue">Overdue</MenuItem>
-                                        <MenuItem value="Defaulted">Defaulted</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <DialogActions>
-                                    <Button color="primary" type="submit">
-                                        Save
-                                    </Button>
-                                    <Button onClick={() => setOpen(false)} color="primary">
-                                        Cancel
-                                    </Button>
-                                </DialogActions>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-
-                    <LoansTableComponent loans={loans}/>
-                </div>
-            )}
+                        <LoansTableComponent loans={loans}/>
+                    </div>
+                )}
         </>
     );
-}
+};
 
 export default LoanBox;
