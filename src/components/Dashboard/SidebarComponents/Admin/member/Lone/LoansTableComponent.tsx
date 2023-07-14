@@ -1,6 +1,15 @@
-import React, {useState} from "react";
-
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TableSortLabel,
+    TablePagination,
+} from '@material-ui/core';
 import { Loan } from '../../../../../../hooks/useMember';
 
 interface LoansTableComponentProps {
@@ -25,10 +34,11 @@ const headCells: HeadCell[] = [
     { id: 'RepaymentStatus', label: 'Repayment Status' },
 ];
 
-
 const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Loan>('LoanID');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const handleSortRequest = (cellId: keyof Loan) => {
         const isAsc = orderBy === cellId && order === 'asc';
@@ -36,65 +46,81 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
         setOrderBy(cellId);
     };
 
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     const sortedLoans = [...loans].sort((a, b) => {
-        let aVal: string | number = a[orderBy] || '';
-        let bVal: string | number = b[orderBy] || '';
+        const aVal: string | number = a[orderBy] || '';
+        const bVal: string | number = b[orderBy] || '';
 
-        if(orderBy === 'StartDate' || orderBy === 'DueDate') {
-            aVal = new Date(aVal as string).getTime();
-            bVal = new Date(bVal as string).getTime();
-        } else if(typeof aVal === 'number' && typeof bVal === 'number') {
-            aVal = parseFloat(aVal.toString());
-            bVal = parseFloat(bVal.toString());
-        } else {
-            aVal = aVal.toString();
-            bVal = bVal.toString();
-        }
-
-        if(typeof aVal === 'string' && typeof bVal === 'string') {
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
             return aVal.localeCompare(bVal) * (order === 'asc' ? 1 : -1);
         } else {
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
     });
 
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, sortedLoans.length - page * rowsPerPage);
 
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        {headCells.map((cell) => (
-                            <TableCell key={cell.id}>
-                                <TableSortLabel
-                                    active={orderBy === cell.id}
-                                    direction={orderBy === cell.id ? order : 'asc'}
-                                    onClick={() => handleSortRequest(cell.id)}
-                                >
-                                    {cell.label}
-                                </TableSortLabel>
-                            </TableCell>
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedLoans.map((loan) => (
-                        <TableRow key={loan.LoanID}>
-                            <TableCell>{loan.LoanID}</TableCell>
-                            <TableCell>{loan.MemberID}</TableCell>
-                            <TableCell>{loan.FamilyID}</TableCell>
-                            <TableCell>{loan.Amount}</TableCell>
-                            <TableCell>{loan.InterestRate}</TableCell>
-                            <TableCell>{loan.StartDate ? new Date(loan.StartDate).toLocaleDateString() : ''}</TableCell>
-                            <TableCell>{loan.DueDate ? new Date(loan.DueDate).toLocaleDateString() : ''}</TableCell>
-                            <TableCell>{loan.Lender}</TableCell>
-                            <TableCell>{loan.LoanPurpose}</TableCell>
-                            <TableCell>{loan.RepaymentStatus}</TableCell>
+        <Paper>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            {headCells.map((cell) => (
+                                <TableCell key={cell.id}>
+                                    <TableSortLabel
+                                        active={orderBy === cell.id}
+                                        direction={orderBy === cell.id ? order : 'asc'}
+                                        onClick={() => handleSortRequest(cell.id)}
+                                    >
+                                        {cell.label}
+                                    </TableSortLabel>
+                                </TableCell>
+                            ))}
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {sortedLoans.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((loan) => (
+                            <TableRow key={loan.LoanID}>
+                                <TableCell>{loan.LoanID}</TableCell>
+                                <TableCell>{loan.MemberID}</TableCell>
+                                <TableCell>{loan.FamilyID}</TableCell>
+                                <TableCell>{loan.Amount}</TableCell>
+                                <TableCell>{loan.InterestRate}</TableCell>
+                                <TableCell>{loan.StartDate}</TableCell>
+                                <TableCell>{loan.DueDate}</TableCell>
+                                <TableCell>{loan.Lender}</TableCell>
+                                <TableCell>{loan.LoanPurpose}</TableCell>
+                                <TableCell>{loan.RepaymentStatus}</TableCell>
+                            </TableRow>
+                        ))}
+
+                        {emptyRows > 0 && (
+                            <TableRow style={{ height: 53 * emptyRows }}>
+                                <TableCell colSpan={headCells.length} />
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={sortedLoans.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </Paper>
     );
 };
 

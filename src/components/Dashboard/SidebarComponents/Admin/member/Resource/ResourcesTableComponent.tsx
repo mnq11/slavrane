@@ -1,6 +1,15 @@
-// ResourcesTableComponent.tsx
-import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TableSortLabel,
+    TablePagination
+} from '@material-ui/core';
 import { Resource } from '../../../../../../hooks/useMember';
 
 interface ResourcesTableComponentProps {
@@ -19,12 +28,14 @@ const headCells: HeadCell[] = [
     { id: 'ResourceName', label: 'Resource Name' },
     { id: 'ResourceValue', label: 'Resource Value' },
     { id: 'ResourceDescription', label: 'Resource Description' },
-    { id: 'DateAcquired', label: 'Date Acquired' },
+    { id: 'DateAcquired', label: 'Date Acquired' }
 ];
 
 const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Resource>('ResourceID');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const handleSortRequest = (cellId: keyof Resource) => {
         const isAsc = orderBy === cellId && order === 'asc';
@@ -36,10 +47,10 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
         let aVal: string | number = a[orderBy] || '';
         let bVal: string | number = b[orderBy] || '';
 
-        if(orderBy === 'DateAcquired') {
+        if (orderBy === 'DateAcquired') {
             aVal = new Date(aVal as string).getTime();
             bVal = new Date(bVal as string).getTime();
-        } else if(typeof aVal === 'number' && typeof bVal === 'number') {
+        } else if (typeof aVal === 'number' && typeof bVal === 'number') {
             aVal = parseFloat(aVal.toString());
             bVal = parseFloat(bVal.toString());
         } else {
@@ -47,13 +58,26 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
             bVal = bVal.toString();
         }
 
-        if(typeof aVal === 'string' && typeof bVal === 'string') {
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
             return aVal.localeCompare(bVal) * (order === 'asc' ? 1 : -1);
         } else {
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
     });
 
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const paginatedResources = sortedResources.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
 
     return (
         <TableContainer component={Paper}>
@@ -74,7 +98,7 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {sortedResources.map((resource) => (
+                    {paginatedResources.map((resource) => (
                         <TableRow key={resource.ResourceID}>
                             <TableCell>{resource.ResourceID}</TableCell>
                             <TableCell>{resource.MemberID}</TableCell>
@@ -82,11 +106,24 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
                             <TableCell>{resource.ResourceName}</TableCell>
                             <TableCell>{resource.ResourceValue}</TableCell>
                             <TableCell>{resource.ResourceDescription}</TableCell>
-                            <TableCell>{resource.DateAcquired ? new Date(resource.DateAcquired).toLocaleDateString() : ''}</TableCell>
+                            <TableCell>
+                                {resource.DateAcquired
+                                    ? new Date(resource.DateAcquired).toLocaleDateString()
+                                    : ''}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={sortedResources.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </TableContainer>
     );
 };
