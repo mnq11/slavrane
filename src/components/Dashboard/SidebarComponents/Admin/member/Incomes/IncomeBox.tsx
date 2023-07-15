@@ -4,7 +4,6 @@ import {
     DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch,
     Grid, Paper, Box, IconButton
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
@@ -15,6 +14,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import { Member, Income } from "../../../../../../hooks/useMember";
 import IncomesTableComponent from "./IncomesTableComponent";
 import {getIncomesForMember, createIncome, deleteIncome, updateIncome} from "../../../../../../API/api";
+import {IncomeStyles} from "./Incom.styles";
 
 interface CheckboxProps {
     label: string;
@@ -23,37 +23,12 @@ interface CheckboxProps {
     member: Member;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-    }, label: {
-        marginRight: theme.spacing(2),
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    container: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: theme.spacing(2),
-    },
-    switch: {
-        alignSelf: 'center',
-    },
-    dialogAction: {
-        justifyContent: 'center',
-    },
-}));
-
 const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [open, setOpen] = useState(false);
-    const classes = useStyles();
+    const [editingIncome, setEditingIncome] = useState<Income | null>(null);
+
+    const classes = IncomeStyles();
 
     const validationSchema = Yup.object({
         Source: Yup.string().required('Required'),
@@ -64,7 +39,7 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     });
 
     const formik = useFormik({
-        initialValues: {
+        initialValues: editingIncome || {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
             Source: 'Default Source',
@@ -75,7 +50,8 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
         },
         validationSchema,
         onSubmit: (values) => {
-            const incomeData = {
+            const incomeData: Income = {
+                IncomeID: editingIncome ? editingIncome.IncomeID : undefined, // assign IncomeID at the creation
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Source: values.Source,
@@ -83,19 +59,35 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                 Date: values.Date,
                 Recurring: values.Recurring,
                 Frequency: values.Frequency,
+
             };
-            createIncome(incomeData)
-                .then((newIncome) => {
-                    newIncome.Date = newIncome.Date.split('T')[0];
-                    setIncomes([newIncome, ...incomes]);
-                    setOpen(false);
-                    toast.success('Income created successfully');
-                })
-                .catch((error) => {
-                    toast.error(`Failed to create income: ${error.message}`);
-                });
+
+            if (editingIncome) {
+                updateIncome(incomeData)
+                    .then((updatedIncome) => {
+                        setIncomes(incomes.map(income => income.IncomeID === editingIncome!.IncomeID ? updatedIncome : income));
+                        setOpen(false);
+                        setEditingIncome(null); // clear the editing income
+                        toast.success('Income updated successfully');
+                    })
+                    .catch((error) => {
+                        toast.error(`Failed to update income: ${error.message}`);
+                    });
+            } else {
+                createIncome(incomeData)
+                    .then((newIncome) => {
+                        newIncome.Date = newIncome.Date.split('T')[0];
+                        setIncomes([newIncome, ...incomes]);
+                        setOpen(false);
+                        toast.success('Income created successfully');
+                    })
+                    .catch((error) => {
+                        toast.error(`Failed to create income: ${error.message}`);
+                    });
+            }
         },
     });
+
 
     useEffect(() => {
         if (checked) {
@@ -117,6 +109,10 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
         deleteIncome(incomeId)
             .then(() => {
                 setIncomes(incomes.filter(income => income.IncomeID !== incomeId));
+                if(editingIncome && editingIncome.IncomeID === incomeId){
+                    setOpen(false);
+                    setEditingIncome(null); // clear the editing income
+                }
                 toast.success('Income deleted successfully');
             })
             .catch((error) => {
@@ -125,15 +121,8 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     };
 
     const handleUpdateIncome = async (incomeId: number, incomeData: Income) => {
-        incomeData.IncomeID = incomeId; // or whatever the id field is named
-        updateIncome(incomeData)
-            .then((updatedIncome) => {
-                setIncomes(incomes.map(income => income.IncomeID === incomeId ? updatedIncome : income));
-                toast.success('Income updated successfully');
-            })
-            .catch((error) => {
-                toast.error(`Failed to update income: ${error.message}`);
-            });
+        setEditingIncome(incomeData);
+        setOpen(true);
     };
 
     return (

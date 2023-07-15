@@ -29,16 +29,16 @@ export interface Family {
 
 
 export interface Income {
-    IncomeID: number;
-    FamilyID: number;
-    MemberID: number;
+    IncomeID?: number;
+    FamilyID?: number;
+    MemberID?: number;
     Source: string;
     Amount: string;
     Date: string;
     Recurring: string;
     Frequency: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 
 }
 

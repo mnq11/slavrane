@@ -13,7 +13,7 @@ import {createLoan, getLoansForMember} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import {makeStyles} from "@material-ui/core/styles";
+import {LoanBoxStyles} from "./LoanBox.styles";
 
 interface CheckboxProps {
     label: string;
@@ -23,71 +23,11 @@ interface CheckboxProps {
 }
 
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: theme.spacing(2),
-        borderRadius: theme.spacing(1),
-        boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.1)',
-        marginBottom: theme.spacing(2),
-    },
-    label: {
-        marginRight: theme.spacing(2),
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    switch: {
-        alignSelf: 'center',
-    },
-    heading: {
-        margin: theme.spacing(0, 0, 2),
-        color: '#333',
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-    },
-    button: {
-        marginBottom: theme.spacing(2),
-    },
-    dialog: {
-        '& .MuiPaper-root': {
-            borderRadius: theme.spacing(2),
-        },
-    },
-    dialogTitle: {
-        backgroundColor: '#f9f9f9',
-        padding: theme.spacing(2),
-        borderBottom: '1px solid #ccc',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    formControl: {
-        marginBottom: theme.spacing(2),
-    },
-    loanAmountContainer: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    loanAmountInput: {
-        flexGrow: 1,
-    },
-    icon: {
-        color: '#999',
-    },
-    paper: {
-        padding: theme.spacing(3),
-    },
-}));
 const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [loans, setLoans] = useState<Loan[]>([]);
     const [open, setOpen] = useState(false);
     const {enqueueSnackbar} = useSnackbar();
-    const classes = useStyles();
+    const classes = LoanBoxStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,

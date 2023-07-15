@@ -64,6 +64,8 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
         const valueA = a[sortColumn];
         const valueB = b[sortColumn];
 
+        if (valueA === undefined || valueB === undefined) return 0;
+
         if (sortDirection === 'asc') {
             if (valueA < valueB) return -1;
             if (valueA > valueB) return 1;
@@ -112,10 +114,10 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
                                 <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
                                 <TableCell align="right">{income.Frequency}</TableCell>
                                 <TableCell align="right">
-                                    <IconButton onClick={() => handleUpdateIncome(income.IncomeID, income)}>
+                                    <IconButton onClick={() => handleUpdateIncome(income.IncomeID?? 0, income)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDeleteIncome(income.IncomeID)}>
+                                    <IconButton onClick={() => handleDeleteIncome(income.IncomeID?? 0)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>
