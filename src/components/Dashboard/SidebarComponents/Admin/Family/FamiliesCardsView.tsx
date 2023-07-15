@@ -53,8 +53,20 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
     useEffect(() => {
+        const fetchFamilies = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchAllFamilies();
+                setFamilies(data);
+            } catch (error) {
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchFamilies();
-    }, []);
+    }, [setLoading]);
+
 
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
