@@ -14,7 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
 import { Member, Income } from "../../../../../../hooks/useMember";
 import IncomesTableComponent from "./IncomesTableComponent";
-import { getIncomesForMember, createIncome } from "../../../../../../API/api";
+import {getIncomesForMember, createIncome, deleteIncome, updateIncome} from "../../../../../../API/api";
 
 interface CheckboxProps {
     label: string;
@@ -112,6 +112,28 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     const handleNewIncome = () => {
         setOpen(true);
         toast.info('Creating a new income');
+    };
+    const handleDeleteIncome = (incomeId: number) => {
+        deleteIncome(incomeId)
+            .then(() => {
+                setIncomes(incomes.filter(income => income.IncomeID !== incomeId));
+                toast.success('Income deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete income: ${error.message}`);
+            });
+    };
+
+    const handleUpdateIncome = async (incomeId: number, incomeData: Income) => {
+        incomeData.IncomeID = incomeId; // or whatever the id field is named
+        updateIncome(incomeData)
+            .then((updatedIncome) => {
+                setIncomes(incomes.map(income => income.IncomeID === incomeId ? updatedIncome : income));
+                toast.success('Income updated successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to update income: ${error.message}`);
+            });
     };
 
     return (
@@ -232,7 +254,7 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                                 </DialogContent>
                             </Dialog>
 
-                            <IncomesTableComponent incomes={incomes} />
+                            <IncomesTableComponent incomes={incomes} handleUpdateIncome={handleUpdateIncome} handleDeleteIncome={handleDeleteIncome} />
                         </Paper>
                     </Grid>
                 )}

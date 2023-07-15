@@ -178,6 +178,17 @@ export async function createIncome(income) {
     console.log('Api log: for create Income', response.data);
     return response.data;
 }
+export async function updateIncome(income) {
+    const response = await api.put(`/incomes/updateIncome/${income.IncomeID}`, income);
+    console.log('Api log: for update Income', response.data);
+    return response.data;
+}
+
+export async function deleteIncome(incomeId) {
+    const response = await api.delete(`/incomes/deleteIncome/${incomeId}`);
+    console.log('Api log: for delete Income', response.data);
+    return response.data;
+}
 export async function getLoansForFamily(memberId) {
     const response = await api.get(`/loans/family/${memberId}`);
     console.log('Api log: for getLoansForMember', response.data);

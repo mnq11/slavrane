@@ -9,14 +9,17 @@ import {
     TableRow,
     Paper,
     TablePagination,
-    TableSortLabel,
+    TableSortLabel, IconButton,
 } from '@material-ui/core';
 import { Income } from '../../../../../../hooks/useMember';
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface IncomesTableProps {
     incomes: Income[];
+    handleDeleteIncome: (incomeId: number) => void;
+    handleUpdateIncome: (incomeId: number, incomeData: Income) => void;
 }
-
 type SortDirection = 'asc' | 'desc';
 
 interface HeadCell {
@@ -33,7 +36,7 @@ const headCells: HeadCell[] = [
     { id: 'Frequency', label: 'Frequency', sortable: true },
 ];
 
-const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes }) => {
+const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDeleteIncome, handleUpdateIncome }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortColumn, setSortColumn] = useState<keyof Income>('Source');
@@ -95,6 +98,7 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes }) => {
                                     )}
                                 </TableCell>
                             ))}
+                            <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -107,12 +111,20 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes }) => {
                                 <TableCell align="right">{income.Date? new Date(income.Date).toISOString().split('T')[0] : ''}</TableCell>
                                 <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
                                 <TableCell align="right">{income.Frequency}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton onClick={() => handleUpdateIncome(income.IncomeID, income)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDeleteIncome(income.IncomeID)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
 
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={5} />
+                                <TableCell colSpan={6} />
                             </TableRow>
                         )}
                     </TableBody>
