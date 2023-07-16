@@ -6,9 +6,9 @@ import {
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Resource, Member } from '../../../../../../hooks/useMember';
+import {Resource, Member} from '../../../../../../hooks/useMember';
 import ResourcesTableComponent from './ResourcesTableComponent';
-import { createResource, getResourcesForMember } from '../../../../../../API/api';
+import {createResource, updateResource, deleteResource, getResourcesForMember} from '../../../../../../API/api';
 import { toast } from 'react-toastify';
 import { useSliderSwitchStyles } from '../Lone/LoanBox.styles';
 
@@ -22,15 +22,17 @@ interface CheckboxProps {
 const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [resources, setResources] = useState<Resource[]>([]);
     const [open, setOpen] = useState(false);
+    const [editingResource, setEditingResource] = useState<Resource | null>(null);
+
     const classes = useSliderSwitchStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
-            ResourceName: 'Default Resource Name',
-            ResourceValue: 100,
-            ResourceDescription: 'Default Resource Description',
-            DateAcquired: new Date().toISOString().slice(0, 10),
+            ResourceName: editingResource ? editingResource.ResourceName : 'Default Resource Name',
+            ResourceValue: editingResource ? editingResource.ResourceValue.toString() : '100',
+            ResourceDescription: editingResource ? editingResource.ResourceDescription : 'Default Resource Description',
+            DateAcquired: editingResource ? editingResource.DateAcquired : new Date().toISOString().slice(0, 10),
         },
         validationSchema: Yup.object({
             ResourceName: Yup.string().required('Required'),
@@ -40,35 +42,70 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
         }),
         onSubmit: (values) => {
             const resourceData = {
+                ResourceID: editingResource ? editingResource.ResourceID : undefined,
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 ResourceName: values.ResourceName,
-                ResourceValue: values.ResourceValue,
+                ResourceValue: Number(values.ResourceValue),
                 ResourceDescription: values.ResourceDescription,
                 DateAcquired: values.DateAcquired,
             };
 
-            createResource(resourceData)
-                .then((newResource) => {
-                    setResources([newResource, ...resources]);
-                    setOpen(false);
-                    toast.success('Resource created successfully');
-                })
-                .catch((error) => {
-                    toast.error('Failed to create resource: ' + error.message);
-                });
+            if (editingResource) {
+                updateResource(resourceData)
+                    .then((updatedResource) => {
+                        setResources(resources.map(resource => resource.ResourceID === updatedResource.ResourceID ? updatedResource : resource));
+                        setOpen(false);
+                        setEditingResource(null);
+                        toast.success('Resource updated successfully');
+                    })
+                    .catch((error) => {
+                        toast.error(`Failed to update resource: ${error.message}`);
+                    });
+            }
+            else {
+                createResource(resourceData)
+                    .then((newResource) => {
+                        setResources([newResource, ...resources]);
+                        setOpen(false);
+                        toast.success('Resource created successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Failed to create resource: ' + error.message);
+                    });
+            }
         },
     });
 
-    useEffect(() => {
-        if (checked) {
-            getResourcesForMember(member.MemberID)
-                .then((resources) => setResources(resources))
-                .catch((error) => {
-                    toast.error('Failed to fetch resources: ' + error.message);
-                });
+        useEffect(() => {
+        getResourcesForMember(member.MemberID)
+            .then((resources) => setResources(resources))
+            .catch((error) => {
+                toast.error('Failed to fetch resources: ' + error.message);
+            });
+    }, [member.MemberID]);
+
+    const handleUpdateResources = async (resourceId: number) => {
+        const resourceData = resources.find(resource => resource.ResourceID === resourceId);
+        if(resourceData){
+            setEditingResource(resourceData);
+            setOpen(true);
         }
-    }, [checked, member.MemberID]);
+    };
+    const handleDeleteResources = (resourceID: number) => {
+        deleteResource(resourceID)
+            .then(() => {
+                setResources(resources.filter(resource => resource.ResourceID !== resourceID));
+                if(editingResource && editingResource.ResourceID === resourceID){
+                    setOpen(false);
+                    setEditingResource(null);
+                }
+                toast.success('Resource deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete Resource: ${error.message}`);
+            });
+    };
 
     return (
         <>
@@ -166,7 +203,7 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <ResourcesTableComponent resources={resources} />
+                    <ResourcesTableComponent resources={resources} handleUpdateResources={handleUpdateResources} handleDeleteResources={handleDeleteResources}/>
                 </div>
             )}
         </>

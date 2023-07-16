@@ -8,12 +8,16 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination
+    TablePagination, IconButton
 } from '@material-ui/core';
-import { Resource } from '../../../../../../hooks/useMember';
+import { Resource} from '../../../../../../hooks/useMember';
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface ResourcesTableComponentProps {
     resources: Resource[];
+    handleDeleteResources: (resourceId: number) => void;
+    handleUpdateResources: (resourceId: number, resourceData: Resource) => void;
 }
 
 interface HeadCell {
@@ -31,7 +35,7 @@ const headCells: HeadCell[] = [
     { id: 'DateAcquired', label: 'Date Acquired' }
 ];
 
-const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources }) => {
+const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources,handleDeleteResources,handleUpdateResources }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Resource>('ResourceID');
     const [page, setPage] = useState(0);
@@ -110,6 +114,14 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
                                 {resource.DateAcquired
                                     ? new Date(resource.DateAcquired).toLocaleDateString()
                                     : ''}
+                            </TableCell>
+                            <TableCell align="right">
+                                <IconButton onClick={() => handleUpdateResources(resource.ResourceID?? 0, resource)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteResources(resource.ResourceID?? 0)}>
+                                    <DeleteIcon />
+                                </IconButton>
                             </TableCell>
                         </TableRow>
                     ))}

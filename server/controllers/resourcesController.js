@@ -11,6 +11,7 @@ const createResourceSchema = Joi.object({
 
 const updateResourceSchema = Joi.object({
     ResourceID: Joi.number().integer().optional(),
+    MemberID: Joi.number().integer().required(),
     FamilyID: Joi.number().integer().required(),
     ResourceName: Joi.string().required(),
     ResourceValue: Joi.number().required(),
