@@ -231,10 +231,11 @@ export async function createSaving(saving) {
 }
 
 export async function updateSaving(saving) {
-    const response = await api.put(`/savings/updateSaving/${saving.SavingID}`, saving);
+    const response = await api.put(`/savings/updateSaving/${saving.SavingsID}`, saving);
     console.log('Api log: for update Saving', response.data);
     return response.data;
 }
+
 
 export async function deleteSaving(savingId) {
     const response = await api.delete(`/savings/deleteSaving/${savingId}`);

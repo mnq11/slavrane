@@ -8,12 +8,17 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination,
+    TablePagination, IconButton,
 } from '@material-ui/core';
-import { Loan } from '../../../../../../hooks/useMember';
+import {Loan} from '../../../../../../hooks/useMember';
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface LoansTableComponentProps {
     loans: Loan[];
+
+    handleUpdateLoan:(loanId: number, loanData: Loan) => void;
+    handleDeleteLoan: (loanId: number) => void;
 }
 
 interface HeadCell {
@@ -34,7 +39,7 @@ const headCells: HeadCell[] = [
     { id: 'RepaymentStatus', label: 'Repayment Status' },
 ];
 
-const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
+const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans, handleUpdateLoan, handleDeleteLoan }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Loan>('LoanID');
     const [page, setPage] = useState(0);
@@ -100,6 +105,14 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans }) => {
                                 <TableCell>{loan.Lender}</TableCell>
                                 <TableCell>{loan.LoanPurpose}</TableCell>
                                 <TableCell>{loan.RepaymentStatus}</TableCell>
+                                <TableCell>
+                                    <IconButton onClick={() => handleUpdateLoan(loan.LoanID?? 0, loan)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDeleteLoan(loan.LoanID?? 0)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
 

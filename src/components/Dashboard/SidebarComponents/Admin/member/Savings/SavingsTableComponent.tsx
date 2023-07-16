@@ -9,12 +9,16 @@ import {
     Paper,
     TableSortLabel,
     TableFooter,
-    TablePagination
+    TablePagination, IconButton
 } from '@material-ui/core';
 import { Savings} from '../../../../../../hooks/useMember';
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface SavingsTableComponentProps {
     savings: Savings[];
+    handleDeleteSavings: (savingsId: number) => void;
+    handleUpdateSavings: (savingsId: number, savingsData: Savings) => void;
 }
 
 interface HeadCell {
@@ -31,7 +35,7 @@ const headCells: HeadCell[] = [
     { id: 'TargetDate', label: 'Target Date' },
 ];
 
-const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }) => {
+const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,handleDeleteSavings, handleUpdateSavings }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Savings>('SavingsID');
     const [page, setPage] = useState(0);
@@ -94,7 +98,14 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings }
                             <TableCell>{saving.Date? new Date(saving.Date).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{saving.SavingsGoal}</TableCell>
                             <TableCell>{new Date(saving.TargetDate).toISOString().slice(0,10)}</TableCell>
-                        </TableRow>
+                            <TableCell align="right">
+                                <IconButton onClick={() => handleUpdateSavings(saving.SavingsID?? 0, saving)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteSavings(saving.SavingsID?? 0)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell></TableRow>
                     ))}
                 </TableBody>
                 <TableFooter>

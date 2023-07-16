@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
     FormControlLabel, Dialog, DialogTitle, DialogContent,
     TextField, DialogActions, Button, FormControl, IconButton,
@@ -7,9 +7,9 @@ import {
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {useSnackbar} from 'notistack';
-import {Member, Loan} from '../../../../../../hooks/useMember';
+import {Member, Loan, } from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
-import {createLoan, getLoansForMember} from '../../../../../../API/api';
+import {createLoan, deleteLoan, updateLoan} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -26,6 +26,8 @@ interface CheckboxProps {
 const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [loans, setLoans] = useState<Loan[]>([]);
     const [open, setOpen] = useState(false);
+    const [editingLoan, setEditingLoan] = useState<Loan | null>(null);
+
     const {enqueueSnackbar} = useSnackbar();
     const classes = LoanBoxStyles();
     const formik = useFormik({
@@ -53,6 +55,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         }),
         onSubmit: (values) => {
             const loanData = {
+                ...(editingLoan && { LoanID: editingLoan.LoanID }),
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Amount: values.LoanAmount,
@@ -63,39 +66,60 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                 LoanPurpose: values.LoanPurpose,
                 RepaymentStatus: values.RepaymentStatus,
             };
-            createLoan(loanData)
-                .then((newLoan) => {
-                    setLoans([newLoan, ...loans]);
+            const apiFunction = editingLoan ? updateLoan : createLoan;
+            apiFunction(loanData)
+                .then((updatedLoan) => {
+                    if (editingLoan) {
+                        setLoans(loans.map(l => l.LoanID === updatedLoan.LoanID ? updatedLoan : l));
+                        enqueueSnackbar('Loan updated successfully', {variant: 'success'});
+                        toast('Loan updated successfully')
+                    } else {
+                        setLoans([updatedLoan, ...loans]);
+                        enqueueSnackbar('Loan created successfully', {variant: 'success'});
+                        toast('Loan created successfully')
+                    }
                     setOpen(false);
-                    enqueueSnackbar('Loan created successfully', {variant: 'success'});
+                    setEditingLoan(null);
+
                 })
                 .catch((error) => {
-                    enqueueSnackbar('Failed to create loan: ' + error.message, {variant: 'error'});
+                    enqueueSnackbar(`Failed to ${editingLoan ? 'update' : 'create'} loan: ${error.message}`, {variant: 'error'});
+                    toast(`Failed to ${editingLoan ? 'update' : 'create'} loan: ${error.message}`)
                 });
         },
     });
 
-    useEffect(() => {
-        if (checked) {
-            getLoansForMember(member.MemberID)
-                .then((loans) => setLoans(loans))
-                .catch((error) => {
-                    enqueueSnackbar('Failed to fetch loans: ' + error.message, {variant: 'error'});
-                });
-        }
-    }, [checked, member.MemberID, enqueueSnackbar]);
-
     const handleNewLoan = () => {
         setOpen(true);
+        setEditingLoan(null);
         toast.info('Create New Loan');
+    };
+
+    const handleUpdateLoan = async (LoanId: number, LoanData: Loan) => {
+        setEditingLoan(LoanData);
+        setOpen(true);
+    };
+
+    const handleDeleteLoan = (loanId: number) => {
+        deleteLoan(loanId)
+            .then(() => {
+                setLoans(loans.filter(loan => loan.LoanID !== loanId));
+                if(editingLoan && editingLoan.LoanID === loanId){
+                    setOpen(false);
+                    setEditingLoan(null);
+                }
+                toast.success('Loan deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete loan: ${error.message}`);
+            });
     };
 
     const handleLoanAmountChange = (change: number) => {
         const newLoanAmount = formik.values.LoanAmount + change;
         formik.setFieldValue('LoanAmount', newLoanAmount < 1000 ? 1000 : newLoanAmount);
     };
-
-    return (
+return (
         <>
             <div className={classes.container}>
                 <FormControlLabel
@@ -214,7 +238,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                             </DialogContent>
                         </Dialog>
 
-                        <LoansTableComponent loans={loans}/>
+                        <LoansTableComponent loans={loans} handleUpdateLoan={handleUpdateLoan} handleDeleteLoan={handleDeleteLoan}/>
                     </div>
                 )}
         </>

@@ -11,6 +11,7 @@ const createSavingsSchema = Joi.object({
 
 
 const updateSavingsSchema = Joi.object({
+    SavingsID: Joi.number().required(),
     FamilyID: Joi.number(),
     MemberID: Joi.number(),
     Amount: Joi.number(),

@@ -96,6 +96,7 @@ export interface Resource {
 export interface Savings {
     SavingsID: number;
     FamilyID: number;
+    MemberID: number;
     Amount: number;
     Date: string;
     SavingsGoal: string;

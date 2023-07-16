@@ -8,7 +8,7 @@ import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Member, Savings} from '../../../../../../hooks/useMember';
 import SavingsTableComponent from './SavingsTableComponent';
-import {createSaving, getSavingsForMember} from '../../../../../../API/api';
+import {createSaving, deleteSaving, getSavingsForMember, updateSaving} from '../../../../../../API/api';
 import {toast} from "react-toastify";
 import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
@@ -22,9 +22,18 @@ interface SavingsBoxProps {
 const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member}) => {
     const [savings, setSavings] = useState<Savings[]>([]);
     const [open, setOpen] = useState(false);
+    const [editingSaving, setEditingSaving] = useState<Savings | null>(null);
+
     const classes = useSliderSwitchStyles();
     const formik = useFormik({
-        initialValues: {
+        initialValues: editingSaving ? {
+            MemberID: editingSaving.MemberID,
+            FamilyID: editingSaving.FamilyID,
+            Amount: editingSaving.Amount,
+            Date: new Date(editingSaving.Date).toISOString().slice(0, 10),
+            SavingsGoal: editingSaving.SavingsGoal,
+            TargetDate: new Date(editingSaving.TargetDate).toISOString().slice(0, 10),
+        } : {
             MemberID: member.MemberID,
             FamilyID: member.FamilyID,
             Amount: 0,
@@ -32,6 +41,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
             SavingsGoal: '',
             TargetDate: new Date().toISOString().slice(0, 10),
         },
+        enableReinitialize: true,  // This prop
         validationSchema: Yup.object({
             Amount: Yup.number().required('Required'),
             Date: Yup.date().required('Required'),
@@ -49,15 +59,30 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                 TargetDate: values.TargetDate,
             };
 
-            createSaving(savingsData)
-                .then((newSavings) => {
-                    setSavings([newSavings, ...savings]);
-                    setOpen(false);
-                    toast.success('Savings created successfully');
-                })
-                .catch((error) => {
-                    toast.error('Failed to create savings: ' + error.message);
-                });
+            if(editingSaving) {
+                const updatedSavingsData = {...savingsData, SavingsID: editingSaving.SavingsID};
+
+                updateSaving(updatedSavingsData)
+                    .then((updatedSaving) => {
+                        setSavings(savings.map(saving => saving.SavingsID === updatedSaving.SavingsID ? updatedSaving : saving));
+                        setOpen(false);
+                        setEditingSaving(null);
+                        toast.success('Savings updated successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Failed to update savings: ' + error.message);
+                    });
+            } else {
+                createSaving(savingsData)
+                    .then((newSavings) => {
+                        setSavings([newSavings, ...savings]);
+                        setOpen(false);
+                        toast.success('Savings created successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Failed to create savings: ' + error.message);
+                    });
+            }
         },
     });
 
@@ -70,6 +95,29 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                 });
         }
     }, [checked, member.MemberID]);
+
+    const handleUpdateSavings = async (savingId: number) => {
+        const savingsData = savings.find(saving => saving.SavingsID === savingId);
+        if(savingsData){
+            setEditingSaving(savingsData);
+            setOpen(true);
+        }
+    };
+
+    const handleDeleteSavings = (savingsID: number) => {
+        deleteSaving(savingsID)
+            .then(() => {
+                setSavings(savings.filter(saving => saving.SavingsID !== savingsID));
+                if(editingSaving && editingSaving.SavingsID === savingsID){
+                    setOpen(false);
+                    setEditingSaving(null);
+                }
+                toast.success('Savings deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete Savings: ${error.message}`);
+            });
+    };
 
     return (
         <>
@@ -97,7 +145,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                     </Button>
 
                     <Dialog open={open} onClose={() => setOpen(false)}>
-                        <DialogTitle>Create New Savings</DialogTitle>
+                        <DialogTitle>{editingSaving ? 'Edit Savings' : 'Create New Savings'}</DialogTitle>
                         <DialogContent>
                             <form onSubmit={formik.handleSubmit}>
                                 <FormControl fullWidth error={formik.touched.Amount && Boolean(formik.errors.Amount)}>
@@ -167,7 +215,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <SavingsTableComponent savings={savings}/>
+                    <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings} handleDeleteSavings={handleDeleteSavings}/>
                 </div>
             )}
         </>

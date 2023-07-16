@@ -88,6 +88,9 @@ export const LoanBoxStyles = makeStyles((theme) => ({
         borderRadius: theme.spacing(1),
         boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.1)',
         marginBottom: theme.spacing(2),
+    },root: {
+        flexGrow: 1,
+
     },
     label: {
         marginRight: theme.spacing(2),
