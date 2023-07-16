@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     FormControlLabel, Dialog,
     DialogTitle, DialogContent, TextField,
-    DialogActions, Button, FormControl, FormHelperText, Switch,
+    DialogActions, Button, FormControl, FormHelperText, Switch, Tooltip,
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -11,6 +11,9 @@ import ResourcesTableComponent from './ResourcesTableComponent';
 import {createResource, updateResource, deleteResource, getResourcesForMember} from '../../../../../../API/api';
 import { toast } from 'react-toastify';
 import { useSliderSwitchStyles } from '../Lone/LoanBox.styles';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 interface CheckboxProps {
     label: string;
@@ -126,11 +129,11 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
             </div>
             {checked && (
                 <div>
-                    <h4>Resources for Member {member.MemberID}</h4>
-
-                    <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-                        Create New Resource
-                    </Button>
+                    <Tooltip title="Create New Resource">
+                        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+                            <AddCircleIcon /> Create New Resource
+                        </Button>
+                    </Tooltip>
 
                     <Dialog open={open} onClose={() => setOpen(false)}>
                         <DialogTitle>Create New Resource</DialogTitle>
@@ -192,13 +195,17 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                                     )}
                                 </FormControl>
 
-                                <DialogActions>
-                                    <Button color="primary" type="submit">
-                                        Save
-                                    </Button>
-                                    <Button onClick={() => setOpen(false)} color="primary">
-                                        Cancel
-                                    </Button>
+                                <DialogActions className={classes.dialogAction}>
+                                    <Tooltip title="Save">
+                                        <Button color="primary" type="submit" startIcon={<SaveIcon />}>
+                                            Save
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title="Cancel">
+                                        <Button onClick={() => setOpen(false)} color="primary" startIcon={<CancelIcon />}>
+                                            Cancel
+                                        </Button>
+                                    </Tooltip>
                                 </DialogActions>
                             </form>
                         </DialogContent>
