@@ -51,15 +51,15 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
         validationSchema: validationSchema,
         onSubmit: (values) => {
             const skillData = {
-                SkillID: values.SkillID,
                 MemberID: member.MemberID,
                 SkillName: values.SkillName,
                 SkillLevel: values.SkillLevel,
                 DateAcquired: values.DateAcquired,
                 Certification: values.Certification,
             };
+
             if (editingSkill) {
-                updateSkill(skillData)
+                updateSkill({...skillData, SkillID: values.SkillID})
                     .then((updatedSkill) => {
                         setSkills(skills.map(skill => skill.SkillID === updatedSkill.SkillID ? updatedSkill : skill));
                         setOpen(false);
