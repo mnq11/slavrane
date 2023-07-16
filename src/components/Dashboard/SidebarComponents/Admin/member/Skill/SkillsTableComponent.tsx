@@ -8,12 +8,16 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination
+    TablePagination, IconButton
 } from '@material-ui/core';
-import { Skill } from '../../../../../../hooks/useMember';
+import {Skill} from '../../../../../../hooks/useMember';
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface SkillsTableComponentProps {
     skills: Skill[];
+    handleDeleteSkill: (skillId: number) => void;
+    handleUpdateSkill: (skillId: number, skillData: Skill) => void;
 }
 
 interface HeadCell {
@@ -29,7 +33,7 @@ const headCells: HeadCell[] = [
     { id: 'Certification', label: 'Certification' }
 ];
 
-const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) => {
+const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills,handleDeleteSkill,handleUpdateSkill }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Skill>('SkillID');
     const [page, setPage] = useState(0);
@@ -100,6 +104,14 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills }) =
                             <TableCell>{skill.SkillLevel}</TableCell>
                             <TableCell>{skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{skill.Certification}</TableCell>
+                            <TableCell align="right">
+                                <IconButton onClick={() => handleUpdateSkill(skill.SkillID?? 0, skill)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteSkill(skill.SkillID?? 0)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

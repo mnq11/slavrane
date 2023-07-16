@@ -11,9 +11,9 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { Member, Skill } from '../../../../../../hooks/useMember';
+import {Skill, Member} from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
-import { getSkillsForMember, createSkill } from '../../../../../../API/api';
+import {getSkillsForMember, createSkill, deleteSkill, updateSkill} from '../../../../../../API/api';
 import {toast} from "react-toastify";
 import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 
@@ -27,6 +27,8 @@ interface CheckboxProps {
 const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [open, setOpen] = useState(false);
+    const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
+
     const { enqueueSnackbar } = useSnackbar();
     const classes = useSliderSwitchStyles();
 
@@ -39,6 +41,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
 
     const formik = useFormik({
         initialValues: {
+            SkillID: 0,
             MemberID: member.MemberID,
             SkillName: '',
             SkillLevel: '',
@@ -48,24 +51,38 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
         validationSchema: validationSchema,
         onSubmit: (values) => {
             const skillData = {
+                SkillID: values.SkillID,
                 MemberID: member.MemberID,
                 SkillName: values.SkillName,
                 SkillLevel: values.SkillLevel,
                 DateAcquired: values.DateAcquired,
                 Certification: values.Certification,
             };
-            createSkill(skillData)
-                .then((newSkill) => {
-                    setSkills([newSkill, ...skills]);
-                    setOpen(false);
-                    enqueueSnackbar('Skill created successfully', { variant: 'success' });
-                })
-                .catch((error) => {
-                    enqueueSnackbar('Failed to create skill: ' + error.message, { variant: 'error' });
-                });
+            if (editingSkill) {
+                updateSkill(skillData)
+                    .then((updatedSkill) => {
+                        setSkills(skills.map(skill => skill.SkillID === updatedSkill.SkillID ? updatedSkill : skill));
+                        setOpen(false);
+                        setEditingSkill(null);
+                        enqueueSnackbar('Skill updated successfully', { variant: 'success' });
+                    })
+                    .catch((error) => {
+                        enqueueSnackbar('Failed to update skill: ' + error.message, { variant: 'error' });
+                    });
+            } else {
+                createSkill(skillData)
+                    .then((newSkill) => {
+                        setSkills([newSkill, ...skills]);
+                        setOpen(false);
+                        setEditingSkill(null);
+                        enqueueSnackbar('Skill created successfully', { variant: 'success' });
+                    })
+                    .catch((error) => {
+                        enqueueSnackbar('Failed to create skill: ' + error.message, { variant: 'error' });
+                    });
+            }
         },
     });
-
     useEffect(() => {
         if (checked) {
             getSkillsForMember(member.MemberID)
@@ -78,9 +95,38 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
 
     const handleNewSkill = () => {
         setOpen(true);
-        toast.info('Create New Skill')
+        setEditingSkill(null);
+        formik.resetForm();
+        toast.info('Create New Skill');
     };
 
+    const handleUpdateSkill = async (skillID: number, SkillData: Skill) => {
+        setEditingSkill(SkillData);
+        await formik.setValues({
+            SkillID: SkillData.SkillID,
+            MemberID: SkillData.MemberID,
+            SkillName: SkillData.SkillName,
+            SkillLevel: SkillData.SkillLevel,
+            DateAcquired: SkillData.DateAcquired,
+            Certification: SkillData.Certification
+        });
+        setOpen(true);
+    };
+
+    const handleDeleteSkill = (skillID: number) => {
+        deleteSkill(skillID)
+            .then(() => {
+                setSkills(skills.filter(skill => skill.SkillID !== skillID));
+                if(editingSkill && editingSkill.SkillID === skillID){
+                    setOpen(false);
+                    setEditingSkill(null); // clear the editing income
+                }
+                toast.success('Skill deleted successfully');
+            })
+            .catch((error) => {
+                toast.error(`Failed to delete skill: ${error.message}`);
+            });
+    };
     return (
         <>
             <div className={classes.container}>
@@ -166,7 +212,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
                         </DialogContent>
                     </Dialog>
 
-                    <SkillsTableComponent skills={skills} />
+                    <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill} handleDeleteSkill={handleDeleteSkill}/>
                 </div>
             )}
         </>
