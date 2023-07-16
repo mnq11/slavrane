@@ -78,7 +78,7 @@ module.exports = (models) => {
     async function deleteTask(req, res) {
         console.log('deleteTask function called.', req.params);
         try {
-            const taskId = req.paraams.id;
+            const taskId = req.params.id; // corrected from `req.paraams.id`
             const task = await Task.findByPk(taskId);
             if (!task) return res.status(404).json({message: 'Task not found.'});
 
@@ -91,6 +91,7 @@ module.exports = (models) => {
             res.status(500).json({message: 'An error occurred while deleting the task.'});
         }
     }
+
     async function getTasksForMember(req, res) {
         console.log('getTasksForMember function called.', req.params);
         try {

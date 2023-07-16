@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel } from '@material-ui/core';
-import { Tasks } from "../../../../../../hooks/useMember";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    TableSortLabel,
+    IconButton
+} from '@material-ui/core';
+import {Tasks} from "../../../../../../hooks/useMember";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 interface TableComponentProps {
     tasks: Tasks[];
+    handleDeleteTask: (tasksId: number) => void;
+    handleUpdateTask: (tasksId: number, tasksData: Tasks) => void;
 }
 
 interface HeadCell {
@@ -20,7 +34,7 @@ const headCells: HeadCell[] = [
     { id: 'Description', label: 'Description' },
 ];
 
-const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
+const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks,handleDeleteTask,handleUpdateTask }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Tasks>('DueDate');
 
@@ -79,6 +93,14 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks }) => {
                             <TableCell>{task.DueDate ? new Date(task.DueDate).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{task.Priority}</TableCell>
                             <TableCell>{task.Description}</TableCell>
+                            <TableCell align="right">
+                                <IconButton onClick={() => handleUpdateTask(task.TaskID?? 0, task)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteTask(task.TaskID?? 0)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
