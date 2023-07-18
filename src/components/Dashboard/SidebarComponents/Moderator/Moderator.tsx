@@ -16,8 +16,14 @@ const Moderator: React.FC<ModeratorProps> = ({ member }) => {
 
     useEffect(() => {
         // Fetch members by family ID
-        getMembersByFamilyId(member.FamilyID).then(setMembers);
+        getMembersByFamilyId(member.FamilyID)
+            .then((data) => {
+                // Filter out members who are 'admin' or 'moderator'
+                const nonAdminMembers = data.filter((member: Member) => member.Role !== 'admin' && member.Role !== 'moderator');
+                setMembers(nonAdminMembers);
+            });
     }, [member.FamilyID]);
+
 
     const onSelectMember = (member: Member) => {
         // Set the selected member
