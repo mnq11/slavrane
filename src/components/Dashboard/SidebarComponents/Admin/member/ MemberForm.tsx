@@ -13,7 +13,7 @@ import {
     FormHelperText,
     InputAdornment
 } from '@material-ui/core';
-import {Member} from "../../../../../hooks/useMember";
+import {Member, useMember} from "../../../../../hooks/useMember";
 import {MemberFormStyles} from "./Styling/AdminMember.Styles";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -50,6 +50,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
     const [dobError, setDobError] = useState("");
     const [scoreError, setScoreError] = useState("");
     const [genderError, setGenderError] = useState("");
+    const [user] = useMember();
 
     const classes = MemberFormStyles();
 
@@ -240,7 +241,6 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                     >
                         <MenuItem value={'Male'}>Male</MenuItem>
                         <MenuItem value={'Female'}>Female</MenuItem>
-                        <MenuItem value={'Other'}>Other</MenuItem>
                     </Select>
                     <FormHelperText error>{genderError}</FormHelperText>
                 </FormControl>
@@ -254,12 +254,13 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                         onChange={(e) => setRole(e.target.value as 'normal' | 'moderator' | 'admin' | 'analyst')}
                         label="Role"
                     >
+                        {user?.Role === 'admin' && <MenuItem value={'admin'}>Admin</MenuItem>}
+                        {(user?.Role === 'admin' || user?.Role === 'moderator') && <MenuItem value={'moderator'}>Moderator</MenuItem>}
+                        {(user?.Role === 'admin' || user?.Role === 'moderator' || user?.Role === 'analyst') && <MenuItem value={'analyst'}>Analyst</MenuItem>}
                         <MenuItem value={'normal'}>Normal</MenuItem>
-                        <MenuItem value={'moderator'}>Moderator</MenuItem>
-                        <MenuItem value={'admin'}>Admin</MenuItem>
-                        <MenuItem value={'analyst'}>Analyst</MenuItem>
                     </Select>
                 </FormControl>
+
 
                 <TextField
                     className={classes.textField}

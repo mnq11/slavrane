@@ -93,11 +93,18 @@ module.exports = (models) => {
     const updateMember = async (req, res) => {
         console.log(req.body);
         try {
+            // If a new password is provided, hash it before updating
+            if (req.body.Password) {
+                const saltRounds = 10;
+                req.body.Password = await bcrypt.hash(req.body.Password, saltRounds);
+            }
+
             const updated = await models.Member.update(req.body, {
                 where: {
                     MemberID: req.params.id
                 }
             });
+
             if (updated) {
                 res.status(200).json({ message: 'Member updated' });
             } else {
