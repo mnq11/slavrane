@@ -14,6 +14,8 @@ import Income from "./SidebarComponents/User/Income";
 import Expense from "./SidebarComponents/User/Expense";
 import Savings from "./SidebarComponents/User/Savings";
 import AdminPanel from "./SidebarComponents/Admin/AdminPanel";
+import Analyst from "./SidebarComponents/Analyst/Analyst";
+import Moderator from "./SidebarComponents/Moderator/Moderator";
 
 interface SidebarProps {
     open: boolean;
@@ -28,6 +30,8 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
     const menuItems = member ? [
         {label: 'Welcome', content: <Welcome member={member} />},
         ...(member.Role === 'admin' ? [{label: 'Admin Panel', content: <AdminPanel member={member} />}] : []),
+        ...(member.Role === 'moderator' ||'admin'? [{label: 'Analyses', content: <Analyst member={member} />}] : []),
+        ...(member.Role === 'analyst'||'moderator' ||'admin' ? [{label: 'Moderation', content: <Moderator member={member} />}] : []),
         {label: 'Family', content: <Family member={member} />},
         {label: 'Task', content: <Task member={member} />},
         {label: 'Resource', content: <Resource member={member} />},
