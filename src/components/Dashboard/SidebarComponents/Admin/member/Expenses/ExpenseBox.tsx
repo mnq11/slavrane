@@ -74,7 +74,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
             Category: 'Default Category',
             Date: new Date().toISOString().split('T')[0],
             Amount: '0',
-            Recurring: 'false',
+            Recurring: false,
             Frequency: 'One-time',
         },
         validationSchema,
@@ -152,7 +152,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
             Category: expense.Category,
             Date: expense.Date,
             Amount: expense.Amount.toString(),
-            Recurring: expense.Recurring,
+            Recurring: expense.Recurring ,
             Frequency: expense.Frequency,
         });
     };
@@ -251,7 +251,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    checked={formik.values.Recurring === 'true'}
+                                                    checked={formik.values.Recurring}
                                                     onChange={formik.handleChange}
                                                     name="Recurring"
                                                     color="primary"

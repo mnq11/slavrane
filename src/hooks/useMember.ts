@@ -11,7 +11,7 @@ export interface Expense {
     Category: string;
     Amount: number;
     Date: string;
-    Recurring: string;
+    Recurring: boolean;
     Frequency: string;
 
 }

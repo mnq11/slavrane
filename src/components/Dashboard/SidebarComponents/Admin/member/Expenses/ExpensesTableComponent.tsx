@@ -53,8 +53,8 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
         let bVal = b[orderBy];
 
         if(orderBy === 'Date') {
-            aVal = aVal ? new Date(aVal).getTime() : 0;
-            bVal = bVal ? new Date(bVal).getTime() : 0;
+            aVal = typeof aVal === "string" ? new Date(aVal).getTime() : 0;
+            bVal = typeof bVal === "string" ? new Date(bVal).getTime() : 0;
         } else if(orderBy === 'Amount') {
             if (typeof aVal === "string") {
                 aVal = parseFloat(aVal);
@@ -62,6 +62,9 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
             if (typeof bVal === "string") {
                 bVal = parseFloat(bVal);
             }
+        } else if(orderBy === 'Recurring') {
+            aVal = aVal === true ? 1 : 0;
+            bVal = bVal === true ? 1 : 0;
         }
 
         aVal = aVal ?? 0;
@@ -78,6 +81,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
     });
 
 
+
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -92,7 +96,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
             <Table>
                 <TableHead>
                     <TableRow>
-                        {headCells.map((cell) => (
+                        {headCells.slice(3).map((cell) => (
                             <TableCell key={cell.id}>
                                 <TableSortLabel
                                     active={orderBy === cell.id}
@@ -108,13 +112,10 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
                 <TableBody>
                     {sortedExpenses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((expense) => (
                         <TableRow key={expense.ExpenseID}>
-                            <TableCell>{expense.ExpenseID}</TableCell>
-                            <TableCell>{expense.FamilyID}</TableCell>
-                            <TableCell>{expense.MemberID}</TableCell>
                             <TableCell>{expense.Category}</TableCell>
                             <TableCell>{expense.Amount}</TableCell>
                             <TableCell>{expense.Date ? new Date(expense.Date).toISOString().split('T')[0] : ''}</TableCell>
-                            <TableCell>{expense.Recurring}</TableCell>
+                            <TableCell>{expense.Recurring ? 'Yes' : 'No'}</TableCell>
                             <TableCell>{expense.Frequency}</TableCell>
                             <TableCell>
                                 <IconButton color="primary" onClick={() => onUpdate(expense)}>
