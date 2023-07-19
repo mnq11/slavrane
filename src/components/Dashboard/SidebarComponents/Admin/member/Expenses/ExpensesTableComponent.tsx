@@ -19,23 +19,6 @@ interface TableComponentProps {
     onUpdate: (expense: Expense) => void;
     onDelete: (expenseId: number) => void;
 }
-
-interface HeadCell {
-    id: keyof Expense;
-    label: string;
-}
-
-const headCells: HeadCell[] = [
-    {id: 'ExpenseID', label: 'Expense ID'},
-    {id: 'FamilyID', label: 'Family ID'},
-    {id: 'MemberID', label: 'Member ID'},
-    {id: 'Category', label: 'Category'},
-    {id: 'Amount', label: 'Amount'},
-    {id: 'Date', label: 'Date'},
-    {id: 'Recurring', label: 'Recurring'},
-    {id: 'Frequency', label: 'Frequency'},
-];
-
 const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpdate, onDelete}) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [orderBy, setOrderBy] = useState<keyof Expense>('ExpenseID');
