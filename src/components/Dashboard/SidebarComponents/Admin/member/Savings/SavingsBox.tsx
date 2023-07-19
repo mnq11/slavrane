@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Switch, CardContent, Card, Grid, Typography, Box} from '@material-ui/core';
+import {Button, Switch, CardContent, Card, Grid, Typography, Box, IconButton} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Member, Savings} from '../../../../../../hooks/useMember';
@@ -8,6 +8,8 @@ import {createSaving, deleteSaving, getSavingsForMember, updateSaving} from '../
 import {toast} from "react-toastify";
 import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
 import SavingsForm from "./SavingsForm";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import {Divider} from "antd";
 
 interface SavingsBoxProps {
     label: string;
@@ -130,10 +132,13 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                     </Box>
                     {checked && (
                         <>
-                            <Typography variant="h6">Savings for Member {member.MemberID}</Typography>
-                            <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-                                Create New Savings
-                            </Button>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <IconButton color="primary" onClick={() => setOpen(true)}>
+                                    <AddCircleOutlineIcon/>
+                                </IconButton>
+                            </Box>
+                            <Divider/>
+
                             <SavingsForm
                                 open={open}
                                 handleClose={() => setOpen(false)}

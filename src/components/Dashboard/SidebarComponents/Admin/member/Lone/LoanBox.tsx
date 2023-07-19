@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
     Dialog, DialogTitle, DialogContent, Switch,
-    Button, Box, Typography, Grid, CardContent, Card
+    Box, Typography, Grid, CardContent, Card, IconButton
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -13,6 +13,7 @@ import {toast} from 'react-toastify';
 import LoanForm from "./LoanForm";
 import {useLoanBoxStyles} from "./LoanBox.styles";
 import {Divider} from "antd";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 interface CheckboxProps {
     label: string;
@@ -144,10 +145,11 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                             <>
                                 <Box>
                                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="h6">Loans {member.MemberID}</Typography>
-                                        <Button variant="contained" color="primary" onClick={handleNewLoan}>
-                                            Create New Loan
-                                        </Button>
+                                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                                            <IconButton color="primary" onClick={handleNewLoan}>
+                                                <AddCircleOutlineIcon/>
+                                            </IconButton>
+                                        </Box>
                                     </Box>
                                     <Divider/>
                                     <Dialog open={open} onClose={() => setOpen(false)}>

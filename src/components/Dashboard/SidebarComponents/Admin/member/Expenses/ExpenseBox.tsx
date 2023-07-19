@@ -197,7 +197,6 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                             {checked && (
                                 <Box>
                                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                                        <Typography variant="h6">Expenses {member.MemberName}</Typography>
                                         <IconButton color="primary" onClick={handleNewExpense}>
                                             <AddCircleOutlineIcon/>
                                         </IconButton>

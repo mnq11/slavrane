@@ -1,6 +1,6 @@
 // SkillBox.tsx
 import React, {useState, useEffect} from 'react';
-import {  Button, Switch, Grid, Card, CardContent, Typography, Box } from '@material-ui/core';
+import {Button, Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
 import {useSnackbar} from 'notistack';
 import {Skill, Member} from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
@@ -8,6 +8,8 @@ import {getSkillsForMember, createSkill, deleteSkill, updateSkill} from '../../.
 import {toast} from "react-toastify";
 import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
 import SkillForm from "./SkillForm";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import {Divider} from "antd";
 
 interface SkillBoxProps {
     label: string;
@@ -119,12 +121,13 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
                     </Box>
                     {checked && (
                         <>
-                            <Typography variant="h6">Skills {member.MemberID}</Typography>
 
-                            <Button variant="contained" color="primary" onClick={handleNewSkill}>
-                                Create New Skill
-                            </Button>
-
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <IconButton color="primary" onClick={handleNewSkill}>
+                                    <AddCircleOutlineIcon/>
+                                </IconButton>
+                            </Box>
+                            <Divider/>
                             <SkillForm
                                 open={open}
                                 onSubmit={onSubmit}

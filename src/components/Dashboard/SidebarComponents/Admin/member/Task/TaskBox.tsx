@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Switch, Grid, Card, CardContent, Typography, Box } from '@material-ui/core';
+import {Button, Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Member, Tasks} from "../../../../../../hooks/useMember";
@@ -7,6 +7,8 @@ import TasksTableComponent from "./TasksTableComponent";
 import {getTasksForMember, createTask, deleteTask, updateTask} from "../../../../../../API/api";
 import TaskForm from "./TaskForm";
 import useLoanBoxStyles from "../Lone/LoanBox.styles";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import {Divider} from "antd";
 
 interface CheckboxProps {
     label: string;
@@ -104,12 +106,13 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                     </Box>
                     {checked && (
                         <>
-                            <Typography variant="h6">Tasks {member.MemberID}</Typography>
 
-                            <Button variant="contained" color="primary" onClick={handleNewTask}>
-                                Create New Task
-                            </Button>
-
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <IconButton color="primary" onClick={handleNewTask}>
+                                    <AddCircleOutlineIcon/>
+                                </IconButton>
+                            </Box>
+                            <Divider/>
                             <TaskForm
                                 open={open}
                                 onClose={() => setOpen(false)}

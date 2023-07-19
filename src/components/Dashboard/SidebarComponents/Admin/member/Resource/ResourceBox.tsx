@@ -118,12 +118,9 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                     {checked && (
                         <>
                             <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <Typography variant="h6" >Resources {member.MemberID}</Typography>
-                                <Tooltip title={editingResource ? "Update Resource" : "Create New Resource"}>
-                                    <Button variant="contained" color="primary" onClick={() => setOpen(true)} >
-                                        <AddCircleIcon /> {editingResource ? "Update Resource" : "Create New Resource"}
+                                    <Button variant="contained"  onClick={() => setOpen(true)} >
+                                        <AddCircleIcon />
                                     </Button>
-                                </Tooltip>
                             </Box>
                             <Divider />
                             <Dialog open={open} onClose={() => setOpen(false)}>
