@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {FormControlLabel, Button,  Switch,} from '@material-ui/core';
+import { Button, Switch, Grid, Card, CardContent, Typography, Box } from '@material-ui/core';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Member, Tasks} from "../../../../../../hooks/useMember";
 import TasksTableComponent from "./TasksTableComponent";
 import {getTasksForMember, createTask, deleteTask, updateTask} from "../../../../../../API/api";
-import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
 import TaskForm from "./TaskForm";
+import useLoanBoxStyles from "../Lone/LoanBox.styles";
 
 interface CheckboxProps {
     label: string;
@@ -20,8 +20,7 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
     const [open, setOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Tasks | null>(null);
 
-    const classes = useSliderSwitchStyles();
-
+    const classes = useLoanBoxStyles();
     useEffect(() => {
         if (checked) {
             getTasksForMember(member.MemberID)
@@ -92,47 +91,45 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
     };
 
     return (
-        <>
-            <div className={classes.container}>
-                <FormControlLabel
-                    control={
+        <Grid item xs={12}>
+            <Card className={classes.card}>
+                <CardContent>
+                    <Box className={classes.switchBox}>
+                        <Typography variant="h5">{label}</Typography>
                         <Switch
                             checked={checked}
                             onChange={onChange}
                             color="primary"
-                            className={classes.switch}
                         />
-                    }
-                    label={label}
-                    labelPlacement="start"
-                    className={classes.label}
-                />
-            </div>
-            {checked && (
-                <div>
-                    <h4>Tasks {member.MemberID}</h4>
+                    </Box>
+                    {checked && (
+                        <>
+                            <Typography variant="h6">Tasks {member.MemberID}</Typography>
 
-                    <Button variant="contained" color="primary" onClick={handleNewTask}>Create New Task</Button>
+                            <Button variant="contained" color="primary" onClick={handleNewTask}>
+                                Create New Task
+                            </Button>
 
-                    <TaskForm
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        onSubmit={handleSubmit}
-                        initialValues={{
-                            MemberID: member.MemberID || -1,
-                            TaskName: editingTask?.TaskName || 'Enter new task name',
-                            Description: editingTask?.Description || 'Enter task description',
-                            DueDate: editingTask?.DueDate || new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().slice(0,10),
-                            TaskStatus: editingTask?.TaskStatus ||"Not Started",
-                            Priority: editingTask?.Priority || 1
-                        }}
-                    />
+                            <TaskForm
+                                open={open}
+                                onClose={() => setOpen(false)}
+                                onSubmit={handleSubmit}
+                                initialValues={{
+                                    MemberID: member.MemberID || -1,
+                                    TaskName: editingTask?.TaskName || 'Enter new task name',
+                                    Description: editingTask?.Description || 'Enter task description',
+                                    DueDate: editingTask?.DueDate || new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().slice(0,10),
+                                    TaskStatus: editingTask?.TaskStatus ||"Not Started",
+                                    Priority: editingTask?.Priority || 1
+                                }}
+                            />
 
-                    <TasksTableComponent tasks={tasks} handleUpdateTask={handleUpdateTask}
-                                         handleDeleteTask={handleDeleteTask}/>
-                </div>
-            )}
-        </>
+                            <TasksTableComponent tasks={tasks} handleUpdateTask={handleUpdateTask} handleDeleteTask={handleDeleteTask} />
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 

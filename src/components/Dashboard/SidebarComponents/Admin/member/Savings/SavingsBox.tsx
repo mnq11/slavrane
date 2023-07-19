@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {FormControlLabel, Button,  Switch} from '@material-ui/core';
+import { Button, Switch, CardContent, Card, Grid, Typography, Box} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Member, Savings} from '../../../../../../hooks/useMember';
 import SavingsTableComponent from './SavingsTableComponent';
 import {createSaving, deleteSaving, getSavingsForMember, updateSaving} from '../../../../../../API/api';
 import {toast} from "react-toastify";
-import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
+import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
 import SavingsForm from "./SavingsForm";
 
 interface SavingsBoxProps {
@@ -21,7 +21,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
     const [open, setOpen] = useState(false);
     const [editingSaving, setEditingSaving] = useState<Savings | null>(null);
 
-    const classes = useSliderSwitchStyles();
+    const classes = useLoanBoxStyles();
     const formik = useFormik({
         initialValues: editingSaving ? {
             MemberID: editingSaving.MemberID,
@@ -117,41 +117,36 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
     };
 
     return (
-        <>
-            <div className={classes.container}>
-                <FormControlLabel
-                    control={
+        <Grid item xs={12}>
+            <Card className={classes.card}>
+                <CardContent>
+                    <Box className={classes.switchBox}>
+                        <Typography variant="h5">{label}</Typography>
                         <Switch
                             checked={checked}
                             onChange={onChange}
                             color="primary"
-                            className={classes.switch}
                         />
-                    }
-                    label={label}
-                    labelPlacement="start"
-                    className={classes.label}
-                />
-            </div>
-            {checked && (
-                <div>
-                    <h4>Savings for Member {member.MemberID}</h4>
-
-                    <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-                        Create New Savings
-                    </Button>
-
-                    <SavingsForm
-                        open={open}
-                        handleClose={() => setOpen(false)}
-                        formik={formik}
-                        isUpdating={Boolean(editingSaving)}                     />
-
-                    <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings} handleDeleteSavings={handleDeleteSavings}/>
-                </div>
-            )}
-        </>
+                    </Box>
+                    {checked && (
+                        <>
+                            <Typography variant="h6">Savings for Member {member.MemberID}</Typography>
+                            <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+                                Create New Savings
+                            </Button>
+                            <SavingsForm
+                                open={open}
+                                handleClose={() => setOpen(false)}
+                                formik={formik}
+                                isUpdating={Boolean(editingSaving)}
+                            />
+                            <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings} handleDeleteSavings={handleDeleteSavings}/>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </Grid>
     );
-}
+};
 
 export default SavingsBox;

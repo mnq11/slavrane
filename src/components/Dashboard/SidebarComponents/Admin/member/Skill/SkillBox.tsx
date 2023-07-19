@@ -1,12 +1,12 @@
 // SkillBox.tsx
 import React, {useState, useEffect} from 'react';
-import {FormControlLabel, Button, Switch} from '@material-ui/core';
+import {  Button, Switch, Grid, Card, CardContent, Typography, Box } from '@material-ui/core';
 import {useSnackbar} from 'notistack';
 import {Skill, Member} from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
 import {getSkillsForMember, createSkill, deleteSkill, updateSkill} from '../../../../../../API/api';
 import {toast} from "react-toastify";
-import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
+import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
 import SkillForm from "./SkillForm";
 
 interface SkillBoxProps {
@@ -22,7 +22,7 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
     const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
 
     const {enqueueSnackbar} = useSnackbar();
-    const classes = useSliderSwitchStyles();
+    const classes = useLoanBoxStyles();
 
     const onSubmit = (values: any) => {
         const skillData = {
@@ -106,40 +106,38 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
         Certification: 'Default Certification',
     };
     return (
-        <>
-            <div className={classes.container}>
-                <FormControlLabel
-                    control={
+        <Grid item xs={12}>
+            <Card className={classes.card}>
+                <CardContent>
+                    <Box className={classes.switchBox}>
+                        <Typography variant="h5">{label}</Typography>
                         <Switch
                             checked={checked}
                             onChange={onChange}
                             color="primary"
-                            className={classes.switch}
                         />
-                    }
-                    label={label}
-                    labelPlacement="start"
-                    className={classes.label}
-                />
-            </div>
-            {checked && (
-                <div>
-                    <h4>Skills {member.MemberID}</h4>
+                    </Box>
+                    {checked && (
+                        <>
+                            <Typography variant="h6">Skills {member.MemberID}</Typography>
 
-                    <Button variant="contained" color="primary" onClick={handleNewSkill}>
-                        Create New Skill
-                    </Button>
+                            <Button variant="contained" color="primary" onClick={handleNewSkill}>
+                                Create New Skill
+                            </Button>
 
-                    <SkillForm
-                        open={open}
-                        onSubmit={onSubmit}
-                        onClose={() => setOpen(false)}
-                        initialValues={initialValues}
-                    />
-                    <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill} handleDeleteSkill={handleDeleteSkill} />
-                </div>
-            )}
-        </>
+                            <SkillForm
+                                open={open}
+                                onSubmit={onSubmit}
+                                onClose={() => setOpen(false)}
+                                initialValues={initialValues}
+                            />
+
+                            <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill} handleDeleteSkill={handleDeleteSkill} />
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 

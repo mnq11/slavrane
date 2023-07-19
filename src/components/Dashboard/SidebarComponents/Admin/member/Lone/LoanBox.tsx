@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {
-    FormControlLabel, Dialog, DialogTitle, DialogContent, Switch, Button
-} from '@material-ui/core';
+import {Dialog, DialogTitle, DialogContent, Switch,
+    Button, Box, Typography, Grid, CardContent, Card} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {useSnackbar} from 'notistack';
@@ -9,8 +8,9 @@ import {Member, Loan, } from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
 import {createLoan, deleteLoan, updateLoan} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
-import {LoanBoxStyles} from "./LoanBox.styles";
 import LoanForm from "./LoanForm";
+import {useLoanBoxStyles} from "./LoanBox.styles";
+import {Divider} from "antd";
 
 interface CheckboxProps {
     label: string;
@@ -26,7 +26,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
     const [editingLoan, setEditingLoan] = useState<Loan | null>(null);
 
     const {enqueueSnackbar} = useSnackbar();
-    const classes = LoanBoxStyles();
+    const classes = useLoanBoxStyles();
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
@@ -116,43 +116,44 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         const newLoanAmount = formik.values.LoanAmount + change;
         formik.setFieldValue('LoanAmount', newLoanAmount < 1000 ? 1000 : newLoanAmount);
     };
-return (
-        <>
-            <div className={classes.container}>
-                <FormControlLabel
-                    control={
+    return (
+        <Grid item xs={12}>
+            <Card className={classes.card}>
+                <CardContent>
+                    <Box className={classes.switchBox}>
+                        <Typography variant="h5">{label}</Typography>
                         <Switch
                             checked={checked}
                             onChange={onChange}
                             color="primary"
-                            className={classes.switch}
                         />
-                    }
-                    label={label}
-                    labelPlacement="start"
-                />
-            </div>
-
-
-                {checked && (
-                    <div>
-                        <h4 className={classes.heading}>Loans {member.MemberID}</h4>
-                        <Button variant="contained" color="primary" onClick={handleNewLoan} className={classes.button}>
-                            Create New Loan
-                        </Button>
-                        <Dialog open={open} onClose={() => setOpen(false)} className={classes.dialog}>
-                            <DialogTitle className={classes.dialogTitle}>Create New Loan</DialogTitle>
-                            <DialogContent>
-                                <LoanForm
-                                    formik={formik}
-                                    handleLoanAmountChange={handleLoanAmountChange}
-                                    setOpen={setOpen} />
-                            </DialogContent>
-                        </Dialog>
-                        <LoansTableComponent loans={loans} handleUpdateLoan={handleUpdateLoan} handleDeleteLoan={handleDeleteLoan}/>
-                    </div>
-                )}
-        </>
+                    </Box>
+                    {checked && (
+                        <>
+                            <Box>
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
+                                    <Typography variant="h6" >Loans {member.MemberID}</Typography>
+                                    <Button variant="contained" color="primary" onClick={handleNewLoan} >
+                                        Create New Loan
+                                    </Button>
+                                </Box>
+                                <Divider/>
+                                <Dialog open={open} onClose={() => setOpen(false)} >
+                                    <DialogTitle>Create New Loan</DialogTitle>
+                                    <DialogContent>
+                                        <LoanForm
+                                            formik={formik}
+                                            handleLoanAmountChange={handleLoanAmountChange}
+                                            setOpen={setOpen} />
+                                    </DialogContent>
+                                </Dialog>
+                                <LoansTableComponent loans={loans} handleUpdateLoan={handleUpdateLoan} handleDeleteLoan={handleDeleteLoan} />
+                            </Box>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 

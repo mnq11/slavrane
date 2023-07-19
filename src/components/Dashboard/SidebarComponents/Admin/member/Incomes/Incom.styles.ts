@@ -6,25 +6,22 @@ export const IncomeStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
-        paper: {
+        card: {
             padding: theme.spacing(2),
-            textAlign: 'center',
-        }, label: {
-            marginRight: theme.spacing(2),
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            color: '#333',
+            color: theme.palette.text.secondary,
         },
-        container: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+        title: {
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
             marginBottom: theme.spacing(2),
         },
-        switch: {
-            alignSelf: 'center',
+        switchBox: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: theme.spacing(2),
         },
         dialogAction: {
-            justifyContent: 'center',
+            justifyContent: 'space-around',
         },
     }));

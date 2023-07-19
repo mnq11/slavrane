@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-    FormControlLabel, Dialog, DialogTitle,
-    DialogContent, Button, Switch, Tooltip,} from '@material-ui/core';
+    Dialog, DialogTitle,
+    DialogContent, Button, Switch, Tooltip, Box, Typography, Grid, Card, CardContent,
+} from '@material-ui/core';
 import {Resource, Member} from '../../../../../../hooks/useMember';
 import ResourcesTableComponent from './ResourcesTableComponent';
 import {createResource, updateResource, deleteResource, getResourcesForMember} from '../../../../../../API/api';
 import { toast } from 'react-toastify';
-import { useSliderSwitchStyles } from '../Lone/LoanBox.styles';
+import { useLoanBoxStyles } from '../Lone/LoanBox.styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ResourceForm from './ResourceForm';
+import {Divider} from "antd";
 
 interface CheckboxProps {
     label: string;
@@ -22,7 +24,7 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
     const [open, setOpen] = useState(false);
     const [editingResource, setEditingResource] = useState<Resource | null>(null);
 
-    const classes = useSliderSwitchStyles();
+    const classes = useLoanBoxStyles();
 
     const initialValues = {
         FamilyID: member.FamilyID,
@@ -102,45 +104,45 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
     };
 
     return (
-        <>
-            <div className={classes.container}>
-                <FormControlLabel
-                    control={
+        <Grid item xs={12}>
+            <Card className={classes.card}>
+                <CardContent>
+                    <Box className={classes.switchBox}>
+                        <Typography variant="h5">{label}</Typography>
                         <Switch
                             checked={checked}
                             onChange={onChange}
                             color="primary"
-                            className={classes.switch}
                         />
-                    }
-                    label={label}
-                    labelPlacement="start"
-                    className={classes.label}
-                />
-            </div>
-            {checked && (
-                <div>
-                    <Tooltip title={editingResource ? "Update Resource" : "Create New Resource"}>
-                        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-                            <AddCircleIcon /> {editingResource ? "Update Resource" : "Create New Resource"}
-                        </Button>
-                    </Tooltip>
-                    <Dialog open={open} onClose={() => setOpen(false)}>
-                        <DialogTitle>{editingResource ? 'Update Resource' : 'Create New Resource'}</DialogTitle>
-                        <DialogContent>
-                            <ResourceForm
-                                member={member}
-                                onSubmit={onSubmit}
-                                onClose={() => setOpen(false)}
-                                initialValues={initialValues}
-                            />
-                        </DialogContent>
-                    </Dialog>
-
-                    <ResourcesTableComponent resources={resources} handleUpdateResources={handleUpdateResources} handleDeleteResources={handleDeleteResources}/>
-                </div>
-            )}
-        </>
+                    </Box>
+                    {checked && (
+                        <>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Typography variant="h6" >Resources {member.MemberID}</Typography>
+                                <Tooltip title={editingResource ? "Update Resource" : "Create New Resource"}>
+                                    <Button variant="contained" color="primary" onClick={() => setOpen(true)} >
+                                        <AddCircleIcon /> {editingResource ? "Update Resource" : "Create New Resource"}
+                                    </Button>
+                                </Tooltip>
+                            </Box>
+                            <Divider />
+                            <Dialog open={open} onClose={() => setOpen(false)}>
+                                <DialogTitle>{editingResource ? 'Update Resource' : 'Create New Resource'}</DialogTitle>
+                                <DialogContent>
+                                    <ResourceForm
+                                        member={member}
+                                        onSubmit={onSubmit}
+                                        onClose={() => setOpen(false)}
+                                        initialValues={initialValues}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                            <ResourcesTableComponent resources={resources} handleUpdateResources={handleUpdateResources} handleDeleteResources={handleDeleteResources}/>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 
