@@ -33,7 +33,7 @@ export interface Income {
     FamilyID?: number;
     MemberID?: number;
     Source: string;
-    Amount: string;
+    Amount: number;
     Date: string;
     Recurring: string;
     Frequency: string;
@@ -110,7 +110,7 @@ export interface Skill {
     SkillID: number;
     MemberID?: number | undefined;
     SkillName: string;
-    SkillLevel: string;
+    SkillLevel: number;
     DateAcquired: string;
     Certification: string;
     createdAt: string;
@@ -122,7 +122,7 @@ export interface Tasks {
     TaskName: string;
     TaskStatus: string;
     DueDate: string;
-    Priority: string;
+    Priority: number;
     Description: string;
     createdAt: string;
     updatedAt: string;

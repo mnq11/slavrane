@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         MemberID: DataTypes.INTEGER,
         SkillName: DataTypes.STRING,
-        SkillLevel: DataTypes.STRING,
+        SkillLevel: DataTypes.INTEGER,
         DateAcquired: DataTypes.DATE,
         Certification: DataTypes.STRING
     });

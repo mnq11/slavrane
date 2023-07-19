@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const createSkillSchema = Joi.object({
     SkillName: Joi.string().required(),
-    SkillLevel: Joi.string().required(),
+    SkillLevel: Joi.number().required(),
     DateAcquired: Joi.date().required(),
     Certification: Joi.string().required(),
     MemberID: Joi.number().integer().required(),
@@ -11,7 +11,7 @@ const createSkillSchema = Joi.object({
 const updateSkillSchema = Joi.object({
     SkillID: Joi.number().integer().optional(),
     SkillName: Joi.string().optional(),
-    SkillLevel: Joi.string().optional(),
+    SkillLevel: Joi.number().optional(),
     DateAcquired: Joi.date().optional(),
     Certification: Joi.string().optional(),
     MemberID: Joi.number().integer().required(),

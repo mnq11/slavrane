@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     FormControlLabel,
     Dialog,
@@ -6,11 +6,11 @@ import {
     DialogContent,
     TextField,
     DialogActions,
-    Button, Switch,
+    Button, Switch, Select, FormControl, InputLabel, MenuItem, FormHelperText,
 } from '@material-ui/core';
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { useSnackbar } from 'notistack';
+import {useSnackbar} from 'notistack';
 import {Skill, Member} from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
 import {getSkillsForMember, createSkill, deleteSkill, updateSkill} from '../../../../../../API/api';
@@ -24,12 +24,12 @@ interface CheckboxProps {
     member: Member;
 }
 
-const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
+const SkillBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [open, setOpen] = useState(false);
     const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
 
-    const { enqueueSnackbar } = useSnackbar();
+    const {enqueueSnackbar} = useSnackbar();
     const classes = useSliderSwitchStyles();
 
     const validationSchema = Yup.object({
@@ -43,10 +43,10 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
         initialValues: {
             SkillID: 0,
             MemberID: member.MemberID,
-            SkillName: '',
-            SkillLevel: '',
-            DateAcquired: '',
-            Certification: '',
+            SkillName: 'Default Skill Name',
+            SkillLevel: 1,
+            DateAcquired: new Date().toISOString().split('T')[0], // This will set today's date as the default
+            Certification: 'Default Certification',
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -64,10 +64,12 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
                         setSkills(skills.map(skill => skill.SkillID === updatedSkill.SkillID ? updatedSkill : skill));
                         setOpen(false);
                         setEditingSkill(null);
-                        enqueueSnackbar('Skill updated successfully', { variant: 'success' });
+                        enqueueSnackbar('Skill updated successfully', {variant: 'success'});
+                        toast.success('Skill updated successfully');
                     })
                     .catch((error) => {
-                        enqueueSnackbar('Failed to update skill: ' + error.message, { variant: 'error' });
+                        enqueueSnackbar('Failed to update skill: ' + error.message, {variant: 'error'});
+                        toast.error('Failed to update skill: ' + error.message);
                     });
             } else {
                 createSkill(skillData)
@@ -75,10 +77,13 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
                         setSkills([newSkill, ...skills]);
                         setOpen(false);
                         setEditingSkill(null);
-                        enqueueSnackbar('Skill created successfully', { variant: 'success' });
+                        enqueueSnackbar('Skill created successfully', {variant: 'success'});
+                        toast.success('Skill created successfully');
+
                     })
                     .catch((error) => {
-                        enqueueSnackbar('Failed to create skill: ' + error.message, { variant: 'error' });
+                        enqueueSnackbar('Failed to create skill: ' + error.message, {variant: 'error'});
+                        toast.error('Failed to create skill: ' + error.message);
                     });
             }
         },
@@ -88,7 +93,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
             getSkillsForMember(member.MemberID)
                 .then((skills) => setSkills(skills))
                 .catch((error) => {
-                    enqueueSnackbar('Failed to fetch skills: ' + error.message, { variant: 'error' });
+                    enqueueSnackbar('Failed to fetch skills: ' + error.message, {variant: 'error'});
                 });
         }
     }, [checked, member.MemberID, enqueueSnackbar]);
@@ -110,6 +115,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
             DateAcquired: SkillData.DateAcquired,
             Certification: SkillData.Certification
         });
+
         setOpen(true);
     };
 
@@ -117,7 +123,7 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
         deleteSkill(skillID)
             .then(() => {
                 setSkills(skills.filter(skill => skill.SkillID !== skillID));
-                if(editingSkill && editingSkill.SkillID === skillID){
+                if (editingSkill && editingSkill.SkillID === skillID) {
                     setOpen(false);
                     setEditingSkill(null); // clear the editing income
                 }
@@ -166,16 +172,25 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
                                     error={formik.touched.SkillName && Boolean(formik.errors.SkillName)}
                                     helperText={formik.touched.SkillName && formik.errors.SkillName}
                                 />
-                                <TextField
-                                    fullWidth
-                                    id="SkillLevel"
-                                    name="SkillLevel"
-                                    label="Skill Level"
-                                    value={formik.values.SkillLevel}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.SkillLevel && Boolean(formik.errors.SkillLevel)}
-                                    helperText={formik.touched.SkillLevel && formik.errors.SkillLevel}
-                                />
+                                <FormControl fullWidth>
+                                    <InputLabel id="SkillLevel-label">Skill Level</InputLabel>
+                                    <Select
+                                        labelId="SkillLevel-label"
+                                        id="SkillLevel"
+                                        name="SkillLevel"
+                                        value={formik.values.SkillLevel}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.SkillLevel && Boolean(formik.errors.SkillLevel)}
+                                    >
+                                        {Array.from({length: 10}, (_, i) => i + 1).map((value) => (
+                                            <MenuItem value={value} key={value}>{value}</MenuItem>
+                                        ))}
+                                    </Select>
+                                    {formik.touched.SkillLevel && formik.errors.SkillLevel && (
+                                        <FormHelperText>{formik.errors.SkillLevel}</FormHelperText>
+                                    )}
+                                </FormControl>
+
                                 <TextField
                                     fullWidth
                                     id="DateAcquired"
@@ -212,7 +227,8 @@ const SkillBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member })
                         </DialogContent>
                     </Dialog>
 
-                    <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill} handleDeleteSkill={handleDeleteSkill}/>
+                    <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill}
+                                          handleDeleteSkill={handleDeleteSkill}/>
                 </div>
             )}
         </>

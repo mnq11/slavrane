@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog, DialogTitle,
-    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch,
-    Grid, Paper, Box, IconButton
+    Dialog, DialogTitle,
+    DialogContent, Switch,
+    Grid, Box, IconButton, Card, CardContent, Typography
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useFormik } from 'formik';
+import {makeStyles} from '@material-ui/core/styles';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import CloseIcon from '@material-ui/icons/Close';
-import SaveIcon from '@material-ui/icons/Save';
-import { Member, Expense } from "../../../../../../hooks/useMember";
+import {Member, Expense} from "../../../../../../hooks/useMember";
 import ExpensesTableComponent from "./ExpensesTableComponent";
 import {getExpensesForMember, createExpense, deleteExpense, updateExpense} from "../../../../../../API/api";
+import {Divider} from "antd";
+import ExpenseForm from "./ExpenseForm";
 
 interface SwitchProps {
     label: string;
@@ -27,32 +27,28 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
-    paper: {
+    card: {
         padding: theme.spacing(2),
-        textAlign: 'center',
         color: theme.palette.text.secondary,
     },
-    container: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+    title: {
+        fontWeight: 'bold',
+        fontSize: '1.5rem',
         marginBottom: theme.spacing(2),
     },
-    switch: {
-        alignSelf: 'center',
-    },
-    label: {
-        marginLeft: theme.spacing(1),
-        fontSize: '1rem',
-        fontWeight: 'bold',
-        color: '#333',
+    switchBox: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing(2),
     },
     dialogAction: {
-        justifyContent: 'center',
+        justifyContent: 'space-around',
     },
 }));
+const categories = ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5', 'Category 6', 'Category 7', 'Category 8', 'Category 9', 'Category 10'];
 
-const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member }) => {
+const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
@@ -62,18 +58,21 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     const validationSchema = Yup.object({
         Category: Yup.string().required('Required'),
         Date: Yup.date().required('Required'),
-        Amount: Yup.string().required('Required'),
+        Amount: Yup.number()
+            .typeError('Amount must be a number') // This is a custom error message
+            .required('Required'),
         Recurring: Yup.string().required('Required'),
         Frequency: Yup.string().required('Required'),
     });
+
 
     const formik = useFormik({
         initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
-            Category: 'Default Category',
+            Category: categories[0],
             Date: new Date().toISOString().split('T')[0],
-            Amount: '0',
+            Amount: 0,
             Recurring: false,
             Frequency: 'One-time',
         },
@@ -84,7 +83,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Category: values.Category,
-                Amount: Number(values.Amount), // Convert Amount to a number
+                Amount: Number(values.Amount),
                 Date: values.Date,
                 Recurring: values.Recurring,
                 Frequency: values.Frequency
@@ -151,10 +150,14 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
             MemberID: member?.MemberID || 0,
             Category: expense.Category,
             Date: expense.Date,
-            Amount: expense.Amount.toString(),
-            Recurring: expense.Recurring ,
+            Amount: expense.Amount,
+            Recurring: expense.Recurring,
             Frequency: expense.Frequency,
         });
+    };
+    const handleCloseDialog = () => {
+        setOpen(false);
+        toast.info('Expense creation cancelled');
     };
 
 
@@ -177,128 +180,50 @@ const ExpenseBox: React.FC<SwitchProps> = ({ label, checked, onChange, member })
     };
 
 
-
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                        <div className={classes.container}>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={checked}
-                                        onChange={onChange}
-                                        color="primary"
-                                        className={classes.switch}
-                                    />
-                                }
-                                label={label}
-                                labelPlacement="start"
-                                className={classes.label}
-                            />
-                        </div>
-                    </Paper>
-                </Grid>
-                {checked && (
-                    <Grid item xs={12}>
-                        <Paper className={classes.paper}>
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <h4>Expenses {member.MemberName}</h4>
-                                <IconButton color="primary" onClick={handleNewExpense}>
-                                    <AddCircleOutlineIcon />
-                                </IconButton>
+                    <Card className={classes.card}>
+                        <CardContent>
+                            <Box className={classes.switchBox}>
+                                <Typography variant="h5">{label}</Typography>
+                                <Switch
+                                    checked={checked}
+                                    onChange={onChange}
+                                    color="primary"
+                                />
                             </Box>
-
-                            <Dialog open={open} onClose={handleNewExpense}>
-                                <DialogTitle>Create New Expense</DialogTitle>
-                                <DialogContent>
-                                    <form onSubmit={formik.handleSubmit}>
-                                        <TextField
-                                            fullWidth
-                                            id="Category"
-                                            name="Category"
-                                            label="Category"
-                                            value={formik.values.Category}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Category && Boolean(formik.errors.Category)}
-                                            helperText={formik.touched.Category && formik.errors.Category}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            id="Date"
-                                            name="Date"
-                                            label="Date"
-                                            type="date"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            value={formik.values.Date}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Date && Boolean(formik.errors.Date)}
-                                            helperText={formik.touched.Date && formik.errors.Date}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            id="Amount"
-                                            name="Amount"
-                                            label="Amount"
-                                            value={formik.values.Amount}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Amount && Boolean(formik.errors.Amount)}
-                                            helperText={formik.touched.Amount && formik.errors.Amount}
-                                        />
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={formik.values.Recurring}
-                                                    onChange={formik.handleChange}
-                                                    name="Recurring"
-                                                    color="primary"
-                                                />
-                                            }
-                                            label="Recurring"
-                                        />
-                                        <Select
-                                            fullWidth
-                                            id="Frequency"
-                                            name="Frequency"
-                                            value={formik.values.Frequency}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}
-                                        >
-                                            <MenuItem value={'One-time'}>One-time</MenuItem>
-                                            <MenuItem value={'Daily'}>Daily</MenuItem>
-                                            <MenuItem value={'Weekly'}>Weekly</MenuItem>
-                                            <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                                            <MenuItem value={'Annual'}>Annual</MenuItem>
-                                        </Select>
-                                        <DialogActions className={classes.dialogAction}>
-                                            <Button
-                                                onClick={() => {
-                                                    setOpen(false);
-                                                    toast.info('Expense creation cancelled');
-                                                }}
-                                                color="primary"
-                                                startIcon={<CloseIcon />}
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" color="primary" startIcon={<SaveIcon />}>
-                                                Save
-                                            </Button>
-                                        </DialogActions>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
-
-                            <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense} onDelete={handleDeleteExpense} />
-                        </Paper>
-                    </Grid>
-                )}
+                            {checked && (
+                                <Box>
+                                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="h6">Expenses {member.MemberName}</Typography>
+                                        <IconButton color="primary" onClick={handleNewExpense}>
+                                            <AddCircleOutlineIcon/>
+                                        </IconButton>
+                                    </Box>
+                                    <Divider/>
+                                    <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense}
+                                                            onDelete={handleDeleteExpense}/>
+                                    <Dialog open={open} onClose={handleNewExpense}>
+                                        <DialogTitle>{mode === 'create' ? 'Create New Expense' : 'Update Expense'}</DialogTitle>
+                                        <DialogContent>
+                                            <ExpenseForm
+                                                formik={formik}
+                                                categories={categories}
+                                                mode={mode}
+                                                handleCloseDialog={handleCloseDialog}
+                                            />
+                                        </DialogContent>
+                                    </Dialog>
+                                </Box>
+                            )}
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
         </div>
     );
-};
+}
 
 export default ExpenseBox;

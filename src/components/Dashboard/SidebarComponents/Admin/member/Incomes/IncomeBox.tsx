@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Checkbox, FormControlLabel, Dialog, DialogTitle,
     DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch,
-    Grid, Paper, Box, IconButton
+    Grid, Paper, Box, IconButton, FormHelperText, FormControl, InputLabel
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -22,6 +22,7 @@ interface CheckboxProps {
     onChange: () => void;
     member: Member;
 }
+const incomeSources = ['Job', 'Business', 'Investment', 'Other'];
 
 const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
@@ -33,7 +34,7 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     const validationSchema = Yup.object({
         Source: Yup.string().required('Required'),
         Date: Yup.date().required('Required'),
-        Amount: Yup.string().required('Required'),
+        Amount: Yup.number().typeError('Amount must be a number').required('Required'),
         Recurring: Yup.string().required('Required'),
         Frequency: Yup.string().required('Required'),
     });
@@ -44,14 +45,14 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
             MemberID: member.MemberID,
             Source: 'Default Source',
             Date: new Date().toISOString().split('T')[0],
-            Amount: '0',
+            Amount: 0,
             Recurring: 'false',
             Frequency: 'One-time',
         },
         validationSchema,
         onSubmit: (values) => {
             const incomeData: Income = {
-                IncomeID: editingIncome ? editingIncome.IncomeID : undefined, // assign IncomeID at the creation
+                IncomeID: editingIncome ? editingIncome.IncomeID : undefined,
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Source: values.Source,
@@ -164,16 +165,27 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                                 <DialogTitle>Create New Income</DialogTitle>
                                 <DialogContent>
                                     <form onSubmit={formik.handleSubmit}>
-                                        <TextField
-                                            fullWidth
-                                            id="Source"
-                                            name="Source"
-                                            label="Source"
-                                            value={formik.values.Source}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Source && Boolean(formik.errors.Source)}
-                                            helperText={formik.touched.Source && formik.errors.Source}
-                                        />
+                                        <FormControl variant="filled" fullWidth>
+                                            <InputLabel id="Source-label">Source</InputLabel>
+                                            <Select
+                                                labelId="Source-label"
+                                                id="Source"
+                                                name="Source"
+                                                value={formik.values.Source}
+                                                onChange={formik.handleChange}
+                                                error={formik.touched.Source && Boolean(formik.errors.Source)}
+                                            >
+                                                {incomeSources.map((source, index) => (
+                                                    <MenuItem value={source} key={index}>
+                                                        {source}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                            {formik.touched.Source && formik.errors.Source ? (
+                                                <FormHelperText>{formik.errors.Source}</FormHelperText>
+                                            ) : null}
+                                        </FormControl>
+
                                         <TextField
                                             fullWidth
                                             id="Date"
@@ -193,11 +205,13 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                                             id="Amount"
                                             name="Amount"
                                             label="Amount"
+                                            type="number"
                                             value={formik.values.Amount}
                                             onChange={formik.handleChange}
                                             error={formik.touched.Amount && Boolean(formik.errors.Amount)}
                                             helperText={formik.touched.Amount && formik.errors.Amount}
                                         />
+
                                         <FormControlLabel
                                             control={
                                                 <Checkbox

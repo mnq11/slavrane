@@ -7,7 +7,7 @@ const createTaskSchema = Joi.object({
     TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').required(),
     MemberID: Joi.number().integer().required(),
     TaskName: Joi.string().required(),
-    Priority: Joi.string().required(),
+    Priority: Joi.number().required(),
     // Add validation for other fields as needed
 });
 
@@ -19,7 +19,7 @@ const updateTaskSchema = Joi.object({
 
     DueDate: Joi.date().optional(),
     TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').optional(),
-    Priority: Joi.string().optional(),
+    Priority: Joi.number().optional(),
     createdAt: Joi.date().optional(),
     updatedAt: Joi.date().optional(),
     // Add validation for other fields as needed

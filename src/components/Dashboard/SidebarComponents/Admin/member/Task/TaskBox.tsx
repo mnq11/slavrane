@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
     FormControlLabel, Dialog, DialogTitle
-    , DialogContent, TextField, DialogActions, Button, InputLabel, Select, MenuItem, FormHelperText, Switch
+    , DialogContent, TextField, DialogActions, Button, InputLabel, Select, MenuItem, FormHelperText, Switch, FormControl
 } from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
@@ -31,17 +31,17 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         Description: Yup.string().required("Required"),
         DueDate: Yup.date().required("Required"),
         TaskStatus: Yup.string().oneOf(['Not Started', 'Pending', 'In Progress', 'Completed'], 'Invalid status').required("Required"),
-        Priority: Yup.string().required("Required")
+        Priority: Yup.number().required("Required")
     });
 
     const formik = useFormik({
         initialValues: {
             MemberID: member.MemberID,
-            TaskName: '',
-            Description: '',
-            DueDate: '',
+            TaskName: 'Default Task Name',
+            Description: 'Default Description',
+            DueDate: new Date().toISOString().split('T')[0],
             TaskStatus: 'Not Started',
-            Priority: ''
+            Priority: 1
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -202,16 +202,25 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                                     <FormHelperText>{formik.errors.TaskStatus}</FormHelperText>
                                 }
 
-                                <TextField
-                                    fullWidth
-                                    id="Priority"
-                                    name="Priority"
-                                    label="Priority"
-                                    value={formik.values.Priority}
-                                    onChange={formik.handleChange}
-                                    error={formik.touched.Priority && Boolean(formik.errors.Priority)}
-                                    helperText={formik.touched.Priority && formik.errors.Priority}
-                                />
+                                <FormControl fullWidth>
+                                    <InputLabel id="Priority-label">Priority</InputLabel>
+                                    <Select
+                                        labelId="Priority-label"
+                                        id="Priority"
+                                        name="Priority"
+                                        value={formik.values.Priority}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.Priority && Boolean(formik.errors.Priority)}
+                                    >
+                                        {Array.from({length: 10}, (_, i) => (
+                                            <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>
+                                        ))}
+
+                                    </Select>
+                                    {formik.touched.Priority && formik.errors.Priority && (
+                                        <FormHelperText>{formik.errors.Priority}</FormHelperText>
+                                    )}
+                                </FormControl>
                                 <DialogActions>
                                     <Button onClick={() => {
                                         setOpen(false);
