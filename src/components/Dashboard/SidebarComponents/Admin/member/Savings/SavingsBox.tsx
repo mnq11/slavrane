@@ -1,9 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-    FormControlLabel, Dialog,
-    DialogTitle, DialogContent, TextField,
-    DialogActions, Button, FormControl, FormHelperText, Switch
-} from '@material-ui/core';
+import {FormControlLabel, Button,  Switch} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Member, Savings} from '../../../../../../hooks/useMember';
@@ -11,6 +7,7 @@ import SavingsTableComponent from './SavingsTableComponent';
 import {createSaving, deleteSaving, getSavingsForMember, updateSaving} from '../../../../../../API/api';
 import {toast} from "react-toastify";
 import {useSliderSwitchStyles} from "../Lone/LoanBox.styles";
+import SavingsForm from "./SavingsForm";
 
 interface SavingsBoxProps {
     label: string;
@@ -144,77 +141,12 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                         Create New Savings
                     </Button>
 
-                    <Dialog open={open} onClose={() => setOpen(false)}>
-                        <DialogTitle>{editingSaving ? 'Edit Savings' : 'Create New Savings'}</DialogTitle>
-                        <DialogContent>
-                            <form onSubmit={formik.handleSubmit}>
-                                <FormControl fullWidth error={formik.touched.Amount && Boolean(formik.errors.Amount)}>
-                                    <TextField
-                                        id="Amount"
-                                        name="Amount"
-                                        label="Amount"
-                                        type="number"
-                                        value={formik.values.Amount}
-                                        onChange={formik.handleChange}
-                                    />
-                                    {formik.touched.Amount && formik.errors.Amount && (
-                                        <FormHelperText>{formik.errors.Amount}</FormHelperText>
-                                    )}
-                                </FormControl>
+                    <SavingsForm
+                        open={open}
+                        handleClose={() => setOpen(false)}
+                        formik={formik}
+                        isUpdating={Boolean(editingSaving)}                     />
 
-                                <FormControl fullWidth error={formik.touched.Date && Boolean(formik.errors.Date)}>
-                                    <TextField
-                                        id="Date"
-                                        name="Date"
-                                        label="Date"
-                                        type="date"
-                                        value={formik.values.Date}
-                                        onChange={formik.handleChange}
-                                    />
-                                    {formik.touched.Date && formik.errors.Date && (
-                                        <FormHelperText>{formik.errors.Date}</FormHelperText>
-                                    )}
-                                </FormControl>
-
-                                <FormControl fullWidth error={formik.touched.SavingsGoal && Boolean(formik.errors.SavingsGoal)}>
-                                    <TextField
-                                        id="SavingsGoal"
-                                        name="SavingsGoal"
-                                        label="Savings Goal"
-                                        type="number"
-                                        value={formik.values.SavingsGoal}
-                                        onChange={formik.handleChange}
-                                    />
-                                    {formik.touched.SavingsGoal && formik.errors.SavingsGoal && (
-                                        <FormHelperText>{formik.errors.SavingsGoal}</FormHelperText>
-                                    )}
-                                </FormControl>
-
-                                <FormControl fullWidth error={formik.touched.TargetDate && Boolean(formik.errors.TargetDate)}>
-                                    <TextField
-                                        id="TargetDate"
-                                        name="TargetDate"
-                                        label="Target Date"
-                                        type="date"
-                                        value={formik.values.TargetDate}
-                                        onChange={formik.handleChange}
-                                    />
-                                    {formik.touched.TargetDate && formik.errors.TargetDate && (
-                                        <FormHelperText>{formik.errors.TargetDate}</FormHelperText>
-                                    )}
-                                </FormControl>
-
-                                <DialogActions>
-                                    <Button color="primary" type="submit">
-                                        Save
-                                    </Button>
-                                    <Button onClick={() => setOpen(false)} color="primary">
-                                        Cancel
-                                    </Button>
-                                </DialogActions>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
                     <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings} handleDeleteSavings={handleDeleteSavings}/>
                 </div>
             )}
