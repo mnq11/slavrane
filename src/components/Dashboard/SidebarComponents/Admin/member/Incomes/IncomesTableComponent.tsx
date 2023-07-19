@@ -18,7 +18,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 interface IncomesTableProps {
     incomes: Income[];
     handleDeleteIncome: (incomeId: number) => void;
-    handleUpdateIncome: (incomeId: number, incomeData: Income) => void;
+    handleUpdateIncome: ( incomeData: Income) => void;
 }
 type SortDirection = 'asc' | 'desc';
 
@@ -114,7 +114,7 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
                                 <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
                                 <TableCell align="right">{income.Frequency}</TableCell>
                                 <TableCell align="right">
-                                    <IconButton onClick={() => handleUpdateIncome(income.IncomeID?? 0, income)}>
+                                    <IconButton onClick={() => handleUpdateIncome( income)}>
                                         <EditIcon />
                                     </IconButton>
                                     <IconButton onClick={() => handleDeleteIncome(income.IncomeID?? 0)}>

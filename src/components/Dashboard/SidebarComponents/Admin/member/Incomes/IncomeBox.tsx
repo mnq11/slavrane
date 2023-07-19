@@ -1,80 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    Checkbox, FormControlLabel, Dialog, DialogTitle,
-    DialogContent, TextField, DialogActions, Button, Select, MenuItem, Switch,
-    Grid, Paper, Box, IconButton, FormHelperText, FormControl, InputLabel
+    Dialog, DialogTitle,
+    DialogContent, Switch,
+    Grid, Box, IconButton, Card, CardContent, Typography
 } from '@material-ui/core';
-import { useFormik } from 'formik';
+import {makeStyles} from '@material-ui/core/styles';
+import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import CloseIcon from '@material-ui/icons/Close';
-import SaveIcon from '@material-ui/icons/Save';
-import { Member, Income } from "../../../../../../hooks/useMember";
+import {Member, Income} from "../../../../../../hooks/useMember";
 import IncomesTableComponent from "./IncomesTableComponent";
 import {getIncomesForMember, createIncome, deleteIncome, updateIncome} from "../../../../../../API/api";
-import {IncomeStyles} from "./Incom.styles";
+import {Divider} from "antd";
+import IncomeForm from "./IncomeForm";
 
-interface CheckboxProps {
+interface SwitchProps {
     label: string;
     checked: boolean;
     onChange: () => void;
     member: Member;
 }
-const incomeSources = ['Job', 'Business', 'Investment', 'Other'];
 
-const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    card: {
+        padding: theme.spacing(2),
+        color: theme.palette.text.secondary,
+    },
+    title: {
+        fontWeight: 'bold',
+        fontSize: '1.5rem',
+        marginBottom: theme.spacing(2),
+    },
+    switchBox: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: theme.spacing(2),
+    },
+    dialogAction: {
+        justifyContent: 'space-around',
+    },
+}));
+
+const sources = ['Source 1', 'Source 2', 'Source 3', 'Source 4', 'Source 5'];
+
+const IncomeBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [open, setOpen] = useState(false);
-    const [editingIncome, setEditingIncome] = useState<Income | null>(null);
-
-    const classes = IncomeStyles();
+    const classes = useStyles();
+    const [mode, setMode] = useState<'create' | 'update'>('create');
+    const [updatingIncome, setUpdatingIncome] = useState<Income | null>(null);
 
     const validationSchema = Yup.object({
         Source: Yup.string().required('Required'),
         Date: Yup.date().required('Required'),
-        Amount: Yup.number().typeError('Amount must be a number').required('Required'),
-        Recurring: Yup.string().required('Required'),
+        Amount: Yup.number()
+            .typeError('Amount must be a number')
+            .required('Required'),
+        Recurring: Yup.bool().required('Required'),
         Frequency: Yup.string().required('Required'),
     });
 
     const formik = useFormik({
-        initialValues: editingIncome || {
+        initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
-            Source: 'Default Source',
+            Source: sources[0],
             Date: new Date().toISOString().split('T')[0],
             Amount: 0,
-            Recurring: 'false',
+            Recurring: false,
             Frequency: 'One-time',
         },
         validationSchema,
         onSubmit: (values) => {
             const incomeData: Income = {
-                IncomeID: editingIncome ? editingIncome.IncomeID : undefined,
+                IncomeID: 0,
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Source: values.Source,
-                Amount: values.Amount,
+                Amount: Number(values.Amount),
                 Date: values.Date,
                 Recurring: values.Recurring,
-                Frequency: values.Frequency,
-
+                Frequency: values.Frequency
             };
 
-            if (editingIncome) {
-                updateIncome(incomeData)
-                    .then((updatedIncome) => {
-                        setIncomes(incomes.map(income => income.IncomeID === editingIncome!.IncomeID ? updatedIncome : income));
-                        setOpen(false);
-                        setEditingIncome(null); // clear the editing income
-                        toast.success('Income updated successfully');
-                    })
-                    .catch((error) => {
-                        toast.error(`Failed to update income: ${error.message}`);
-                    });
-            } else {
+            if (mode === 'create') {
                 createIncome(incomeData)
                     .then((newIncome) => {
                         newIncome.Date = newIncome.Date.split('T')[0];
@@ -85,17 +100,33 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
                     .catch((error) => {
                         toast.error(`Failed to create income: ${error.message}`);
                     });
+            } else if (mode === 'update' && updatingIncome) {
+                incomeData['IncomeID'] = updatingIncome.IncomeID; // make sure to pass IncomeID for update
+                updateIncome(incomeData)
+                    .then((updatedIncome) => {
+                        const index = incomes.findIndex((inc) => inc.IncomeID === updatedIncome.IncomeID);
+                        const newIncomes = [...incomes];
+                        newIncomes[index] = updatedIncome;
+                        setIncomes(newIncomes);
+                        setOpen(false);
+                        toast.success('Income updated successfully');
+                    })
+                    .catch((error) => {
+                        // Revert the change in local state if update fails
+                        const index = incomes.findIndex((inc) => inc.IncomeID === updatingIncome.IncomeID);
+                        const newIncomes = [...incomes];
+                        newIncomes[index] = incomes[index];
+                        setIncomes(newIncomes);
+                        toast.error(`Failed to update income: ${error.message}`);
+                    });
             }
         },
     });
 
-
     useEffect(() => {
         if (checked) {
             getIncomesForMember(member.MemberID)
-                .then((incomes) => {
-                    setIncomes(incomes);
-                })
+                .then(setIncomes)
                 .catch((error) => {
                     toast.error(`Failed to fetch incomes: ${error.message}`);
                 });
@@ -103,167 +134,93 @@ const IncomeBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }
     }, [checked, member.MemberID]);
 
     const handleNewIncome = () => {
+        setMode('create');
         setOpen(true);
+        formik.resetForm();
         toast.info('Creating a new income');
     };
-    const handleDeleteIncome = (incomeId: number) => {
-        deleteIncome(incomeId)
-            .then(() => {
-                setIncomes(incomes.filter(income => income.IncomeID !== incomeId));
-                if(editingIncome && editingIncome.IncomeID === incomeId){
-                    setOpen(false);
-                    setEditingIncome(null); // clear the editing income
-                }
-                toast.success('Income deleted successfully');
-            })
-            .catch((error) => {
-                toast.error(`Failed to delete income: ${error.message}`);
-            });
+
+    const handleUpdateIncome = (income: Income) => {
+        setOpen(true);
+        setMode('update');
+        setUpdatingIncome(income);
+
+        formik.setValues({
+            FamilyID: member?.FamilyID || 0,
+            MemberID: member?.MemberID || 0,
+            Source: income.Source,
+            Date: income.Date,
+            Amount: income.Amount,
+            Recurring: income.Recurring,
+            Frequency: income.Frequency,
+        });
     };
 
-    const handleUpdateIncome = async (incomeId: number, incomeData: Income) => {
-        setEditingIncome(incomeData);
-        setOpen(true);
+    const handleCloseDialog = () => {
+        setOpen(false);
+        toast.info('Income creation cancelled');
+    };
+
+    const handleDeleteIncome = (incomeId: number) => {
+        const index = incomes.findIndex((income) => income.IncomeID === incomeId);
+        if (index !== -1) {
+            deleteIncome(incomeId)
+                .then(() => {
+                    const newIncomes = [...incomes];
+                    newIncomes.splice(index, 1);
+                    setIncomes(newIncomes);
+                    toast.success('Income deleted successfully');
+                })
+                .catch((error) => {
+                    toast.error(`Failed to delete income: ${error.message}`);
+                });
+        }
     };
 
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                        <div className={classes.container}>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={checked}
-                                        onChange={onChange}
-                                        color="primary"
-                                        className={classes.switch}
-                                    />
-                                }
-                                label={label}
-                                labelPlacement="start"
-                                className={classes.label}
-                            />
-                        </div>
-                    </Paper>
-                </Grid>
-                {checked && (
-                    <Grid item xs={12}>
-                        <Paper className={classes.paper}>
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <h4>Incomes {member.MemberName}</h4>
-                                <IconButton color="primary" onClick={handleNewIncome}>
-                                    <AddCircleOutlineIcon />
-                                </IconButton>
+                    <Card className={classes.card}>
+                        <CardContent>
+                            <Box className={classes.switchBox}>
+                                <Typography variant="h5">{label}</Typography>
+                                <Switch
+                                    checked={checked}
+                                    onChange={onChange}
+                                    color="primary"
+                                />
                             </Box>
-
-                            <Dialog open={open} onClose={() => {
-                                setOpen(false);
-                                toast.info('Income creation cancelled');
-                            }}>
-                                <DialogTitle>Create New Income</DialogTitle>
-                                <DialogContent>
-                                    <form onSubmit={formik.handleSubmit}>
-                                        <FormControl variant="filled" fullWidth>
-                                            <InputLabel id="Source-label">Source</InputLabel>
-                                            <Select
-                                                labelId="Source-label"
-                                                id="Source"
-                                                name="Source"
-                                                value={formik.values.Source}
-                                                onChange={formik.handleChange}
-                                                error={formik.touched.Source && Boolean(formik.errors.Source)}
-                                            >
-                                                {incomeSources.map((source, index) => (
-                                                    <MenuItem value={source} key={index}>
-                                                        {source}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                            {formik.touched.Source && formik.errors.Source ? (
-                                                <FormHelperText>{formik.errors.Source}</FormHelperText>
-                                            ) : null}
-                                        </FormControl>
-
-                                        <TextField
-                                            fullWidth
-                                            id="Date"
-                                            name="Date"
-                                            label="Date"
-                                            type="date"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            value={formik.values.Date}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Date && Boolean(formik.errors.Date)}
-                                            helperText={formik.touched.Date && formik.errors.Date}
-                                        />
-                                        <TextField
-                                            fullWidth
-                                            id="Amount"
-                                            name="Amount"
-                                            label="Amount"
-                                            type="number"
-                                            value={formik.values.Amount}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Amount && Boolean(formik.errors.Amount)}
-                                            helperText={formik.touched.Amount && formik.errors.Amount}
-                                        />
-
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={formik.values.Recurring === 'true'}
-                                                    onChange={(event) => {
-                                                        formik.setFieldValue("Recurring", event.target.checked ? 'true' : 'false');
-                                                    }}
-                                                    name="Recurring"
-                                                    color="primary"
-                                                />
-                                            }
-                                            label="Recurring"
-                                        />
-                                        <Select
-                                            fullWidth
-                                            id="Frequency"
-                                            name="Frequency"
-                                            value={formik.values.Frequency}
-                                            onChange={formik.handleChange}
-                                            error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}
-                                        >
-                                            <MenuItem value={'One-time'}>One-time</MenuItem>
-                                            <MenuItem value={'Daily'}>Daily</MenuItem>
-                                            <MenuItem value={'Weekly'}>Weekly</MenuItem>
-                                            <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                                            <MenuItem value={'Annual'}>Annual</MenuItem>
-                                        </Select>
-                                        {formik.touched.Frequency && formik.errors.Frequency ? (
-                                            <div>{formik.errors.Frequency}</div>
-                                        ) : null}
-                                        <DialogActions className={classes.dialogAction}>
-                                            <IconButton color="primary" onClick={() => {
-                                                setOpen(false);
-                                                toast.info('Income creation cancelled');
-                                            }}>
-                                                <CloseIcon />
-                                            </IconButton>
-                                            <Button type="submit" color="primary" startIcon={<SaveIcon />}>
-                                                Save
-                                            </Button>
-                                        </DialogActions>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
-
-                            <IncomesTableComponent incomes={incomes} handleUpdateIncome={handleUpdateIncome} handleDeleteIncome={handleDeleteIncome} />
-                        </Paper>
-                    </Grid>
-                )}
+                            {checked && (
+                                <Box>
+                                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="h6">Incomes {member.MemberName}</Typography>
+                                        <IconButton color="primary" onClick={handleNewIncome}>
+                                            <AddCircleOutlineIcon/>
+                                        </IconButton>
+                                    </Box>
+                                    <Divider/>
+                                    <IncomesTableComponent incomes={incomes} handleUpdateIncome={handleUpdateIncome}
+                                                           handleDeleteIncome={handleDeleteIncome}/>
+                                    <Dialog open={open} onClose={handleNewIncome}>
+                                        <DialogTitle>{mode === 'create' ? 'Create New Income' : 'Update Income'}</DialogTitle>
+                                        <DialogContent>
+                                            <IncomeForm
+                                                formik={formik}
+                                                mode={mode}
+                                                handleCloseDialog={handleCloseDialog}
+                                                sources={sources}
+                                            />
+                                        </DialogContent>
+                                    </Dialog>
+                                </Box>
+                            )}
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
         </div>
     );
-};
+}
 
 export default IncomeBox;

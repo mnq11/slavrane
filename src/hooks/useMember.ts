@@ -35,7 +35,7 @@ export interface Income {
     Source: string;
     Amount: number;
     Date: string;
-    Recurring: string;
+    Recurring: boolean;
     Frequency: string;
     createdAt?: string;
     updatedAt?: string;
