@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
-import {Dialog, DialogTitle, DialogContent, Switch,
-    Button, Box, Typography, Grid, CardContent, Card} from '@material-ui/core';
+import React, {useEffect, useState} from 'react';
+import {
+    Dialog, DialogTitle, DialogContent, Switch,
+    Button, Box, Typography, Grid, CardContent, Card
+} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {useSnackbar} from 'notistack';
-import {Member, Loan, } from '../../../../../../hooks/useMember';
+import {Member, Loan,} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
-import {createLoan, deleteLoan, updateLoan} from '../../../../../../API/api';
+import {createLoan, deleteLoan, getLoansForMember, getResourcesForMember, updateLoan} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
 import LoanForm from "./LoanForm";
 import {useLoanBoxStyles} from "./LoanBox.styles";
@@ -52,7 +54,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         }),
         onSubmit: (values) => {
             const loanData = {
-                ...(editingLoan && { LoanID: editingLoan.LoanID }),
+                ...(editingLoan && {LoanID: editingLoan.LoanID}),
                 FamilyID: member.FamilyID,
                 MemberID: member.MemberID,
                 Amount: values.LoanAmount,
@@ -101,7 +103,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         deleteLoan(loanId)
             .then(() => {
                 setLoans(loans.filter(loan => loan.LoanID !== loanId));
-                if(editingLoan && editingLoan.LoanID === loanId){
+                if (editingLoan && editingLoan.LoanID === loanId) {
                     setOpen(false);
                     setEditingLoan(null);
                 }
@@ -116,45 +118,56 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         const newLoanAmount = formik.values.LoanAmount + change;
         formik.setFieldValue('LoanAmount', newLoanAmount < 1000 ? 1000 : newLoanAmount);
     };
-    return (
-        <Grid item xs={12}>
-            <Card className={classes.card}>
-                <CardContent>
-                    <Box className={classes.switchBox}>
-                        <Typography variant="h5">{label}</Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={onChange}
-                            color="primary"
-                        />
-                    </Box>
-                    {checked && (
-                        <>
-                            <Box>
-                                <Box display="flex" justifyContent="space-between" alignItems="center">
-                                    <Typography variant="h6" >Loans {member.MemberID}</Typography>
-                                    <Button variant="contained" color="primary" onClick={handleNewLoan} >
-                                        Create New Loan
-                                    </Button>
-                                </Box>
-                                <Divider/>
-                                <Dialog open={open} onClose={() => setOpen(false)} >
-                                    <DialogTitle>Create New Loan</DialogTitle>
-                                    <DialogContent>
-                                        <LoanForm
-                                            formik={formik}
-                                            handleLoanAmountChange={handleLoanAmountChange}
-                                            setOpen={setOpen} />
-                                    </DialogContent>
-                                </Dialog>
-                                <LoansTableComponent loans={loans} handleUpdateLoan={handleUpdateLoan} handleDeleteLoan={handleDeleteLoan} />
-                            </Box>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
-        </Grid>
-    );
-};
+    useEffect(() => {
+        getLoansForMember(member.MemberID)
+            .then((loans) => {
+                setLoans(loans);
+            })
+            .catch((error) => {
+                enqueueSnackbar(`Failed to fetch loans: ${error.message}`, {variant: 'error'});
+            });
+    }, [member.MemberID, enqueueSnackbar]);
 
-export default LoanBox;
+        return (
+            <Grid item xs={12}>
+                <Card className={classes.card}>
+                    <CardContent>
+                        <Box className={classes.switchBox}>
+                            <Typography variant="h5">{label}</Typography>
+                            <Switch
+                                checked={checked}
+                                onChange={onChange}
+                                color="primary"
+                            />
+                        </Box>
+                        {checked && (
+                            <>
+                                <Box>
+                                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="h6">Loans {member.MemberID}</Typography>
+                                        <Button variant="contained" color="primary" onClick={handleNewLoan}>
+                                            Create New Loan
+                                        </Button>
+                                    </Box>
+                                    <Divider/>
+                                    <Dialog open={open} onClose={() => setOpen(false)}>
+                                        <DialogTitle>Create New Loan</DialogTitle>
+                                        <DialogContent>
+                                            <LoanForm
+                                                formik={formik}
+                                                handleLoanAmountChange={handleLoanAmountChange}
+                                                setOpen={setOpen}/>
+                                        </DialogContent>
+                                    </Dialog>
+                                    <LoansTableComponent loans={loans} handleUpdateLoan={handleUpdateLoan}
+                                                         handleDeleteLoan={handleDeleteLoan}/>
+                                </Box>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+            </Grid>
+        );
+    };
+
+    export default LoanBox;
