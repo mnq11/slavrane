@@ -1,6 +1,6 @@
 // SkillBox.tsx
 import React, {useState, useEffect} from 'react';
-import {Button, Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
+import {Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
 import {useSnackbar} from 'notistack';
 import {Skill, Member} from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';

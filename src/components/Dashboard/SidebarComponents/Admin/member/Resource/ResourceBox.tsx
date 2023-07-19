@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Dialog, DialogTitle,
-    DialogContent, Button, Switch, Tooltip, Box, Typography, Grid, Card, CardContent,
+    DialogContent, Button, Switch, Box, Typography, Grid, Card, CardContent,
 } from '@material-ui/core';
 import {Resource, Member} from '../../../../../../hooks/useMember';
 import ResourcesTableComponent from './ResourcesTableComponent';

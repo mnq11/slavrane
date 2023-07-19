@@ -16,6 +16,7 @@ import Savings from "./SidebarComponents/User/Savings";
 import AdminPanel from "./SidebarComponents/Admin/AdminPanel";
 import Analyst from "./SidebarComponents/Analyst/Analyst";
 import Moderator from "./SidebarComponents/Moderator/Moderator";
+import Watcher from "./SidebarComponents/User/Watcher";
 
 interface SidebarProps {
     open: boolean;
@@ -40,6 +41,8 @@ const Sidebar: React.FC<SidebarProps> = ({open, handleDrawerClose, onContentChan
         {label: 'Expense', content: <Expense member={member} />},
         {label: 'Savings', content: <Savings member={member} />},
         {label: 'Member Settings', content: <UserSettings member={member}/>},
+        {label: 'Watcher', content: <Watcher />},
+
         // Add more items here
     ] : [
         {label: 'Welcome', content: <Welcome member={member} />},
