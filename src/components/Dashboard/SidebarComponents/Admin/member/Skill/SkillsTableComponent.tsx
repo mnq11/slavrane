@@ -19,20 +19,6 @@ interface SkillsTableComponentProps {
     handleDeleteSkill: (skillId: number) => void;
     handleUpdateSkill: (skillId: number, skillData: Skill) => void;
 }
-
-interface HeadCell {
-    id: keyof Skill;
-    label: string;
-}
-
-const headCells: HeadCell[] = [
-    { id: 'SkillID', label: 'Skill ID' },
-    { id: 'SkillName', label: 'Skill Name' },
-    { id: 'SkillLevel', label: 'Skill Level' },
-    { id: 'DateAcquired', label: 'Date Acquired' },
-    { id: 'Certification', label: 'Certification' }
-];
-
 const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills,handleDeleteSkill,handleUpdateSkill }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Skill>('SkillID');
@@ -83,32 +69,33 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills,hand
             <Table>
                 <TableHead>
                     <TableRow>
-                        {headCells.map((cell) => (
-                            <TableCell key={cell.id}>
-                                <TableSortLabel
-                                    active={orderBy === cell.id}
-                                    direction={orderBy === cell.id ? order : 'asc'}
-                                    onClick={() => handleSortRequest(cell.id)}
-                                >
-                                    {cell.label}
-                                </TableSortLabel>
-                            </TableCell>
-                        ))}
+                       <TableCell>  <TableSortLabel  active={orderBy === 'SkillName'} direction={orderBy === 'SkillName' ? order : 'asc'} onClick={() => handleSortRequest('SkillName')}>
+                            Skill Name
+                        </TableSortLabel></TableCell>
+                        <TableCell>  <TableSortLabel  active={orderBy === 'SkillLevel'} direction={orderBy === 'SkillLevel' ? order : 'asc'} onClick={() => handleSortRequest('SkillLevel')}>
+                            Skill Level
+                        </TableSortLabel></TableCell>
+                        <TableCell>  <TableSortLabel  active={orderBy === 'DateAcquired'} direction={orderBy === 'DateAcquired' ? order : 'asc'} onClick={() => handleSortRequest('DateAcquired')}>
+                            Date Acquired
+                        </TableSortLabel></TableCell>
+                        <TableCell>  <TableSortLabel  active={orderBy === 'Certification'} direction={orderBy === 'Certification' ? order : 'asc'} onClick={() => handleSortRequest('Certification')}>
+                            Certification
+                        </TableSortLabel></TableCell>
+                        <TableCell align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {paginatedSkills.map((skill) => (
                         <TableRow key={skill.SkillID}>
-                            <TableCell>{skill.SkillID}</TableCell>
                             <TableCell>{skill.SkillName}</TableCell>
                             <TableCell>{skill.SkillLevel}</TableCell>
                             <TableCell>{skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{skill.Certification}</TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => handleUpdateSkill(skill.SkillID?? 0, skill)}>
+                                <IconButton color={"primary"} onClick={() => handleUpdateSkill(skill.SkillID?? 0, skill)}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteSkill(skill.SkillID?? 0)}>
+                                <IconButton color={"secondary"} onClick={() => handleDeleteSkill(skill.SkillID?? 0)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>

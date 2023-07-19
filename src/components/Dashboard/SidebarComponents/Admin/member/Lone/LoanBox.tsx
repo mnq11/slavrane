@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import {useSnackbar} from 'notistack';
 import {Member, Loan,} from '../../../../../../hooks/useMember';
 import LoansTableComponent from './LoansTableComponent';
-import {createLoan, deleteLoan, getLoansForMember, getResourcesForMember, updateLoan} from '../../../../../../API/api';
+import {createLoan, deleteLoan, getLoansForMember, updateLoan} from '../../../../../../API/api';
 import {toast} from 'react-toastify';
 import LoanForm from "./LoanForm";
 import {useLoanBoxStyles} from "./LoanBox.styles";

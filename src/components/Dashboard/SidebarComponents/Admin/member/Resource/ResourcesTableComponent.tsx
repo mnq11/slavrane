@@ -7,7 +7,6 @@ import {
     TableHead,
     TableRow,
     Paper,
-    TableSortLabel,
     TablePagination, IconButton
 } from '@material-ui/core';
 import { Resource} from '../../../../../../hooks/useMember';
@@ -25,15 +24,7 @@ interface HeadCell {
     label: string;
 }
 
-const headCells: HeadCell[] = [
-    { id: 'ResourceID', label: 'Resource ID' },
-    { id: 'MemberID', label: 'Member ID' },
-    { id: 'FamilyID', label: 'Family ID' },
-    { id: 'ResourceName', label: 'Resource Name' },
-    { id: 'ResourceValue', label: 'Resource Value' },
-    { id: 'ResourceDescription', label: 'Resource Description' },
-    { id: 'DateAcquired', label: 'Date Acquired' }
-];
+
 
 const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources,handleDeleteResources,handleUpdateResources }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -88,25 +79,17 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
             <Table>
                 <TableHead>
                     <TableRow>
-                        {headCells.map((cell) => (
-                            <TableCell key={cell.id}>
-                                <TableSortLabel
-                                    active={orderBy === cell.id}
-                                    direction={orderBy === cell.id ? order : 'asc'}
-                                    onClick={() => handleSortRequest(cell.id)}
-                                >
-                                    {cell.label}
-                                </TableSortLabel>
-                            </TableCell>
-                        ))}
+                        <TableCell onClick={() => handleSortRequest('ResourceName')}>Resource Name</TableCell>
+                        <TableCell onClick={() => handleSortRequest('ResourceValue')}>Resource Value</TableCell>
+                        <TableCell onClick={() => handleSortRequest('ResourceDescription')}>Resource Description</TableCell>
+                        <TableCell onClick={() => handleSortRequest('DateAcquired')}>Date Acquired</TableCell>
+                        <TableCell align="right">Actions</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {paginatedResources.map((resource) => (
                         <TableRow key={resource.ResourceID}>
-                            <TableCell>{resource.ResourceID}</TableCell>
-                            <TableCell>{resource.MemberID}</TableCell>
-                            <TableCell>{resource.FamilyID}</TableCell>
                             <TableCell>{resource.ResourceName}</TableCell>
                             <TableCell>{resource.ResourceValue}</TableCell>
                             <TableCell>{resource.ResourceDescription}</TableCell>
@@ -116,10 +99,10 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
                                     : ''}
                             </TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => handleUpdateResources(resource.ResourceID?? 0, resource)}>
+                                <IconButton color={"primary"} onClick={() => handleUpdateResources(resource.ResourceID?? 0, resource)}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteResources(resource.ResourceID?? 0)}>
+                                <IconButton color={"secondary"} onClick={() => handleDeleteResources(resource.ResourceID?? 0)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>

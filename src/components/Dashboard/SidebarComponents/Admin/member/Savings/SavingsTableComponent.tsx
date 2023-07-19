@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
     Table,
     TableBody,
@@ -11,7 +11,7 @@ import {
     TableFooter,
     TablePagination, IconButton
 } from '@material-ui/core';
-import { Savings} from '../../../../../../hooks/useMember';
+import {Savings} from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -20,22 +20,11 @@ interface SavingsTableComponentProps {
     handleDeleteSavings: (savingsId: number) => void;
     handleUpdateSavings: (savingsId: number, savingsData: Savings) => void;
 }
-
-interface HeadCell {
-    id: keyof Savings;
-    label: string;
-}
-
-const headCells: HeadCell[] = [
-    { id: 'SavingsID', label: 'Savings ID' },
-    { id: 'FamilyID', label: 'Family ID' },
-    { id: 'Amount', label: 'Amount' },
-    { id: 'Date', label: 'Date' },
-    { id: 'SavingsGoal', label: 'Savings Goal' },
-    { id: 'TargetDate', label: 'Target Date' },
-];
-
-const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,handleDeleteSavings, handleUpdateSavings }) => {
+const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({
+                                                                         savings,
+                                                                         handleDeleteSavings,
+                                                                         handleUpdateSavings
+                                                                     }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Savings>('SavingsID');
     const [page, setPage] = useState(0);
@@ -50,10 +39,10 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,h
         let aVal: string | number | Date = a[orderBy] || '';
         let bVal: string | number | Date = b[orderBy] || '';
 
-        if(orderBy === 'Date' || orderBy === 'TargetDate') {
+        if (orderBy === 'Date' || orderBy === 'TargetDate') {
             aVal = new Date(aVal as string).getTime();
             bVal = new Date(bVal as string).getTime();
-        } else if(orderBy === 'Amount') {
+        } else if (orderBy === 'Amount') {
             aVal = parseFloat(aVal.toString());
             bVal = parseFloat(bVal.toString());
         } else {
@@ -61,7 +50,7 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,h
             bVal = bVal.toString();
         }
 
-        if(typeof aVal === 'string' && typeof bVal === 'string') {
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
             return aVal.localeCompare(bVal) * (order === 'asc' ? 1 : -1);
         } else {
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
@@ -69,41 +58,54 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,h
     });
 
 
-
-
     return (
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
                     <TableRow>
-                        {headCells.map((cell) => (
-                            <TableCell key={cell.id}>
-                                <TableSortLabel
-                                    active={orderBy === cell.id}
-                                    direction={orderBy === cell.id ? order : 'asc'}
-                                    onClick={() => handleSortRequest(cell.id)}
-                                >
-                                    {cell.label}
-                                </TableSortLabel>
-                            </TableCell>
-                        ))}
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Amount'} direction={orderBy === 'Amount' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Amount')}
+                        >
+                            Amount
+                        </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={orderBy === 'Date'} direction={orderBy === 'Date' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Date')}
+                        >
+                            Date
+                        </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={orderBy === 'SavingsGoal'} direction={orderBy === 'SavingsGoal' ? order : 'asc'}
+                            onClick={() => handleSortRequest('SavingsGoal')}
+                        >
+                            Savings Goal
+                        </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={orderBy === 'TargetDate'} direction={orderBy === 'TargetDate' ? order : 'asc'}
+                            onClick={() => handleSortRequest('TargetDate')}
+                        >
+                            Target Date
+                        </TableSortLabel></TableCell>
+                        <TableCell align="right">Actions</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {sortedSavings.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((saving) => (
                         <TableRow key={saving.SavingsID}>
-                            <TableCell>{saving.SavingsID}</TableCell>
-                            <TableCell>{saving.FamilyID}</TableCell>
                             <TableCell>{saving.Amount}</TableCell>
-                            <TableCell>{saving.Date? new Date(saving.Date).toISOString().split('T')[0] : ''}</TableCell>
+                            <TableCell>{saving.Date ? new Date(saving.Date).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{saving.SavingsGoal}</TableCell>
-                            <TableCell>{new Date(saving.TargetDate).toISOString().slice(0,10)}</TableCell>
+                            <TableCell>{new Date(saving.TargetDate).toISOString().slice(0, 10)}</TableCell>
                             <TableCell align="right">
-                                <IconButton onClick={() => handleUpdateSavings(saving.SavingsID?? 0, saving)}>
-                                    <EditIcon />
+                                <IconButton color="primary"
+                                            onClick={() => handleUpdateSavings(saving.SavingsID ?? 0, saving)}>
+                                    <EditIcon/>
                                 </IconButton>
-                                <IconButton onClick={() => handleDeleteSavings(saving.SavingsID?? 0)}>
-                                    <DeleteIcon />
+                                <IconButton color="secondary"
+                                            onClick={() => handleDeleteSavings(saving.SavingsID ?? 0)}>
+                                    <DeleteIcon/>
                                 </IconButton>
                             </TableCell></TableRow>
                     ))}
@@ -125,7 +127,6 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({ savings,h
                         />
                     </TableRow>
                 </TableFooter>
-
             </Table>
         </TableContainer>
     );

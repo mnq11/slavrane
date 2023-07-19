@@ -1,4 +1,3 @@
-// IncomesTableComponent.tsx
 import React, { useState } from 'react';
 import {
     Table,
@@ -9,7 +8,8 @@ import {
     TableRow,
     Paper,
     TablePagination,
-    TableSortLabel, IconButton,
+    TableSortLabel,
+    IconButton,
 } from '@material-ui/core';
 import { Income } from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
@@ -18,23 +18,14 @@ import DeleteIcon from "@material-ui/icons/Delete";
 interface IncomesTableProps {
     incomes: Income[];
     handleDeleteIncome: (incomeId: number) => void;
-    handleUpdateIncome: ( incomeData: Income) => void;
+    handleUpdateIncome: (incomeData: Income) => void;
 }
+
 type SortDirection = 'asc' | 'desc';
 
-interface HeadCell {
-    id: keyof Income;
-    label: string;
-    sortable: boolean;
-}
 
-const headCells: HeadCell[] = [
-    { id: 'Source', label: 'Source', sortable: true },
-    { id: 'Amount', label: 'Amount', sortable: true },
-    { id: 'Date', label: 'Date', sortable: true },
-    { id: 'Recurring', label: 'Recurring', sortable: true },
-    { id: 'Frequency', label: 'Frequency', sortable: true },
-];
+
+
 
 const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDeleteIncome, handleUpdateIncome }) => {
     const [page, setPage] = useState(0);
@@ -60,79 +51,65 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
         }
     };
 
-    const sortedIncomes = [...incomes].sort((a, b) => {
+    const sortBy = (a: Income, b: Income) => {
         const valueA = a[sortColumn];
         const valueB = b[sortColumn];
 
-        if (valueA === undefined || valueB === undefined) return 0;
-
-        if (sortDirection === 'asc') {
-            if (valueA < valueB) return -1;
-            if (valueA > valueB) return 1;
+        if (typeof valueA === 'number' && typeof valueB === 'number') {
+            return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+        } else if (typeof valueA === 'string' && typeof valueB === 'string') {
+            return sortDirection === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+        } else if (typeof valueA === 'boolean' && typeof valueB === 'boolean') {
+            return sortDirection === 'asc' ? Number(valueA) - Number(valueB) : Number(valueB) - Number(valueA);
         } else {
-            if (valueA > valueB) return -1;
-            if (valueA < valueB) return 1;
+            return 0;
         }
+    };
 
-        return 0;
-    });
+
+    const sortedIncomes = [...incomes].sort(sortBy);
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, sortedIncomes.length - page * rowsPerPage);
 
     return (
-        <>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {headCells.map((headCell) => (
-                                <TableCell key={headCell.id} sortDirection={sortColumn === headCell.id ? sortDirection : false}>
-                                    {headCell.sortable ? (
-                                        <TableSortLabel
-                                            active={sortColumn === headCell.id}
-                                            direction={sortColumn === headCell.id ? sortDirection : 'asc'}
-                                            onClick={() => handleSort(headCell.id)}
-                                        >
-                                            {headCell.label}
-                                        </TableSortLabel>
-                                    ) : (
-                                        headCell.label
-                                    )}
-                                </TableCell>
-                            ))}
-                            <TableCell align="right">Actions</TableCell>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>  <TableSortLabel active={sortColumn === 'Source'} direction={sortDirection} onClick={() => handleSort('Source')}>Source</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Amount'} direction={sortDirection} onClick={() => handleSort('Amount')}>Amount</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Date'} direction={sortDirection} onClick={() => handleSort('Date')}>Date</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Recurring'} direction={sortDirection} onClick={() => handleSort('Recurring')}>Recurring</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Frequency'} direction={sortDirection} onClick={() => handleSort('Frequency')}>Frequency</TableSortLabel></TableCell>
+                        <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {sortedIncomes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((income) => (
+                        <TableRow key={income.IncomeID}>
+                            <TableCell component="th" scope="row">{income.Source}</TableCell>
+                            <TableCell align="right">{income.Amount}</TableCell>
+                            <TableCell align="right">{income.Date? new Date(income.Date).toISOString().split('T')[0] : ''}</TableCell>
+                            <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
+                            <TableCell align="right">{income.Frequency}</TableCell>
+
+                            <TableCell align="right">
+                                <IconButton color="primary" onClick={() => handleUpdateIncome(income)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton color={"secondary"} onClick={() => handleDeleteIncome(income.IncomeID ?? 0)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell>
                         </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedIncomes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((income) => (
-                            <TableRow key={income.IncomeID}>
-                                <TableCell component="th" scope="row">
-                                    {income.Source}
-                                </TableCell>
-                                <TableCell align="right">{income.Amount}</TableCell>
-                                <TableCell align="right">{income.Date? new Date(income.Date).toISOString().split('T')[0] : ''}</TableCell>
-                                <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
-                                <TableCell align="right">{income.Frequency}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton onClick={() => handleUpdateIncome( income)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDeleteIncome(income.IncomeID?? 0)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
+                    ))}
+                    {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -142,7 +119,7 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </>
+        </TableContainer>
     );
 };
 

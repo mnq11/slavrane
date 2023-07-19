@@ -11,8 +11,8 @@ import {
     TablePagination, IconButton,
 } from '@material-ui/core';
 import {Loan} from '../../../../../../hooks/useMember';
-import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 interface LoansTableComponentProps {
     loans: Loan[];
@@ -27,9 +27,6 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-    { id: 'LoanID', label: 'Loan ID' },
-    { id: 'MemberID', label: 'Member ID' },
-    { id: 'FamilyID', label: 'Family ID' },
     { id: 'Amount', label: 'Loan Amount' },
     { id: 'InterestRate', label: 'Interest Rate' },
     { id: 'StartDate', label: 'Start Date' },
@@ -79,25 +76,81 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans, handle
                 <Table>
                     <TableHead>
                         <TableRow>
-                            {headCells.map((cell) => (
-                                <TableCell key={cell.id}>
-                                    <TableSortLabel
-                                        active={orderBy === cell.id}
-                                        direction={orderBy === cell.id ? order : 'asc'}
-                                        onClick={() => handleSortRequest(cell.id)}
-                                    >
-                                        {cell.label}
-                                    </TableSortLabel>
-                                </TableCell>
-                            ))}
+
+                            <TableCell key="Amount" sortDirection={orderBy === 'Amount' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'Amount'}
+                                    direction={orderBy === 'Amount' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('Amount')}
+                                >
+                                    Loan Amount
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="InterestRate" sortDirection={orderBy === 'InterestRate' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'InterestRate'}
+                                    direction={orderBy === 'InterestRate' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('InterestRate')}
+                                >
+                                    Interest Rate
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="StartDate" sortDirection={orderBy === 'StartDate' ? order : false}>
+                                <TableSortLabel
+
+                                    active={orderBy === 'StartDate'}
+                                    direction={orderBy === 'StartDate' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('StartDate')}
+                                >
+                                    Start Date
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="DueDate" sortDirection={orderBy === 'DueDate' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'DueDate'}
+                                    direction={orderBy === 'DueDate' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('DueDate')}
+                                >
+                                    Due Date
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="Lender" sortDirection={orderBy === 'Lender' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'Lender'}
+                                    direction={orderBy === 'Lender' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('Lender')}
+                                >
+                                    Lender
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="LoanPurpose" sortDirection={orderBy === 'LoanPurpose' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'LoanPurpose'}
+                                    direction={orderBy === 'LoanPurpose' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('LoanPurpose')}
+                                >
+                                    Loan Purpose
+                                </TableSortLabel>
+
+                            </TableCell>
+                            <TableCell key="RepaymentStatus" sortDirection={orderBy === 'RepaymentStatus' ? order : false}>
+                                <TableSortLabel
+                                    active={orderBy === 'RepaymentStatus'}
+                                    direction={orderBy === 'RepaymentStatus' ? order : 'asc'}
+                                    onClick={() => handleSortRequest('RepaymentStatus')}
+                                >
+                                    Repayment Status
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell key="Actions">
+                                Actions
+                            </TableCell>
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {sortedLoans.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((loan) => (
                             <TableRow key={loan.LoanID}>
-                                <TableCell>{loan.LoanID}</TableCell>
-                                <TableCell>{loan.MemberID}</TableCell>
-                                <TableCell>{loan.FamilyID}</TableCell>
                                 <TableCell>{loan.Amount}</TableCell>
                                 <TableCell>{loan.InterestRate}</TableCell>
                                 <TableCell>{loan.StartDate? new Date(loan.StartDate).toISOString().split('T')[0] : ''}</TableCell>
@@ -106,16 +159,15 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans, handle
                                 <TableCell>{loan.LoanPurpose}</TableCell>
                                 <TableCell>{loan.RepaymentStatus}</TableCell>
                                 <TableCell>
-                                    <IconButton onClick={() => handleUpdateLoan(loan.LoanID?? 0, loan)}>
+                                    <IconButton color="primary"  onClick={() => handleUpdateLoan(loan.LoanID?? 0, loan)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDeleteLoan(loan.LoanID?? 0)}>
+                                    <IconButton color="secondary" onClick={() => handleDeleteLoan(loan.LoanID?? 0)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}
-
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 53 * emptyRows }}>
                                 <TableCell colSpan={headCells.length} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Table,
     TableBody,
@@ -10,7 +10,7 @@ import {
     TableSortLabel,
     TablePagination, IconButton
 } from '@material-ui/core';
-import { Expense } from "../../../../../../hooks/useMember";
+import {Expense} from "../../../../../../hooks/useMember";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
@@ -26,17 +26,17 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-    { id: 'ExpenseID', label: 'Expense ID' },
-    { id: 'FamilyID', label: 'Family ID' },
-    { id: 'MemberID', label: 'Member ID' },
-    { id: 'Category', label: 'Category' },
-    { id: 'Amount', label: 'Amount' },
-    { id: 'Date', label: 'Date' },
-    { id: 'Recurring', label: 'Recurring' },
-    { id: 'Frequency', label: 'Frequency' },
+    {id: 'ExpenseID', label: 'Expense ID'},
+    {id: 'FamilyID', label: 'Family ID'},
+    {id: 'MemberID', label: 'Member ID'},
+    {id: 'Category', label: 'Category'},
+    {id: 'Amount', label: 'Amount'},
+    {id: 'Date', label: 'Date'},
+    {id: 'Recurring', label: 'Recurring'},
+    {id: 'Frequency', label: 'Frequency'},
 ];
 
-const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpdate, onDelete }) => {
+const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpdate, onDelete}) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [orderBy, setOrderBy] = useState<keyof Expense>('ExpenseID');
     const [page, setPage] = useState(0);
@@ -52,17 +52,17 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
         let aVal = a[orderBy];
         let bVal = b[orderBy];
 
-        if(orderBy === 'Date') {
+        if (orderBy === 'Date') {
             aVal = typeof aVal === "string" ? new Date(aVal).getTime() : 0;
             bVal = typeof bVal === "string" ? new Date(bVal).getTime() : 0;
-        } else if(orderBy === 'Amount') {
+        } else if (orderBy === 'Amount') {
             if (typeof aVal === "string") {
                 aVal = parseFloat(aVal);
             }
             if (typeof bVal === "string") {
                 bVal = parseFloat(bVal);
             }
-        } else if(orderBy === 'Recurring') {
+        } else if (orderBy === 'Recurring') {
             aVal = aVal === true ? 1 : 0;
             bVal = bVal === true ? 1 : 0;
         }
@@ -70,16 +70,15 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
         aVal = aVal ?? 0;
         bVal = bVal ?? 0;
 
-        if(aVal < bVal) {
+        if (aVal < bVal) {
             return order === 'asc' ? -1 : 1;
         }
-        if(aVal > bVal) {
+        if (aVal > bVal) {
             return order === 'asc' ? 1 : -1;
         }
 
         return 0;
     });
-
 
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -96,17 +95,45 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
             <Table>
                 <TableHead>
                     <TableRow>
-                        {headCells.slice(3).map((cell) => (
-                            <TableCell key={cell.id}>
-                                <TableSortLabel
-                                    active={orderBy === cell.id}
-                                    direction={orderBy === cell.id ? order : 'asc'}
-                                    onClick={() => handleSortRequest(cell.id)}
-                                >
-                                    {cell.label}
-                                </TableSortLabel>
-                            </TableCell>
-                        ))}
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Category'}
+                            direction={orderBy === 'Category' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Category')}
+                        >
+                            Category
+                        </TableSortLabel></TableCell>
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Amount'}
+                            direction={orderBy === 'Amount' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Amount')}
+                        >
+                            Amount
+                        </TableSortLabel></TableCell>
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Date'}
+                            direction={orderBy === 'Date' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Date')}
+                        >
+                            Date
+                        </TableSortLabel></TableCell>
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Recurring'}
+                            direction={orderBy === 'Recurring' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Recurring')}
+                        >
+                            Recurring
+                        </TableSortLabel></TableCell>
+                        <TableCell> <TableSortLabel
+                            active={orderBy === 'Frequency'}
+                            direction={orderBy === 'Frequency' ? order : 'asc'}
+                            onClick={() => handleSortRequest('Frequency')}
+
+                        >
+                            Frequency
+                        </TableSortLabel></TableCell>
+
+
+                        <TableCell>Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -119,10 +146,10 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({ expenses, onUpd
                             <TableCell>{expense.Frequency}</TableCell>
                             <TableCell>
                                 <IconButton color="primary" onClick={() => onUpdate(expense)}>
-                                    <EditIcon />
+                                    <EditIcon/>
                                 </IconButton>
                                 <IconButton color="secondary" onClick={() => onDelete(expense.ExpenseID)}>
-                                    <DeleteIcon />
+                                    <DeleteIcon/>
                                 </IconButton>
                             </TableCell>
                         </TableRow>
