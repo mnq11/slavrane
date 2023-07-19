@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
+import {Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Member, Tasks} from "../../../../../../hooks/useMember";
