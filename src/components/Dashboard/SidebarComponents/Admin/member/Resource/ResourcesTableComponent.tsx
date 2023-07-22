@@ -19,12 +19,6 @@ interface ResourcesTableComponentProps {
     handleUpdateResources: (resourceId: number, resourceData: Resource) => void;
 }
 
-interface HeadCell {
-    id: keyof Resource;
-    label: string;
-}
-
-
 
 const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resources,handleDeleteResources,handleUpdateResources }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');

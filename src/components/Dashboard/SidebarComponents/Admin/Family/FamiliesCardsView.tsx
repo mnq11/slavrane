@@ -64,7 +64,7 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
             }
         };
 
-        fetchFamilies();
+        fetchFamilies().then(r => r);
     }, [setLoading]);
 
 

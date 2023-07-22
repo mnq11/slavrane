@@ -16,7 +16,7 @@ import Savings from "./SidebarComponents/User/Savings";
 import AdminPanel from "./SidebarComponents/Admin/AdminPanel";
 import Analyst from "./SidebarComponents/Analyst/Analyst";
 import Moderator from "./SidebarComponents/Moderator/Moderator";
-import Watcher from "./SidebarComponents/User/Watcher";
+import Watcher from "./SidebarComponents/User/watcher/StockPrice";
 
 interface SidebarProps {
     open: boolean;

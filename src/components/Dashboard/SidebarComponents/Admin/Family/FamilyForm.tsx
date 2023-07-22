@@ -14,8 +14,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ title, family, onSubmit,
     const [familyName, setFamilyName] = useState(family?.FamilyName || '');
     const [address, setAddress] = useState(family?.Address || '');
     const [contactNumber, setContactNumber] = useState(family?.ContactNumber || '');
-    const classes = FamilyFormStyles ();
-
+    FamilyFormStyles ();
     const handleSubmit = () => {
         const updatedFamily: Family = {
             FamilyName: familyName,
