@@ -156,11 +156,7 @@ export async function deleteExpense(expenseId) {
 }
 
 
-export async function getExpensesForFamily(familyId) {
-    const response = await api.get(`/expenses/family/${familyId}`);
-    console.log('Api log: for getExpensesForFamily', response.data);
-    return response.data;
-}
+
 export async function getExpensesForMember(memberId) {
     const response = await api.get(`/expenses/member/${memberId}`);
     console.log('Api log: for getExpensesForMember', response.data);
@@ -189,11 +185,7 @@ export async function deleteIncome(incomeId) {
     console.log('Api log: for delete Income', response.data);
     return response.data;
 }
-export async function getLoansForFamily(memberId) {
-    const response = await api.get(`/loans/family/${memberId}`);
-    console.log('Api log: for getLoansForMember', response.data);
-    return response.data;
-}
+
 
 export async function getLoansForMember(memberId) {
     const response = await api.get(`/loans/member/${memberId}`);
@@ -269,5 +261,66 @@ export async function updateResource(resource) {
 export async function deleteResource(resourceId) {
     const response = await api.delete(`/resources/deleteResource/${resourceId}`);
     console.log('Api log: for delete Resource', response.data);
+    return response.data;
+}
+export async function getIncomesForFamily(familyId) {
+    const response = await api.get(`/incomes/family/${familyId}`);
+    console.log('Api log: for getIncomesForFamily', response.data);
+    return response.data;
+}
+export async function getTotalExpense (FamilyID) {
+    const response = await api.get(`/expenses/totalExpense/${FamilyID}`);
+    console.log('Api log: for getTotalExpense', response.data);
+    return response.data;
+}
+
+export async function getTotalSaving (FamilyID) {
+    const response = await api.get(`/savings/totalSaving/${FamilyID}`);
+    console.log('Api log: for getTotalSaving', response.data);
+    return response.data;
+}
+
+export async function getTotalLoan (FamilyID) {
+    const response = await api.get(`/loans/totalLoan/${FamilyID}`);
+    console.log('Api log: for getTotalLoan', response.data);
+    return response.data;
+}
+
+export async function getTotalResource (FamilyID) {
+    const response = await api.get(`/resources/totalResource/${FamilyID}`);
+    console.log('Api log: for getTotalResource', response.data);
+    return response.data;
+}
+
+export async function getTotalSkill (FamilyID) {
+    const response = await api.get(`/skills/totalSkill/${FamilyID}`);
+    console.log('Api log: for getTotalSkill', response.data);
+    return response.data;
+}
+
+export async function getTotalTask (FamilyID) {
+    const response = await api.get(`/tasks/totalTask/${FamilyID}`);
+    console.log('Api log: for getTotalTask', response.data);
+    return response.data;
+}
+
+export async function getFamilyMembers (FamilyID) {
+    const response = await api.get(`/members/familyMembers/${FamilyID}`);
+    console.log('Api log: for getFamilyMembers', response.data);
+    return response.data;
+}
+
+export async function getFamilyMember (MemberID) {
+    const response = await api.get(`/members/familyMember/${MemberID}`);
+    console.log('Api log: for getFamilyMember', response.data);
+    return response.data;
+}
+export async function getExpensesForFamily(familyId) {
+    const response = await api.get(`/expenses/family/${familyId}`);
+    console.log('Api log: for getExpensesForFamily', response.data);
+    return response.data;
+}export async function getLoansForFamily(memberId) {
+    const response = await api.get(`/loans/family/${memberId}`);
+    console.log('Api log: for getLoansForMember', response.data);
     return response.data;
 }

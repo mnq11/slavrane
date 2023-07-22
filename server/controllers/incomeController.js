@@ -53,6 +53,7 @@ module.exports = (models) => {
         try {
             const { id } = req.params;
             const incomes = await Income.findAll({ where: { FamilyID: id } });
+            console.log('Incomes found:', incomes);
             if (!incomes) return res.status(404).json({ message: 'Incomes not found.' });
             res.json(incomes);
         } catch (error) {
@@ -75,12 +76,11 @@ module.exports = (models) => {
     }
 
 
-
     return {
         createIncome,
         updateIncome,
         deleteIncome,
         getIncomesForFamily,
-        getIncomeForMember
+        getIncomeForMember,
     };
 };

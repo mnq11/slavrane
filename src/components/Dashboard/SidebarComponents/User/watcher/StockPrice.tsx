@@ -69,6 +69,7 @@ export function StockPrice() {
                             <Line type="monotone" dataKey="high" stroke="#ffc658" dot={false} />
                             <Line type="monotone" dataKey="low" stroke="#ff7300" dot={false} />
                             <Line type="monotone" dataKey="average" stroke="#8485d8" dot={false} />
+
                         </LineChart>
                     </ResponsiveContainer>
                 </ChartContainer>
