@@ -269,7 +269,7 @@ export async function getIncomesForFamily(familyId) {
     return response.data;
 }
 export async function getTotalExpense (FamilyID) {
-    const response = await api.get(`/expenses/totalExpense/${FamilyID}`);
+    const response = await api.get(`/expenses/family/${FamilyID}`);
     console.log('Api log: for getTotalExpense', response.data);
     return response.data;
 }

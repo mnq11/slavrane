@@ -50,8 +50,9 @@ module.exports = (models) => {
     async function getExpensesForFamily(req, res) {
         console.log('controller :getExpensesForFamily function called.', req.params);
         try {
-            const { familyId } = req.params;
-            const expenses = await Expense.findAll({ where: { FamilyID: familyId } });
+            const { id } = req.params; // Here, replace `FamilyID` with `id`
+            const expenses = await Expense.findAll({ where: { FamilyID: id } }); // Use `id` here
+            console.log('controller : Expenses for family:', expenses);
             if (!expenses) return res.status(404).json({ message: 'Expenses not found.' });
             res.json(expenses);
         } catch (error) {
@@ -59,6 +60,7 @@ module.exports = (models) => {
             res.status(500).json({ message: 'An error occurred while getting expenses for the family.' });
         }
     }
+
 
     async function getExpensesForMember(req, res) {
         console.log('controller :getExpensesForMember function called.', req.params);

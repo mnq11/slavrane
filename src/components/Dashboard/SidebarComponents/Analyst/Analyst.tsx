@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {Income, Member} from "../../../../hooks/useMember";
-import { getIncomesForFamily } from "../../../../API/api";
+import {Expense, Income, Member} from "../../../../hooks/useMember";
+import {getIncomesForFamily, getTotalExpense} from "../../../../API/api";
 
 interface AnalystProps {
     member: Member;
@@ -8,20 +8,32 @@ interface AnalystProps {
 
 const Analyst: React.FC<AnalystProps> = ({ member }) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
+    const [expenses,setExpenses] = useState<Expense[]>([]); // Changed from Expense to expenses
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<null | string>(null);
 
     useEffect(() => {
         if(member.FamilyID) {
             setIsLoading(true);
+
             getIncomesForFamily(member.FamilyID)
                 .then((res) => {
-                    console.log('Data from server:', res);  // This will log the response
                     if (Array.isArray(res)) {
                         setIncomes(res);
                     } else {
-                        console.log('Unexpected data format:', res);
-                        setError('Unexpected data format from server');
+                        throw new Error('Unexpected data format from server');
+                    }
+                })
+                .catch((err) => {
+                    setError(err.message);
+                });
+
+            getTotalExpense(member.FamilyID)
+                .then((res) => {
+                    if (Array.isArray(res)) {
+                        setExpenses(res); // Save the returned expenses
+                    } else {
+                        throw new Error('Unexpected data format from server');
                     }
                 })
                 .catch((err) => {
@@ -32,7 +44,6 @@ const Analyst: React.FC<AnalystProps> = ({ member }) => {
                 });
         }
     }, [member.FamilyID]);
-
 
     const renderIncomes = () => {
         if (error) {
@@ -62,7 +73,27 @@ const Analyst: React.FC<AnalystProps> = ({ member }) => {
             </>
         );
     };
-
+    const renderExpenses = () => {
+        return (
+            <>
+                <h2>Family Expenses:</h2>
+                <ul>
+                    {expenses.map((expense, index) => (
+                        <li key={index}>
+                            <p>Expense ID: {expense.ExpenseID}</p>
+                            <p>Family ID: {expense.FamilyID}</p>
+                            <p>Member ID: {expense.MemberID}</p>
+                            <p>Category: {expense.Category}</p>
+                            <p>Amount: {expense.Amount}</p>
+                            <p>Date: {new Date(expense.Date).toLocaleDateString()}</p>
+                            <p>Recurring: {expense.Recurring ? "Yes" : "No"}</p>
+                            <p>Frequency: {expense.Frequency}</p>
+                        </li>
+                    ))}
+                </ul>
+            </>
+        );
+    };
 
     return (
         <div>
@@ -70,6 +101,7 @@ const Analyst: React.FC<AnalystProps> = ({ member }) => {
             <p>You are logged in as an analyst.</p>
             <h2>Family Overview:</h2>
             {renderIncomes()}
+            {renderExpenses()}
         </div>
     );
 };
