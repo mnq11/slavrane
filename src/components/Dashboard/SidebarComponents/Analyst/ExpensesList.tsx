@@ -13,7 +13,8 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
 
         const date = new Date(expense.Date);
         const yearMonth = `${date.getFullYear()}-${date.getMonth() + 1}`; // Months are 0-indexed in JavaScript Date
-        acc.years[yearMonth] = (acc.years[yearMonth] || 0) + Number(expense.Amount);
+        acc.years[yearMonth] = (acc.years[yearMonth] || {});
+        acc.years[yearMonth][expense.Category] = (acc.years[yearMonth][expense.Category] || 0) + Number(expense.Amount);
 
         acc.frequency[expense.Frequency] = (acc.frequency[expense.Frequency] || 0) + Number(expense.Amount);
         acc.recurring[expense.Recurring ? 'Yes' : 'No'] = (acc.recurring[expense.Recurring ? 'Yes' : 'No'] || 0) + 1;
@@ -22,10 +23,18 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
     }, {
         totalAmount: 0,
         categories: {} as Record<string, Expense[]>,
-        years: {} as Record<string, number>,
+        years: {} as Record<string, Record<string, number>>,
         frequency: {} as Record<string, number>,
         recurring: {} as Record<string, number>,
     });
+
+    // generate dateData
+    const dateData = Object.entries(stats.years)
+        .sort((a, b) => a[0].localeCompare(b[0]))  // this will sort your year-month keys in ascending order
+        .map(([yearMonth, categories]) => {
+            const [year, month] = yearMonth.split('-');
+            return {year, month, ...categories};
+        });
 
     const categoryData = Object.entries(stats.categories).map(([category, expenses], index) => ({
         category,
@@ -33,11 +42,6 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
         fill: COLORS[index % COLORS.length]
     }));
 
-
-    const dateData = Object.entries(stats.years).map(([yearMonth, count]) => {
-        const [year, month] = yearMonth.split('-');
-        return {year, month, count};
-    });
 
     const frequencyData = Object.entries(stats.frequency).map(([name, value]) => ({name, value}));
 
@@ -58,13 +62,15 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
                 </Bar>
                 <Legend />
             </BarChart>
-            <h3>Yearly breakdown:</h3>
+            <h3>Expenses  line  breakdown:</h3>
             <LineChart width={600} height={300} data={dateData}>
-                <Line type="monotone" dataKey="count" stroke="#8884d8" />
-                <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey={(data) => `${data.year}-${data.month}`} />
                 <YAxis />
                 <Tooltip />
+                <CartesianGrid stroke="#ccc" />
+                {Object.keys(stats.categories).map((category, index) => (
+                    <Line key={category} type="monotone" dataKey={category} stroke={COLORS[index % COLORS.length]} />
+                ))}
             </LineChart>
 
             <h3>Frequency breakdown:</h3>
@@ -75,21 +81,7 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
                 <Legend />
                 <Tooltip />
             </PieChart>
-            <h2>Individual Expenses:</h2>
-            <ul>
-                {expenses.map((expense, index) => (
-                    <li key={index}>
-                        <p>Expense ID: {expense.ExpenseID}</p>
-                        <p>Family ID: {expense.FamilyID}</p>
-                        <p>Member ID: {expense.MemberID}</p>
-                        <p>Category: {expense.Category}</p>
-                        <p>Amount: {expense.Amount}</p>
-                        <p>Date: {new Date(expense.Date).toLocaleDateString()}</p>
-                        <p>Recurring: {expense.Recurring ? "Yes" : "No"}</p>
-                        <p>Frequency: {expense.Frequency}</p>
-                    </li>
-                ))}
-            </ul>
+
         </>
     );
 };
