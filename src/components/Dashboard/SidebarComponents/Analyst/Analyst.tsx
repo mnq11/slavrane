@@ -92,13 +92,12 @@ const Analyst: React.FC<AnalystProps> = ({member}) => {
 
     return (
         <div>
-            <h1>Welcome, {member.MemberName}</h1>
-            <p>You are logged in as an analyst.</p>
             <h2>Family Overview:</h2>
             {/* Conditional rendering based on loading and error states */}
             {error ? <p>Error: {error}</p> : isLoading ? <p>Loading...</p> : <>
-                {/*<IncomesList incomes={incomes}/>*/}
+
                 <ExpensesList expenses={expenses}/>
+                {/*<IncomesList incomes={incomes}/>*/}
                 {/*<SavingsList savings={savings}/>*/}
                 {/*<LoansList loans={loans}/>*/}
                 {/*<MembersList members={members}/>*/}
