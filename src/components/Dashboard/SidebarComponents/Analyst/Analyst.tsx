@@ -97,11 +97,11 @@ const Analyst: React.FC<AnalystProps> = ({member}) => {
             <h2>Family Overview:</h2>
             {/* Conditional rendering based on loading and error states */}
             {error ? <p>Error: {error}</p> : isLoading ? <p>Loading...</p> : <>
-                <IncomesList incomes={incomes}/>
+                {/*<IncomesList incomes={incomes}/>*/}
                 <ExpensesList expenses={expenses}/>
-                <SavingsList savings={savings}/>
-                <LoansList loans={loans}/>
-                <MembersList members={members}/>
+                {/*<SavingsList savings={savings}/>*/}
+                {/*<LoansList loans={loans}/>*/}
+                {/*<MembersList members={members}/>*/}
             </>}
         </div>
     );
