@@ -275,52 +275,21 @@ export async function getTotalExpense (FamilyID) {
 }
 
 export async function getTotalSaving (FamilyID) {
-    const response = await api.get(`/savings/totalSaving/${FamilyID}`);
+    const response = await api.get(`/savings/family/${FamilyID}`);
     console.log('Api log: for getTotalSaving', response.data);
     return response.data;
 }
 
 export async function getTotalLoan (FamilyID) {
-    const response = await api.get(`/loans/totalLoan/${FamilyID}`);
+    const response = await api.get(`/loans/family/${FamilyID}`);
     console.log('Api log: for getTotalLoan', response.data);
     return response.data;
 }
 
-export async function getTotalResource (FamilyID) {
-    const response = await api.get(`/resources/totalResource/${FamilyID}`);
-    console.log('Api log: for getTotalResource', response.data);
-    return response.data;
-}
 
-export async function getTotalSkill (FamilyID) {
-    const response = await api.get(`/skills/totalSkill/${FamilyID}`);
-    console.log('Api log: for getTotalSkill', response.data);
-    return response.data;
-}
-
-export async function getTotalTask (FamilyID) {
-    const response = await api.get(`/tasks/totalTask/${FamilyID}`);
-    console.log('Api log: for getTotalTask', response.data);
-    return response.data;
-}
 
 export async function getFamilyMembers (FamilyID) {
-    const response = await api.get(`/members/familyMembers/${FamilyID}`);
+    const response = await api.get(`/members/families/${FamilyID}`);
     console.log('Api log: for getFamilyMembers', response.data);
-    return response.data;
-}
-
-export async function getFamilyMember (MemberID) {
-    const response = await api.get(`/members/familyMember/${MemberID}`);
-    console.log('Api log: for getFamilyMember', response.data);
-    return response.data;
-}
-export async function getExpensesForFamily(familyId) {
-    const response = await api.get(`/expenses/family/${familyId}`);
-    console.log('Api log: for getExpensesForFamily', response.data);
-    return response.data;
-}export async function getLoansForFamily(memberId) {
-    const response = await api.get(`/loans/family/${memberId}`);
-    console.log('Api log: for getLoansForMember', response.data);
     return response.data;
 }

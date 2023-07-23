@@ -52,7 +52,7 @@ module.exports = (models) => {
         try {
             const { id } = req.params; // Here, replace `FamilyID` with `id`
             const expenses = await Expense.findAll({ where: { FamilyID: id } }); // Use `id` here
-            console.log('controller : Expenses for family:', expenses);
+            // console.log('controller : Expenses for family:', expenses);
             if (!expenses) return res.status(404).json({ message: 'Expenses not found.' });
             res.json(expenses);
         } catch (error) {

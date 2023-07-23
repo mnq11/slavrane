@@ -50,7 +50,7 @@ module.exports = (models) => {
     async function getLoansForFamily(req, res) {
         console.log('getLoansForFamily function called.', req.params);
         try {
-            const { familyId } = req.params;
+            const { id: familyId } = req.params;
             const loans = await Loan.findAll({ where: { FamilyID: familyId } });
             if (!loans) return res.status(404).json({ message: 'Loans not found.' });
             res.json(loans);

@@ -47,7 +47,7 @@ initializeDatabase().then(async (db) => {
     // await createDummyData(sequelize, models);
 
     app.use((req, res, next) => {
-        console.log(`Incoming request: ${req.method} ${req.path}`);
+        // console.log(`Incoming request: ${req.method} ${req.path}`);
         next();
     });
 
