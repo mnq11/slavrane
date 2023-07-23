@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         MemberID: DataTypes.INTEGER,
         TaskName: DataTypes.STRING,
-        TaskStatus: DataTypes.INTEGER,
+        TaskStatus: DataTypes.STRING,
         DueDate: DataTypes.DATE,
         Priority: DataTypes.STRING,
         Description: DataTypes.TEXT

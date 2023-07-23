@@ -260,29 +260,29 @@ export async function updateResource(resource) {
 
 export async function deleteResource(resourceId) {
     const response = await api.delete(`/resources/deleteResource/${resourceId}`);
-    console.log('Api log: for delete Resource', response.data);
+    // console.log('Api log: for delete Resource', response.data);
     return response.data;
 }
 export async function getIncomesForFamily(familyId) {
     const response = await api.get(`/incomes/family/${familyId}`);
-    console.log('Api log: for getIncomesForFamily', response.data);
+    // console.log('Api log: for getIncomesForFamily', response.data);/
     return response.data;
 }
 export async function getTotalExpense (FamilyID) {
     const response = await api.get(`/expenses/family/${FamilyID}`);
-    console.log('Api log: for getTotalExpense', response.data);
+    // console.log('Api log: for getTotalExpense', response.data);
     return response.data;
 }
 
 export async function getTotalSaving (FamilyID) {
     const response = await api.get(`/savings/family/${FamilyID}`);
-    console.log('Api log: for getTotalSaving', response.data);
+    // console.log('Api log: for getTotalSaving', response.data);
     return response.data;
 }
 
 export async function getTotalLoan (FamilyID) {
     const response = await api.get(`/loans/family/${FamilyID}`);
-    console.log('Api log: for getTotalLoan', response.data);
+    // console.log('Api log: for getTotalLoan', response.data);
     return response.data;
 }
 
@@ -290,6 +290,6 @@ export async function getTotalLoan (FamilyID) {
 
 export async function getFamilyMembers (FamilyID) {
     const response = await api.get(`/members/families/${FamilyID}`);
-    console.log('Api log: for getFamilyMembers', response.data);
+    // console.log('Api log: for getFamilyMembers', response.data);
     return response.data;
 }

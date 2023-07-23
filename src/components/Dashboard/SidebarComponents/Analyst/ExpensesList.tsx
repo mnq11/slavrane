@@ -1,10 +1,33 @@
 import React from 'react';
 import { Expense } from "../../../../hooks/useMember";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend, LineChart, Line, TooltipProps } from 'recharts';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#8B4513', '#2E8B57', '#DB7093', '#9ACD32', '#FFD700'];
 
-//Expense List Component
+const formatLargeNumber = (value: number) => {
+    if (value >= 1e6) {
+        return (value / 1e6).toFixed(2) + 'M';
+    }
+    if (value >= 1e3) {
+        return (value / 1e3).toFixed(2) + 'K';
+    }
+    return value.toString();
+};
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+    if (active && payload && payload.length) {
+        const value = payload[0].value;
+        return (
+            <div className="custom-tooltip">
+                <p className="label">{`${payload[0].name} : ${value !== undefined ? formatLargeNumber(value) : 'N/A'}`}</p>
+            </div>
+        );
+    }
+
+    return null;
+};
+
+
+
 const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
     const stats = expenses.reduce((acc, expense) => {
         acc.totalAmount += Number(expense.Amount);
@@ -43,17 +66,19 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
     }));
 
 
+
     const frequencyData = Object.entries(stats.frequency).map(([name, value]) => ({name, value}));
+
 
     return (
         <>
             <h2>Family Expenses:</h2>
-            <p>Total Amount: {stats.totalAmount}</p>
+            <p>Total Amount: {formatLargeNumber(stats.totalAmount)}</p>
             <h3>Category breakdown:</h3>
             <BarChart width={600} height={300} data={categoryData}>
                 <XAxis dataKey="category" />
-                <YAxis />
-                <Tooltip />
+                <YAxis tickFormatter={formatLargeNumber} />
+                <Tooltip content={<CustomTooltip />} />
                 <CartesianGrid stroke="#f5f5f5" />
                 <Bar dataKey="Amount" name="Amount">
                     {categoryData.map((entry, index) => (
@@ -62,26 +87,37 @@ const ExpensesList: React.FC<{expenses: Expense[]}> = ({expenses}) => {
                 </Bar>
                 <Legend />
             </BarChart>
-            <h3>Expenses  line  breakdown:</h3>
+
+            <h3>Expenses line breakdown:</h3>
             <LineChart width={600} height={300} data={dateData}>
                 <XAxis dataKey={(data) => `${data.year}-${data.month}`} />
-                <YAxis />
-                <Tooltip />
+                <YAxis tickFormatter={formatLargeNumber} />
+                <Tooltip content={<CustomTooltip />} />
                 <CartesianGrid stroke="#ccc" />
                 {Object.keys(stats.categories).map((category, index) => (
                     <Line key={category} type="monotone" dataKey={category} stroke={COLORS[index % COLORS.length]} />
                 ))}
             </LineChart>
 
+
             <h3>Frequency breakdown:</h3>
             <PieChart width={400} height={400}>
-                <Pie dataKey="value" isAnimationActive={false} data={frequencyData} cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label>
+                <Pie
+                    dataKey="value"
+                    isAnimationActive={false}
+                    data={frequencyData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    fill="#8884d8"
+                    label={(entry) => `${entry.name}: ${formatLargeNumber(entry.value)}`}
+                >
                     {frequencyData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                 </Pie>
-                <Legend />
-                <Tooltip />
-            </PieChart>
 
+                <Legend />
+                <Tooltip content={<CustomTooltip />} />
+            </PieChart>
         </>
     );
 };

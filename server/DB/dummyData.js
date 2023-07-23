@@ -14,9 +14,9 @@ const createDummyData = async (sequelize, models) => {
 
     try {
         // Sync the models with the database
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({alter: true});
 
-        for (let i = 0; i <10; i++) {
+        for (let i = 0; i < 10; i++) {
             const dummyFamily = await models.Family.create({
                 FamilyName: faker.name.lastName(),
                 Address: faker.address.streetAddress(),
@@ -24,7 +24,7 @@ const createDummyData = async (sequelize, models) => {
             });
             families.push(dummyFamily);
 
-            for(let j = 0; j < 10; j++) { // 10 members for each family
+            for (let j = 0; j < 10; j++) { // 10 members for each family
                 const dummyMember = await models.Member.create({
                     FamilyID: dummyFamily.FamilyID,
                     MemberName: faker.name.findName(),
@@ -36,15 +36,16 @@ const createDummyData = async (sequelize, models) => {
                 });
                 members.push(dummyMember);
 
-                for(let k = 0; k < 10; k++) { // 10 instances for each member
+                for (let k = 0; k < 10; k++) { // 10 instances for each member
                     const dummyTask = await models.Task.create({
                         MemberID: dummyMember.MemberID,
                         TaskName: faker.lorem.words(3),
                         Description: faker.lorem.sentence(),
                         DueDate: faker.date.future().toISOString(),
-                        TaskStatus: 'Pending',
-                        Priority: faker.random.arrayElement(["Low", "Medium", "High"])
+                        TaskStatus: Math.floor(Math.random() * 3) + 1, // Here
+                        Priority: Math.floor(Math.random() * 5) + 1 // And here
                     });
+
                     tasks.push(dummyTask);
 
                     const dummyResource = await models.Resource.create({
@@ -73,7 +74,7 @@ const createDummyData = async (sequelize, models) => {
                         Amount: faker.finance.amount(),
                         Date: faker.date.past().toISOString(),
                         Recurring: faker.datatype.boolean(),
-                        Frequency: faker.random.arrayElement(["Weekly", "Monthly", "Yearly"])
+                        Frequency: faker.random.arrayElement(["One-time", "Monthly", "Daily", "Annual"])
                     });
                     incomes.push(dummyIncome);
 
@@ -84,7 +85,7 @@ const createDummyData = async (sequelize, models) => {
                         Amount: faker.finance.amount(),
                         Date: faker.date.past().toISOString(),
                         Recurring: faker.datatype.boolean(),
-                        Frequency: 'Weekly'
+                        Frequency:faker.random.arrayElement(["One-time", "Monthly", "Daily", "Annual"])
                     });
                     expenses.push(dummyExpense);
 
