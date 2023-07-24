@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Table,
     TableBody,
@@ -8,16 +8,17 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination, IconButton,
+    TablePagination, IconButton, ThemeProvider,
 } from '@material-ui/core';
 import {Loan} from '../../../../../../hooks/useMember';
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import {createMuiTheme} from "@material-ui/core/styles";
 
 interface LoansTableComponentProps {
     loans: Loan[];
 
-    handleUpdateLoan:(loanId: number, loanData: Loan) => void;
+    handleUpdateLoan: (loanId: number, loanData: Loan) => void;
     handleDeleteLoan: (loanId: number) => void;
 }
 
@@ -27,16 +28,15 @@ interface HeadCell {
 }
 
 const headCells: HeadCell[] = [
-    { id: 'Amount', label: 'Loan Amount' },
-    { id: 'InterestRate', label: 'Interest Rate' },
-    { id: 'StartDate', label: 'Start Date' },
-    { id: 'DueDate', label: 'Due Date' },
-    { id: 'Lender', label: 'Lender' },
-    { id: 'LoanPurpose', label: 'Loan Purpose' },
-    { id: 'RepaymentStatus', label: 'Repayment Status' },
+    {id: 'Amount', label: 'مبلغ القرض'},
+    {id: 'StartDate', label: 'تاريخ البدء'},
+    {id: 'DueDate', label: 'تاريخ الاستحقاق'},
+    {id: 'Lender', label: 'المقرض'},
+    {id: 'LoanPurpose', label: 'غرض القرض'},
+    {id: 'RepaymentStatus', label: 'حالة السداد'},
 ];
 
-const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans, handleUpdateLoan, handleDeleteLoan }) => {
+const LoansTableComponent: React.FC<LoansTableComponentProps> = ({loans, handleUpdateLoan, handleDeleteLoan}) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Loan>('LoanID');
     const [page, setPage] = useState(0);
@@ -67,125 +67,101 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({ loans, handle
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
     });
-
+    const formatNumber = (num: number) => {
+        if (num > 999 && num <= 999999) {
+            return (num / 1000).toFixed(1) + 'الف';
+        } else if (num > 999999 && num <= 999999999) {
+            return (num / 1000000).toFixed(1) + 'مليون';
+        } else if (num > 999999999) {
+            return (num / 1000000000).toFixed(1) + 'مليار';
+        } else {
+            return num.toString();
+        }
+    };
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, sortedLoans.length - page * rowsPerPage);
-
+    const translateRepaymentStatus = (status: string) => {
+        switch (status) {
+            case 'Paid':
+                return 'مدفوع';
+            case 'Compromised':
+                return 'معرض للخطر';
+            case 'Pending':
+                return 'قيد الانتظار';
+            case 'Overdue':
+                return 'متأخر';
+            case 'Defaulted':
+                return 'تسوية';
+            default:
+                return status;
+        }
+    };
     return (
-        <Paper>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
+        <ThemeProvider theme={createMuiTheme({
+            direction: 'rtl',
+        })}>
+            <Paper>
+                <TableContainer >
+                    <Table >
+                        <TableHead>
+                            <TableRow>
+                                <TableCell key="Actions">
+                                الإجراءات
+                            </TableCell>
+                                {headCells.map((headCell) => (
+                                    <TableCell key={headCell.id}>
+                                        <TableSortLabel
+                                            active={orderBy === headCell.id}
+                                            direction={orderBy === headCell.id ? order : 'asc'}
+                                            onClick={() => handleSortRequest(headCell.id)}
+                                        >
+                                            {headCell.label}
+                                        </TableSortLabel>
+                                    </TableCell>
+                                ))}
 
-                            <TableCell key="Amount" sortDirection={orderBy === 'Amount' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'Amount'}
-                                    direction={orderBy === 'Amount' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('Amount')}
-                                >
-                                    Loan Amount
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="InterestRate" sortDirection={orderBy === 'InterestRate' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'InterestRate'}
-                                    direction={orderBy === 'InterestRate' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('InterestRate')}
-                                >
-                                    Interest Rate
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="StartDate" sortDirection={orderBy === 'StartDate' ? order : false}>
-                                <TableSortLabel
-
-                                    active={orderBy === 'StartDate'}
-                                    direction={orderBy === 'StartDate' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('StartDate')}
-                                >
-                                    Start Date
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="DueDate" sortDirection={orderBy === 'DueDate' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'DueDate'}
-                                    direction={orderBy === 'DueDate' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('DueDate')}
-                                >
-                                    Due Date
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="Lender" sortDirection={orderBy === 'Lender' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'Lender'}
-                                    direction={orderBy === 'Lender' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('Lender')}
-                                >
-                                    Lender
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="LoanPurpose" sortDirection={orderBy === 'LoanPurpose' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'LoanPurpose'}
-                                    direction={orderBy === 'LoanPurpose' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('LoanPurpose')}
-                                >
-                                    Loan Purpose
-                                </TableSortLabel>
-
-                            </TableCell>
-                            <TableCell key="RepaymentStatus" sortDirection={orderBy === 'RepaymentStatus' ? order : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'RepaymentStatus'}
-                                    direction={orderBy === 'RepaymentStatus' ? order : 'asc'}
-                                    onClick={() => handleSortRequest('RepaymentStatus')}
-                                >
-                                    Repayment Status
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell key="Actions">
-                                Actions
-                            </TableCell>
-
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedLoans.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((loan) => (
-                            <TableRow key={loan.LoanID}>
-                                <TableCell>{loan.Amount}</TableCell>
-                                <TableCell>{loan.InterestRate}</TableCell>
-                                <TableCell>{loan.StartDate? new Date(loan.StartDate).toISOString().split('T')[0] : ''}</TableCell>
-                                <TableCell>{loan.DueDate? new Date(loan.DueDate).toISOString().split('T')[0] : ''}</TableCell>
-                                <TableCell>{loan.Lender}</TableCell>
-                                <TableCell>{loan.LoanPurpose}</TableCell>
-                                <TableCell>{loan.RepaymentStatus}</TableCell>
-                                <TableCell>
-                                    <IconButton color="primary"  onClick={() => handleUpdateLoan(loan.LoanID?? 0, loan)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton color="secondary" onClick={() => handleDeleteLoan(loan.LoanID?? 0)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
                             </TableRow>
-                        ))}
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={headCells.length} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={sortedLoans.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Paper>
+                        </TableHead>
+                        <TableBody>
+                            {sortedLoans.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((loan) => (
+                                <TableRow key={loan.LoanID}>
+                                    <TableCell>
+                                        <IconButton color="primary"
+                                                    onClick={() => handleUpdateLoan(loan.LoanID ?? 0, loan)}>
+                                            <EditIcon/>
+                                        </IconButton>
+                                        <IconButton color="secondary"
+                                                    onClick={() => handleDeleteLoan(loan.LoanID ?? 0)}>
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>{formatNumber(loan.Amount)}</TableCell>
+                                    <TableCell>{loan.StartDate ? new Date(loan.StartDate).toISOString().split('T')[0] : ''}</TableCell>
+                                    <TableCell>{loan.DueDate ? new Date(loan.DueDate).toISOString().split('T')[0] : ''}</TableCell>
+                                    <TableCell>{loan.Lender}</TableCell>
+                                    <TableCell>{loan.LoanPurpose}</TableCell>
+                                    <TableCell>{translateRepaymentStatus(loan.RepaymentStatus)}</TableCell>
+
+                                </TableRow>
+                            ))}
+                            {emptyRows > 0 && (
+                                <TableRow style={{height: 53 * emptyRows}}>
+                                    <TableCell colSpan={headCells.length}/>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={sortedLoans.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </ThemeProvider>
     );
 };
 

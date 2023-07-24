@@ -34,7 +34,7 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
         initialValues: {
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
-            LoanAmount: 100, // set initial value to 100
+            LoanAmount: 1000, // set initial value to 100
             StartDate: new Date().toISOString().slice(0, 10),
             DueDate: new Date().toISOString().slice(0, 10),
             InterestRate: 1,
@@ -43,14 +43,14 @@ const LoanBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
             RepaymentStatus: 'Pending',
         },
         validationSchema: Yup.object({
-            LoanAmount: Yup.number().required('Required'),
-            StartDate: Yup.date().required('Required'),
-            DueDate: Yup.date().required('Required'),
-            InterestRate: Yup.number().required('Required'),
-            Lender: Yup.string().required('Required'),
-            LoanPurpose: Yup.string().required('Required'),
+            LoanAmount: Yup.number().required('مبلغ القرض مطلوب'),
+            StartDate: Yup.date().required(' تاريخ البدء مطلوب'),
+            DueDate: Yup.date().required(' تاريخ الاستحقاق مطلوب'),
+            InterestRate: Yup.number().required('معدل الفائدة مطلوب'),
+            Lender: Yup.string().required('المقرض مطلوب'),
+            LoanPurpose: Yup.string().required('غرض القرض مطلوب'),
             RepaymentStatus: Yup.string()
-                .required('Required')
+                .required(' حالة السداد مطلوبة')
                 .oneOf(['Paid', 'Compromised', 'Pending', 'Overdue', 'Defaulted']),
         }),
         onSubmit: (values) => {
