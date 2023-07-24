@@ -1,7 +1,5 @@
-// FamiliesCardsView.tsx
-
-import React, {useEffect, useState} from 'react';
-import {Family} from "../../../../../hooks/useMember";
+import React, { useEffect, useState } from 'react';
+import { Family } from "../../../../../hooks/useMember";
 import {
     Typography,
     Button,
@@ -12,9 +10,9 @@ import {
     Grid, TextField
 } from '@material-ui/core';
 import 'react-toastify/dist/ReactToastify.css';
-import {FamilyForm} from "./FamilyForm";
-import {fetchAllFamilies, createNewFamily} from '../Provider/adminPanelFunctions';
-import {FamiliesViewStyles} from "./AdminFamily.Styles";
+import { FamilyForm } from "./FamilyForm";
+import { fetchAllFamilies, createNewFamily } from '../Provider/adminPanelFunctions';
+import { FamiliesViewStyles } from "./AdminFamily.Styles";
 
 interface FamiliesCardViewProps {
     onSelectFamily: (family: Family | null) => void;
@@ -25,14 +23,13 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
                                                                 onSelectFamily,
                                                                 setLoading,
                                                             }) => {
-    const classes = FamiliesViewStyles ();
+    const classes = FamiliesViewStyles();
     const [families, setFamilies] = useState<Family[]>([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [filter, setFilter] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
-
 
     const fetchFamilies = async () => {
         try {
@@ -67,7 +64,6 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
         fetchFamilies().then(r => r);
     }, [setLoading]);
 
-
     const handlePageChange = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -78,14 +74,14 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
     };
 
     return (
-        <div className={classes.root}>
+        <div dir="rtl"> {/* Set the text direction to right-to-left */}
             <TextField
-                    className={classes.textField}
+                className={classes.textField}
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                label="Filter families"
+                label="تصفية العائلات"
             />
-            <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Family</Button>
+            <Button className={classes.button} onClick={() => setDialogOpen(true)}>إنشاء عائلة جديدة</Button>
             {!families ? (
                 <div>Loading...</div>
             ) : (
@@ -117,18 +113,17 @@ const FamiliesCardsView: React.FC<FamiliesCardViewProps> = ({
             </div>
             {dialogOpen && (
                 <FamilyForm
-                    title="Create New Family"
+                    title="إنشاء عائلة جديدة"
                     family={undefined}
                     onSubmit={handleCreateFamily}
                     onCancel={() => setDialogOpen(false)}
                 />
-
             )}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={6000}
                 onClose={() => setOpenSnackbar(false)}
-                message="Action successful"
+                message="تمت العملية بنجاح"
             />
         </div>
     );

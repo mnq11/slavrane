@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
-import {Family} from "../../../../../hooks/useMember";
-import {FamilyFormStyles} from "./AdminFamily.Styles";
+import { Family } from "../../../../../hooks/useMember";
+import { FamilyFormStyles } from "./AdminFamily.Styles";
 
 interface FamilyFormProps {
     title: string;
@@ -14,7 +14,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ title, family, onSubmit,
     const [familyName, setFamilyName] = useState(family?.FamilyName || '');
     const [address, setAddress] = useState(family?.Address || '');
     const [contactNumber, setContactNumber] = useState(family?.ContactNumber || '');
-    FamilyFormStyles ();
+    FamilyFormStyles();
     const handleSubmit = () => {
         const updatedFamily: Family = {
             FamilyName: familyName,
@@ -32,27 +32,27 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ title, family, onSubmit,
 
 
     return (
-        <Dialog open={true} onClose={onCancel}>
+        <Dialog open={true} onClose={onCancel} dir="rtl"> {/* Set the text direction to right-to-left */}
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
                     margin="dense"
-                    label="Family Name"
+                    label="اسم العائلة"
                     value={familyName}
                     onChange={(e) => setFamilyName(e.target.value)}
                     fullWidth
                 />
                 <TextField
                     margin="dense"
-                    label="Address"
+                    label="العنوان"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     fullWidth
                 />
                 <TextField
                     margin="dense"
-                    label="Contact Number"
+                    label="رقم الاتصال"
                     value={contactNumber}
                     onChange={(e) => setContactNumber(e.target.value)}
                     fullWidth
@@ -60,7 +60,7 @@ export const FamilyForm: React.FC<FamilyFormProps> = ({ title, family, onSubmit,
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel} color="primary">
-                    Cancel
+                    إلغاء
                 </Button>
                 <Button onClick={handleSubmit} color="primary">
                     {title}

@@ -1,14 +1,13 @@
 // FamilyDetails.tsx
-
-import React, {useEffect, useState} from 'react';
-import {Button, Card, CardContent, Typography} from '@material-ui/core';
-import {Family, Member} from "../../../../../hooks/useMember";
-import {getMembersByFamilyId} from "../../../../../API/api";
+import React, { useEffect, useState } from 'react';
+import { Button, Card, CardContent, Typography } from '@material-ui/core';
+import { Family, Member } from "../../../../../hooks/useMember";
+import { getMembersByFamilyId } from "../../../../../API/api";
 import MembersCardsView from "../member/MembersCardsView";
-import {FamilyForm} from "./FamilyForm";
-import {modifyFamily, removeFamily} from '../Provider/adminPanelFunctions';
-import {FamilyDetailsStyles} from "./AdminFamily.Styles";
-import {useMember} from '../../../../../hooks/useMember';
+import { FamilyForm } from "./FamilyForm";
+import { modifyFamily, removeFamily } from '../Provider/adminPanelFunctions';
+import { FamilyDetailsStyles } from "./AdminFamily.Styles";
+import { useMember } from '../../../../../hooks/useMember';
 
 interface FamilyDetailsProps {
     family: Family | undefined;
@@ -31,7 +30,6 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
 
     const classes = FamilyDetailsStyles();
 
-
     // add these functions
     const handleUpdateFamily = async (updatedFamily: Family) => {
         const modifiedFamily = await modifyFamily(updatedFamily);
@@ -44,7 +42,6 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
             console.error("Failed to update family.");
         }
     };
-
 
     const handleDeleteFamily = async (familyId: number | undefined) => {
         await removeFamily(familyId);
@@ -72,19 +69,17 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
     }
 
     return (
-        <div>
+        <div dir="rtl"> {/* Set the text direction to right-to-left */}
             <Card className={classes.card}>
                 <CardContent>
-                    <Typography variant="h5">Name : {family?.FamilyName}</Typography>
-                    <Typography variant="body2">Address : {family?.Address}</Typography>
-                    <Typography variant="body2">ContactNumber : {family?.ContactNumber}</Typography>
-                    <Button className={classes.backButton} onClick={onBackToFamilyList}>Back</Button>
+                    <Typography variant="h5">الاسم: {family?.FamilyName}</Typography>
+                    <Typography variant="body2">العنوان: {family?.Address}</Typography>
+                    <Typography variant="body2">رقم الاتصال: {family?.ContactNumber}</Typography>
+                    <Button className={classes.backButton} onClick={onBackToFamilyList}>العودة</Button>
                     {(user?.Role === 'admin' || user?.Role === 'moderator') &&
                         <>
-                            <Button className={classes.updateButton} onClick={() => setDialogOpen(true)}>Update
-                                Family</Button>
-                            <Button className={classes.deleteButton}
-                                    onClick={() => handleDeleteFamily(family?.FamilyID)}>Delete</Button>
+                            <Button className={classes.updateButton} onClick={() => setDialogOpen(true)}>تحديث العائلة</Button>
+                            <Button className={classes.deleteButton} onClick={() => handleDeleteFamily(family?.FamilyID)}>حذف</Button>
                         </>
                     }
                 </CardContent>
@@ -96,7 +91,7 @@ const FamilyDetails: React.FC<FamilyDetailsProps> = ({
             />
             {dialogOpen && (
                 <FamilyForm
-                    title="Update Family"
+                    title="تحديث العائلة"
                     family={family}
                     onSubmit={handleUpdateFamily}
                     onCancel={() => setDialogOpen(false)}
