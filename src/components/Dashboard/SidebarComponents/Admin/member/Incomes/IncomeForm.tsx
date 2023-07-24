@@ -11,6 +11,7 @@ import {
     Checkbox,
     FormControlLabel
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { FormikProps } from 'formik';
 
 interface IncomeFormProps {
@@ -20,15 +21,22 @@ interface IncomeFormProps {
     sources: string[];
 }
 
+const useStyles = makeStyles({
+    root: {
+        direction: 'rtl',
+    },
+});
+
 const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog, sources }) => {
-    const frequencies = ['One-time', 'Weekly', 'Monthly', 'Yearly'];
+    const classes = useStyles();
+    const frequencies = ['مرة واحدة', 'أسبوعي', 'شهري', 'سنوي'];
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <FormControl fullWidth>
-                        <InputLabel id="Source-label">Source</InputLabel>
+                        <InputLabel id="Source-label">المصدر</InputLabel>
                         <Select
                             labelId="Source-label"
                             id="Source"
@@ -46,7 +54,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                 <Grid item xs={12}>
                     <TextField
                         id="date"
-                        label="Date"
+                        label="التاريخ"
                         type="date"
                         name="Date"
                         value={formik.values.Date}
@@ -60,7 +68,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                 <Grid item xs={12}>
                     <TextField
                         name="Amount"
-                        label="Amount"
+                        label="المبلغ"
                         type="number"
                         value={formik.values.Amount}
                         onChange={formik.handleChange}
@@ -72,7 +80,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                 </Grid>
                 <Grid item xs={12}>
                     <FormControl fullWidth>
-                        <InputLabel id="Frequency-label">Frequency</InputLabel>
+                        <InputLabel id="Frequency-label">التكرار</InputLabel>
                         <Select
                             labelId="Frequency-label"
                             id="Frequency"
@@ -98,7 +106,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                                 onBlur={formik.handleBlur}
                             />
                         }
-                        label="Recurring"
+                        label="متكرر"
                     />
                     {formik.touched.Recurring && formik.errors.Recurring ? (
                         <div>{String(formik.errors.Recurring)}</div>
@@ -106,8 +114,8 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                 </Grid>
             </Grid>
             <DialogActions>
-                <Button color="secondary" onClick={handleCloseDialog}>Cancel</Button>
-                <Button color="primary" type="submit">{mode === 'create' ? 'Create' : 'Update'}</Button>
+                <Button color="secondary" onClick={handleCloseDialog}>إلغاء</Button>
+                <Button color="primary" type="submit">{mode === 'create' ? 'إنشاء' : 'تحديث'}</Button>
             </DialogActions>
         </form>
     );

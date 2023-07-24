@@ -1,5 +1,3 @@
-// MemberDetails.tsx
-
 import React, {useState} from 'react';
 import {Member} from "../../../../../hooks/useMember";
 import { Card, CardContent, Grid, IconButton, Typography} from '@material-ui/core';
@@ -24,14 +22,15 @@ interface MemberDetailsProps {
 }
 
 const BOXES = {
-    TASK: 'task',
-    SKILL: 'skill',
-    EXPENSE: 'expense',
-    INCOME: 'income',
-    LOAN: 'loan',
-    RESOURCE: 'resource',
-    SAVINGS: 'savings',
+    TASK: 'مهمة',
+    SKILL: 'مهارة',
+    EXPENSE: 'نفقة',
+    INCOME: 'دخل',
+    LOAN: 'قرض',
+    RESOURCE: 'مورد',
+    SAVINGS: 'الادخار',
 };
+
 const MemberDetails: React.FC<MemberDetailsProps> = ({
                                                          member,
                                                          onBackToFamilyDetails,
@@ -47,11 +46,11 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
     const handleDelete = async () => {
         try {
             await deleteMember(member.MemberID);
-            toast.success('Member deleted successfully');
+            toast.success('تم حذف العضو بنجاح');
             onBackToFamilyDetails();
         } catch (error) {
-            console.error("Failed to delete member: ", error);
-            toast.error('Failed to delete member');
+            console.error("فشل في حذف العضو: ", error);
+            toast.error('فشل في حذف العضو');
         }
     };
 
@@ -60,48 +59,43 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
             const updatedMemberWithId = {...updatedMember, MemberID: member.MemberID};
             await updateMember(updatedMemberWithId);
             setUpdateDialogOpen(false);
-            toast.success('Member updated successfully');
+            toast.success('تم تحديث العضو بنجاح');
             onBackToFamilyDetails();
         } catch (error) {
-            console.error("Failed to update member: ", error);
-            toast.error('Failed to update member');
+            console.error("فشل في تحديث العضو: ", error);
+            toast.error('فشل في تحديث العضو');
         }
     };
 
-
-
     return (
         <div>
-            <Card className={classes.card}>
+            <Card className={classes.card} dir="rtl">
                 <CardContent>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <Typography variant="h5">MemberName: {member.MemberName}</Typography>
-                            <Typography variant="body2">Email: {member.Email}</Typography>
-                            <Typography variant="body2">ContactNumber: {member.ContactNumber}</Typography>
-                            <Typography variant="body2">DateOfBirth: {member.DateOfBirth}</Typography>
-                            <Typography variant="body2">Score: {member.score}</Typography>
-                            <Typography variant="body2">ContactNumber: {member.ContactNumber}</Typography>
-
+                            <Typography variant="h5" dir="rtl">اسم العضو: {member.MemberName}</Typography>
+                            <Typography variant="body2"  dir="rtl">البريد الالكتروني: {member.Email}</Typography>
+                            <Typography variant="body2" dir="rtl">رقم الاتصال: {member.ContactNumber}</Typography>
+                            <Typography variant="body2" dir="rtl">تاريخ الميلاد: {member.DateOfBirth}</Typography>
+                            <Typography variant="body2" dir="rtl">النقاط: {member.score}</Typography>
+                            <Typography variant="body2" dir="rtl">رقم الاتصال: {member.ContactNumber}</Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <IconButton className={classes.backButton} onClick={onBackToFamilyDetails}>
+                            <IconButton className={classes.backButton} dir="rtl" onClick={onBackToFamilyDetails}>
                                 <ArrowBackIcon fontSize="large" />
                             </IconButton>
-                            <IconButton className={classes.updateButton} onClick={() => setUpdateDialogOpen(true)}>
+                            <IconButton className={classes.updateButton} dir="rtl" onClick={() => setUpdateDialogOpen(true)}>
                                 <EditIcon fontSize="large" />
                             </IconButton>
-                            <IconButton className={classes.deleteButton} onClick={handleDelete}>
+                            <IconButton className={classes.deleteButton} dir="rtl" onClick={handleDelete}>
                                 <DeleteIcon fontSize="large" />
                             </IconButton>
-
                         </Grid>
                     </Grid>
-
                 </CardContent>
                 {editDialogOpen && (
                     <MemberForm
-                        title="Update Member"
+                        title="تحديث العضو"
                         onSubmit={handleUpdate}
                         onCancel={() => setUpdateDialogOpen(false)}
                         member={member}
@@ -109,44 +103,43 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                 )}
             </Card>
             <ExpenseBox
-                label="Expenses"
+                label="النفقات"
                 checked={activeBox === BOXES.EXPENSE}
                 onChange={() => handleCheckboxChange(BOXES.EXPENSE)}
                 member={member}
             />
             <IncomeBox
-                label="Income"
+                label="الدخل"
                 checked={activeBox === BOXES.INCOME}
                 onChange={() => handleCheckboxChange(BOXES.INCOME)}
                 member={member}
             />
             <SkillBox
-                label="Skill"
+                label="المهارات"
                 checked={activeBox === BOXES.SKILL}
                 onChange={() => handleCheckboxChange(BOXES.SKILL)}
                 member={member}
             />
             <TaskBox
-                label="Tasks"
+                label="المهام"
                 checked={activeBox === BOXES.TASK}
                 onChange={() => handleCheckboxChange(BOXES.TASK)}
                 member={member}
             />
-
             <ResourceBox
-                label="Resources"
+                label="الموارد"
                 checked={activeBox === BOXES.RESOURCE}
                 onChange={() => handleCheckboxChange(BOXES.RESOURCE)}
                 member={member}
             />
             <SavingsBox
-                label="Savings"
+                label="الادخار"
                 checked={activeBox === BOXES.SAVINGS}
                 onChange={() => handleCheckboxChange(BOXES.SAVINGS)}
                 member={member}
             />
             <LoanBox
-                label="Loans"
+                label="القروض"
                 checked={activeBox === BOXES.LOAN}
                 onChange={() => handleCheckboxChange(BOXES.LOAN)}
                 member={member}

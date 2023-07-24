@@ -11,6 +11,7 @@ import {
     TableSortLabel,
     IconButton,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { Income } from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -23,11 +24,14 @@ interface IncomesTableProps {
 
 type SortDirection = 'asc' | 'desc';
 
-
-
-
+const useStyles = makeStyles({
+    root: {
+        direction: 'rtl',
+    },
+});
 
 const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDeleteIncome, handleUpdateIncome }) => {
+    const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortColumn, setSortColumn] = useState<keyof Income>('Source');
@@ -72,16 +76,16 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, sortedIncomes.length - page * rowsPerPage);
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={classes.root}>
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>  <TableSortLabel active={sortColumn === 'Source'} direction={sortDirection} onClick={() => handleSort('Source')}>Source</TableSortLabel></TableCell>
-                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Amount'} direction={sortDirection} onClick={() => handleSort('Amount')}>Amount</TableSortLabel></TableCell>
-                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Date'} direction={sortDirection} onClick={() => handleSort('Date')}>Date</TableSortLabel></TableCell>
-                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Recurring'} direction={sortDirection} onClick={() => handleSort('Recurring')}>Recurring</TableSortLabel></TableCell>
-                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Frequency'} direction={sortDirection} onClick={() => handleSort('Frequency')}>Frequency</TableSortLabel></TableCell>
-                        <TableCell align="right">Actions</TableCell>
+                        <TableCell>  <TableSortLabel active={sortColumn === 'Source'} direction={sortDirection} onClick={() => handleSort('Source')}>المصدر</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Amount'} direction={sortDirection} onClick={() => handleSort('Amount')}>المبلغ</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Date'} direction={sortDirection} onClick={() => handleSort('Date')}>التاريخ</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Recurring'} direction={sortDirection} onClick={() => handleSort('Recurring')}>متكرر</TableSortLabel></TableCell>
+                        <TableCell align="right"><TableSortLabel active={sortColumn === 'Frequency'} direction={sortDirection} onClick={() => handleSort('Frequency')}>التكرار</TableSortLabel></TableCell>
+                        <TableCell align="right">الإجراءات</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -90,7 +94,7 @@ const IncomesTableComponent: React.FC<IncomesTableProps> = ({ incomes, handleDel
                             <TableCell component="th" scope="row">{income.Source}</TableCell>
                             <TableCell align="right">{income.Amount}</TableCell>
                             <TableCell align="right">{income.Date? new Date(income.Date).toISOString().split('T')[0] : ''}</TableCell>
-                            <TableCell align="right">{income.Recurring ? 'Yes' : 'No'}</TableCell>
+                            <TableCell align="right">{income.Recurring ? 'نعم' : 'لا'}</TableCell>
                             <TableCell align="right">{income.Frequency}</TableCell>
 
                             <TableCell align="right">
