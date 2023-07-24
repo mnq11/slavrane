@@ -1,10 +1,9 @@
 import React from 'react';
 import {
     Checkbox, FormControlLabel, TextField, Button, Select, MenuItem,
-    DialogActions, Grid, FormControl, InputLabel, Icon, Typography,
-    Card, CardContent, Box, IconButton, Tooltip
+    DialogActions, Grid, FormControl, InputLabel, Typography,
+    Card, CardContent, Box, IconButton, Tooltip, FormHelperText
 } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 import CategoryIcon from '@material-ui/icons/Category';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -25,11 +24,8 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         minWidth: 120,
     },
-    dialogAction: {
-        justifyContent: 'space-around',
-    },
     icon: {
-        marginRight: theme.spacing(1),
+        marginLeft: theme.spacing(1),
     },
     card: {
         padding: theme.spacing(2),
@@ -37,39 +33,93 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 15,
         boxShadow: '0px 14px 80px rgba(34, 35, 58, 0.2)',
         transition: "0.3s",
+    }, buttonIcon: {
+        marginRight: theme.spacing(1),
+        fontSize: 25,
+        color: theme.palette.common.white,
+        verticalAlign: 'middle',
+    },
+    button: {
+        padding: theme.spacing(1, 2),
+        textTransform: 'none',
+        direction: 'rtl',
+        fontSize: 16, // Increase the font size
+        borderRadius: theme.shape.borderRadius, // Apply theme border radius
+        width: '100%', // Full width button
+    },
+    cancelButton: {
+        marginTop: theme.spacing(1), // Add some margin to the top
+        marginBottom: theme.spacing(2), // Add some margin to the bottom
+        backgroundColor: theme.palette.error.main, // Change the background color
+        color: theme.palette.common.white, // Change the text color
+        '&:hover': {
+            backgroundColor: theme.palette.error.dark, // Change the background color on hover
+        },
+    },
+    createButton: {
+        marginTop: theme.spacing(2), // Add some margin to the top
+    },
+    dialogAction: {
+        flexDirection: 'column', // Change direction to column
+    },
+    iconStyle: {
+        verticalAlign: 'middle',
+        paddingRight: theme.spacing(1),
+        color: theme.palette.primary.main
     },
     infoButton: {
-        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
     }
 }));
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, handleCloseDialog}) => {
     const classes = useStyles();
+    const {
+        handleChange,
+        handleSubmit,
+        values,
+        touched,
+        errors,
+        isSubmitting,
+        handleBlur
+    } = formik;
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit} dir="rtl">
+            <DialogActions className={classes.dialogAction}>
+                <Button
+                    onClick={handleCloseDialog}
+                    startIcon={<CloseIcon className={classes.buttonIcon}/>}
+                    variant="contained"
+                    className={`${classes.button} ${classes.cancelButton}`}
+                >إلغاء</Button>
+            </DialogActions>
             <Card className={classes.card}>
                 <CardContent>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <Typography variant="h6">Expense Form</Typography>
+                            <Typography variant="h6">نموذج النفقات</Typography>
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl className={classes.formControl} fullWidth error={formik.touched.Category && Boolean(formik.errors.Category)}>
+                            <FormControl className={classes.formControl} fullWidth
+                                         error={touched.Category && Boolean(errors.Category)}>
                                 <InputLabel id="Category-label">
-                                    <Icon className={classes.icon}><CategoryIcon /></Icon>
-                                    Category
+                                    <CategoryIcon className={classes.icon}/>الفئة
                                 </InputLabel>
                                 <Select
                                     id="Category"
                                     name="Category"
-                                    value={formik.values.Category}
-                                    onChange={formik.handleChange}
+                                    value={values.Category}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
                                 >
                                     {categories.map(category => (
                                         <MenuItem key={category} value={category}>{category}</MenuItem>
                                     ))}
                                 </Select>
+                                {touched.Category && errors.Category && (
+                                    <FormHelperText>{errors.Category}</FormHelperText>
+                                )}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
@@ -77,15 +127,21 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
                                 fullWidth
                                 id="Date"
                                 name="Date"
-                                label={<><DateRangeIcon className={classes.icon} />Date</>}
+                                label={
+                                    <>
+                                        <DateRangeIcon className={classes.iconStyle}/>
+                                        التاريخ
+                                    </>
+                                }
                                 type="date"
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={formik.values.Date}
-                                onChange={formik.handleChange}
-                                error={formik.touched.Date && Boolean(formik.errors.Date)}
-                                helperText={formik.touched.Date && formik.errors.Date}
+                                value={values.Date}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.Date && Boolean(errors.Date)}
+                                helperText={touched.Date && errors.Date}
                                 variant="outlined"
                             />
                         </Grid>
@@ -94,12 +150,13 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
                                 fullWidth
                                 id="Amount"
                                 name="Amount"
-                                label={<><MoneyIcon className={classes.icon} />Amount</>}
+                                label={<><MoneyIcon className={classes.icon}/>المبلغ</>}
                                 type="number"
-                                value={formik.values.Amount}
-                                onChange={formik.handleChange}
-                                error={formik.touched.Amount && Boolean(formik.errors.Amount)}
-                                helperText={formik.touched.Amount && formik.errors.Amount}
+                                value={values.Amount}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.Amount && Boolean(errors.Amount)}
+                                helperText={touched.Amount && errors.Amount}
                                 variant="outlined"
                             />
                         </Grid>
@@ -108,53 +165,57 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={formik.values.Recurring}
-                                            onChange={formik.handleChange}
+                                            checked={values.Recurring}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
                                             name="Recurring"
                                             color="primary"
                                         />
                                     }
-                                    label="Recurring"
+                                    label="متكرر"
                                 />
                                 <IconButton className={classes.infoButton} size="small">
-                                    <Tooltip title="Check this if the expense is recurring">
-                                        <InfoIcon fontSize="small" />
+                                    <Tooltip title="قم بالتحقق من هذا إذا كانت النفقة متكررة">
+                                        <InfoIcon fontSize="small"/>
                                     </Tooltip>
                                 </IconButton>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl className={classes.formControl} fullWidth error={formik.touched.Frequency && Boolean(formik.errors.Frequency)}>
+                            <FormControl className={classes.formControl} fullWidth
+                                         error={touched.Frequency && Boolean(errors.Frequency)}>
                                 <InputLabel id="Frequency-label">
-                                    <Icon className={classes.icon}><RepeatIcon /></Icon>
-                                    Frequency
+                                    <RepeatIcon className={classes.icon}/>التكرار
                                 </InputLabel>
                                 <Select
                                     id="Frequency"
                                     name="Frequency"
-                                    value={formik.values.Frequency}
-                                    onChange={formik.handleChange}
+                                    value={values.Frequency}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
                                 >
-                                    <MenuItem value={'One-time'}>One-time</MenuItem>
-                                    <MenuItem value={'Daily'}>Daily</MenuItem>
-                                    <MenuItem value={'Weekly'}>Weekly</MenuItem>
-                                    <MenuItem value={'Monthly'}>Monthly</MenuItem>
-                                    <MenuItem value={'Annual'}>Annual</MenuItem>
+                                    <MenuItem value={'One-time'}>مرة واحدة</MenuItem>
+                                    <MenuItem value={'Daily'}>يوميا</MenuItem>
+                                    <MenuItem value={'Weekly'}>أسبوعي</MenuItem>
+                                    <MenuItem value={'Monthly'}>شهريا</MenuItem>
+                                    <MenuItem value={'Annual'}>سنويا</MenuItem>
                                 </Select>
+
+                                {touched.Frequency && errors.Frequency && (
+                                    <FormHelperText>{errors.Frequency}</FormHelperText>
+                                )}
                             </FormControl>
                         </Grid>
                     </Grid>
                     <DialogActions className={classes.dialogAction}>
                         <Button
-                            onClick={handleCloseDialog}
+                            type="submit"
                             color="primary"
-                            startIcon={<CloseIcon/>}
                             variant="contained"
+                            disabled={isSubmitting}
+                            className={`${classes.button} ${classes.createButton}`}
                         >
-                            Cancel
-                        </Button>
-                        <Button type="submit" color="primary" startIcon={<SaveIcon/>} variant="contained">
-                            {mode === 'create' ? 'Create' : 'Update'}
+                            {mode === 'create' ? 'إنشاء' : 'تحديث'}
                         </Button>
                     </DialogActions>
                 </CardContent>

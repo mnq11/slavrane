@@ -46,7 +46,28 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-around',
     },
 }));
-const categories = ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5', 'Category 6', 'Category 7', 'Category 8', 'Category 9', 'Category 10'];
+const categories = [
+    'الطعام والبقالة', // Food and Groceries
+    'فواتير الخدمات (كهرباء, ماء, غاز)', // Utility Bills (Electricity, Water, Gas)
+    'الإيجار أو نفقات الإسكان', // Rent or Housing Expenses
+    'رسوم التعليم', // Education Fees
+    'الرعاية الصحية والنفقات الطبية', // Healthcare and Medical Expenses
+    'تكاليف النقل', // Transportation Costs
+    'الاتصالات (الإنترنت, الهاتف)', // Communication (Internet, Phone)
+    'الملابس والعناية الشخصية', // Clothing and Personal Care
+    'المستلزمات المنزلية', // Household Supplies
+    'الصيانة والإصلاحات (المنزل, المركبات)', // Maintenance and Repairs (House, Vehicle)
+    'تكاليف الوقود أو النقل العام', // Fuel or Public Transport Costs
+    'الادخار والاستثمارات', // Savings and Investments
+    'مدفوعات الدين', // Debt Payments
+    'التأمين (الصحة, المنزل, المركبات)', // Insurance (Health, Home, Vehicle)
+    'الترفيه والاستجمام', // Entertainment and Recreation
+    'النفقات المتنوعة', // Miscellaneous Expenses
+    'تكاليف رعاية الأطفال أو الكبار', // Child Care or Eldercare Costs
+    'المناسبات الخاصة (أعياد الميلاد, المهرجانات)', // Special Occasions (Birthdays, Festivals)
+    'السفر والعطلات', // Travel and Vacations
+    'مساهمات الصندوق الطارئ' // Emergency Fund Contributions
+];
 
 const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -56,15 +77,14 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
     const [updatingExpense, setUpdatingExpense] = useState<Expense | null>(null);
 
     const validationSchema = Yup.object({
-        Category: Yup.string().required('Required'),
-        Date: Yup.date().required('Required'),
+        Category: Yup.string().required('مطلوب'), // Required
+        Date: Yup.date().required('مطلوب'), // Required
         Amount: Yup.number()
-            .typeError('Amount must be a number') // This is a custom error message
-            .required('Required'),
-        Recurring: Yup.string().required('Required'),
-        Frequency: Yup.string().required('Required'),
+            .typeError('يجب أن يكون المبلغ رقما') // Amount must be a number
+            .required('مطلوب'), // Required
+        Recurring: Yup.string().required('مطلوب'), // Required
+        Frequency: Yup.string().required('مطلوب'), // Required
     });
-
 
     const formik = useFormik({
         initialValues: {
@@ -74,7 +94,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
             Date: new Date().toISOString().split('T')[0],
             Amount: 0,
             Recurring: false,
-            Frequency: 'One-time',
+            Frequency: 'مرة واحدة',
         },
         validationSchema,
         onSubmit: (values) => {
@@ -95,10 +115,10 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                         newExpense.Date = newExpense.Date.split('T')[0];
                         setExpenses([newExpense, ...expenses]);
                         setOpen(false);
-                        toast.success('Expense created successfully');
+                        toast.success('تم إنشاء النفقة بنجاح'); // Expense created successfully
                     })
                     .catch((error) => {
-                        toast.error(`Failed to create expense: ${error.message}`);
+                        toast.error(`فشل في إنشاء النفقة: ${error.message}`); // Failed to create expense
                     });
             } else if (mode === 'update' && updatingExpense) {
                 expenseData['ExpenseID'] = updatingExpense.ExpenseID; // make sure to pass ExpenseID for update
@@ -109,7 +129,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                         newExpenses[index] = updatedExpense;
                         setExpenses(newExpenses);
                         setOpen(false);
-                        toast.success('Expense updated successfully');
+                        toast.success('تم تحديث النفقة بنجاح'); // Expense updated successfully
                     })
                     .catch((error) => {
                         // Revert the change in local state if update fails
@@ -117,7 +137,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                         const newExpenses = [...expenses];
                         newExpenses[index] = expenses[index];
                         setExpenses(newExpenses);
-                        toast.error(`Failed to update expense: ${error.message}`);
+                        toast.error(`فشل في تحديث النفقة: ${error.message}`); // Failed to update expense
                     });
             }
         },
@@ -137,7 +157,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
         setMode('create');
         setOpen(true);
         formik.resetForm();
-        toast.info('Creating a new expense');
+        toast.info('إنشاء نفقة جديدة');
     };
 
     const handleUpdateExpense = (expense: Expense) => {
@@ -157,7 +177,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
     };
     const handleCloseDialog = () => {
         setOpen(false);
-        toast.info('Expense creation cancelled');
+        toast.info('إغلاق النافذة');
     };
 
 
@@ -168,14 +188,14 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
 
         deleteExpense(expenseId)
             .then(() => {
-                toast.success('Expense deleted successfully');
+                toast.success('تم حذف النفقة بنجاح'); // Expense deleted successfully
             })
             .catch((error) => {
                 // Add the expense back in local state if deletion fails
                 newExpenses.splice(index, 0, expenses[index]);
                 setExpenses(newExpenses);
 
-                toast.error(`Failed to delete expense: ${error.message}`);
+                toast.error(`فشل في حذف النفقة: ${error.message}`); // Failed to delete expense
             });
     };
 
@@ -205,7 +225,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                                     <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense}
                                                             onDelete={handleDeleteExpense}/>
                                     <Dialog open={open} onClose={handleNewExpense}>
-                                        <DialogTitle>{mode === 'create' ? 'Create New Expense' : 'Update Expense'}</DialogTitle>
+                                        <DialogTitle>{mode === 'create' ? 'أنشئ نفقة جديدة' : 'تحديث النفقات'}</DialogTitle>
                                         <DialogContent>
                                             <ExpenseForm
                                                 formik={formik}
