@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -13,8 +13,8 @@ import {
     FormHelperText,
     InputAdornment
 } from '@material-ui/core';
-import {Member, useMember} from "../../../../../hooks/useMember";
-import {MemberFormStyles} from "./Styling/AdminMember.Styles";
+import { Member, useMember } from "../../../../../hooks/useMember";
+import { MemberFormStyles } from "./Styling/AdminMember.Styles";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import SaveIcon from '@material-ui/icons/Save';
@@ -31,7 +31,7 @@ interface MemberFormProps {
     familyId?: number;
 }
 
-const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCancel, familyId}) => {
+const MemberForm: React.FC<MemberFormProps> = ({ title, member, onSubmit, onCancel, familyId }) => {
     const [name, setName] = useState(member ? member.MemberName : "John Doe");
     const [email, setEmail] = useState(member ? member.Email : "john.doe@example.com");
     const [password, setPassword] = useState(member ? member.Password : "password123");
@@ -58,7 +58,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
         let isValid = true;
 
         if (name === "") {
-            setNameError("Name is required");
+            setNameError("اسم المستخدم مطلوب");
             isValid = false;
         } else {
             setNameError("");
@@ -66,54 +66,54 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
 
         const emailRegex = /\S+@\S+\.\S+/;
         if (email === "") {
-            setEmailError("Email is required");
+            setEmailError("البريد الإلكتروني مطلوب");
             isValid = false;
         } else if (!emailRegex.test(email)) {
-            setEmailError("Invalid email format");
+            setEmailError("صيغة البريد الإلكتروني غير صحيحة");
             isValid = false;
         } else {
             setEmailError("");
         }
 
         if (password === "") {
-            setPasswordError("Password is required");
+            setPasswordError("كلمة المرور مطلوبة");
             isValid = false;
         } else if (password.length < 6) {
-            setPasswordError("Password must be at least 6 characters long");
+            setPasswordError("يجب أن تكون كلمة المرور على الأقل 6 أحرف");
             isValid = false;
         } else {
             setPasswordError("");
         }
 
         if (contactNumber === "") {
-            setContactNumberError("Contact number is required");
+            setContactNumberError("رقم الهاتف مطلوب");
             isValid = false;
         } else if (isNaN(Number(contactNumber))) {
-            setContactNumberError("Contact number must be a number");
+            setContactNumberError("يجب أن يكون رقم الهاتف رقمًا");
             isValid = false;
         } else {
             setContactNumberError("");
         }
 
         if (dob === "") {
-            setDobError("Date of Birth is required");
+            setDobError("تاريخ الميلاد مطلوب");
             isValid = false;
         } else {
             setDobError("");
         }
 
         if (!score) {
-            setScoreError("Score is required");
+            setScoreError("النقاط مطلوبة");
             isValid = false;
         } else if (isNaN(score)) {
-            setScoreError("Score must be a number");
+            setScoreError("يجب أن تكون النقاط رقمًا");
             isValid = false;
         } else {
             setScoreError("");
         }
 
         if (!gender) {
-            setGenderError("Gender is required");
+            setGenderError("الجنس مطلوب");
             isValid = false;
         } else {
             setGenderError("");
@@ -140,7 +140,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 });
                 onCancel();
             } catch (error) {
-                console.log('Failed to submit the form. Please try again.');
+                console.log('فشل في تقديم النموذج. يرجى المحاولة مرة أخرى.');
             } finally {
                 setLoading(false);
             }
@@ -148,12 +148,12 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
     };
 
     return (
-        <Dialog open onClose={onCancel}>
+        <Dialog open onClose={onCancel} dir="rtl">
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <TextField
                     className={classes.textField}
-                    label="Full Name"
+                    label="الاسم الكامل"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     variant="outlined"
@@ -162,7 +162,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 />
                 <TextField
                     className={classes.textField}
-                    label="Email Address"
+                    label="البريد الإلكتروني"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     variant="outlined"
@@ -178,7 +178,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 />
                 <TextField
                     className={classes.textField}
-                    label="Create a Password"
+                    label="إنشاء كلمة مرور"
                     type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -195,7 +195,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 />
                 <TextField
                     className={classes.textField}
-                    label="Phone Number"
+                    label="رقم الهاتف"
                     value={contactNumber}
                     onChange={(e) => setContactNumber(e.target.value)}
                     variant="outlined"
@@ -211,7 +211,7 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                 />
                 <TextField
                     className={classes.textField}
-                    label="Birth Date"
+                    label="تاريخ الميلاد"
                     type="date"
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
@@ -230,41 +230,41 @@ const MemberForm: React.FC<MemberFormProps> = ({title, member, onSubmit, onCance
                     helperText={dobError}
                 />
                 <FormControl variant="outlined" className={classes.select}>
-                    <InputLabel id="gender-select-label">Gender</InputLabel>
+                    <InputLabel id="gender-select-label">الجنس</InputLabel>
                     <Select
                         labelId="gender-select-label"
                         id="gender-select"
                         value={gender}
                         onChange={(e) => setGender(e.target.value as string)}
-                        label="Gender"
+                        label="الجنس"
                         error={Boolean(genderError)}
                     >
-                        <MenuItem value={'Male'}>Male</MenuItem>
-                        <MenuItem value={'Female'}>Female</MenuItem>
+                        <MenuItem value={'Male'}>ذكر</MenuItem>
+                        <MenuItem value={'Female'}>أنثى</MenuItem>
                     </Select>
                     <FormHelperText error>{genderError}</FormHelperText>
                 </FormControl>
 
                 <FormControl variant="outlined" className={classes.select}>
-                    <InputLabel id="role-select-label">Role</InputLabel>
+                    <InputLabel id="role-select-label">الدور</InputLabel>
                     <Select
                         labelId="role-select-label"
                         id="role-select"
                         value={role}
                         onChange={(e) => setRole(e.target.value as 'normal' | 'moderator' | 'admin' | 'analyst')}
-                        label="Role"
+                        label="الدور"
                     >
-                        {user?.Role === 'admin' && <MenuItem value={'admin'}>Admin</MenuItem>}
-                        {(user?.Role === 'admin' || user?.Role === 'moderator') && <MenuItem value={'moderator'}>Moderator</MenuItem>}
-                        {(user?.Role === 'admin' || user?.Role === 'moderator' || user?.Role === 'analyst') && <MenuItem value={'analyst'}>Analyst</MenuItem>}
-                        <MenuItem value={'normal'}>Normal</MenuItem>
+                        {user?.Role === 'admin' && <MenuItem value={'admin'}>مشرف</MenuItem>}
+                        {(user?.Role === 'admin' || user?.Role === 'moderator') && <MenuItem value={'moderator'}>مراقب</MenuItem>}
+                        {(user?.Role === 'admin' || user?.Role === 'moderator' || user?.Role === 'analyst') && <MenuItem value={'analyst'}>محلل</MenuItem>}
+                        <MenuItem value={'normal'}>عادي</MenuItem>
                     </Select>
                 </FormControl>
 
 
                 <TextField
                     className={classes.textField}
-                    label="Score"
+                    label="النقاط"
                     type="number"
                     value={score}
                     onChange={(e) => setScore(Number(e.target.value))}

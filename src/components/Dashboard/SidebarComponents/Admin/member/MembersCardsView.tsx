@@ -1,11 +1,9 @@
-// MembersCardsView.tsx
-
 import React, { useState } from 'react';
 import { Button, Card, CardContent, Grid, Typography, TextField, TablePagination } from '@material-ui/core';
 import { Member } from "../../../../../hooks/useMember";
-import {createNewMember} from "../Provider/adminPanelFunctions";
-import {MembersCardsViewStyles} from "./Styling/AdminMember.Styles";
-import MemberForm from "./ MemberForm";
+import { createNewMember } from "../Provider/adminPanelFunctions";
+import { MembersCardsViewStyles } from "./Styling/AdminMember.Styles";
+import MemberForm from "./MemberForm";
 
 interface MembersCardsViewProps {
     members: Member[] | undefined;
@@ -27,7 +25,7 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
             // Update the members list with the new member...
             members?.push(createdMember);
         } else {
-            console.error("Failed to create member.");
+            console.error("فشل في إنشاء العضو.");
         }
     };
 
@@ -41,14 +39,14 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
     };
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} dir="rtl">
             <TextField
                 className={classes.textField}
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                label="Filter members"
+                label="تصفية الأعضاء"
             />
-            <Button className={classes.button} onClick={() => setDialogOpen(true)}>Create New Member</Button>
+            <Button className={classes.button} onClick={() => setDialogOpen(true)}>إنشاء عضو جديد</Button>
             <Grid container spacing={3}>
                 {members
                     ?.filter((member) => member.MemberName.includes(filter))
@@ -75,7 +73,7 @@ const MembersCardsView: React.FC<MembersCardsViewProps> = ({ members, onSelectMe
             </div>
             {dialogOpen && (
                 <MemberForm
-                    title="Create New Member"
+                    title="إنشاء عضو جديد"
                     onSubmit={handleCreateMember}
                     onCancel={() => setDialogOpen(false)}
                     familyId={selectedFamily}

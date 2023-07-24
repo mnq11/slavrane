@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
@@ -11,7 +11,7 @@ import {
     IconButton,
     TablePagination
 } from '@material-ui/core';
-import {Tasks} from "../../../../../../hooks/useMember";
+import { Tasks } from "../../../../../../hooks/useMember";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -20,7 +20,7 @@ interface TableComponentProps {
     handleDeleteTask: (taskId: number) => void;
     handleUpdateTask: (taskId: number, tasksData: Tasks) => void;
 }
-const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDeleteTask, handleUpdateTask}) => {
+const TasksTableComponent: React.FC<TableComponentProps> = ({ tasks, handleDeleteTask, handleUpdateTask }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Tasks>('DueDate');
     const [page, setPage] = useState(0);
@@ -66,7 +66,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
     const paginatedTasks = sortedTasks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} dir="rtl">
             <Table>
                 <TableHead>
                     <TableRow>
@@ -76,7 +76,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                                 direction={orderBy === 'TaskName' ? order : 'asc'}
                                 onClick={() => handleSortRequest('TaskName')}
                             >
-                                Task Name
+                                اسم المهمة
                             </TableSortLabel>
                         </TableCell>
                         <TableCell key={'TaskStatus'}>
@@ -85,7 +85,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                                 direction={orderBy === 'TaskStatus' ? order : 'asc'}
                                 onClick={() => handleSortRequest('TaskStatus')}
                             >
-                                Status
+                                الحالة
                             </TableSortLabel>
                         </TableCell>
                         <TableCell key={'DueDate'}>
@@ -94,7 +94,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                                 direction={orderBy === 'DueDate' ? order : 'asc'}
                                 onClick={() => handleSortRequest('DueDate')}
                             >
-                                Due Date
+                                تاريخ الاستحقاق
                             </TableSortLabel>
                         </TableCell>
                         <TableCell key={'Priority'}>
@@ -103,7 +103,7 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                                 direction={orderBy === 'Priority' ? order : 'asc'}
                                 onClick={() => handleSortRequest('Priority')}
                             >
-                                Priority
+                                الأولوية
                             </TableSortLabel>
                         </TableCell>
                         <TableCell key={'Description'}>
@@ -112,14 +112,12 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                                 direction={orderBy === 'Description' ? order : 'asc'}
                                 onClick={() => handleSortRequest('Description')}
                             >
-                                Description
+                                الوصف
                             </TableSortLabel>
                         </TableCell>
                         <TableCell key={'Actions'} align="right">
-                            Actions
+                            الإجراءات
                         </TableCell>
-
-
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -132,10 +130,10 @@ const TasksTableComponent: React.FC<TableComponentProps> = ({tasks, handleDelete
                             <TableCell>{task.Description}</TableCell>
                             <TableCell align="right">
                                 <IconButton color={"primary"} onClick={() => handleUpdateTask(task.TaskID ?? 0, task)}>
-                                    <EditIcon/>
+                                    <EditIcon />
                                 </IconButton>
                                 <IconButton color={"secondary"} onClick={() => handleDeleteTask(task.TaskID ?? 0)}>
-                                    <DeleteIcon/>
+                                    <DeleteIcon />
                                 </IconButton>
                             </TableCell>
                         </TableRow>

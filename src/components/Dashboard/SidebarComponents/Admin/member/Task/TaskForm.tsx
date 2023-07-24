@@ -9,12 +9,12 @@ import * as Yup from 'yup';
 
 // TaskForm.tsx
 const validationSchema = Yup.object({
-    MemberID: Yup.number().min(0, "Invalid MemberID").required("Required"),
-    TaskName: Yup.string().required("Required"),
-    Description: Yup.string().required("Required"),
-    DueDate: Yup.date().required("Required"),
-    TaskStatus: Yup.string().oneOf(['Not Started', 'Pending', 'In Progress', 'Completed'], 'Invalid status').required("Required"),
-    Priority: Yup.number().required("Required")
+    MemberID: Yup.number().min(0, "رقم عضو غير صالح").required("مطلوب"),
+    TaskName: Yup.string().required("مطلوب"),
+    Description: Yup.string().required("مطلوب"),
+    DueDate: Yup.date().required("مطلوب"),
+    TaskStatus: Yup.string().oneOf(['لم يبدأ', 'قيد الانتظار', 'قيد التنفيذ', 'مكتمل'], 'حالة غير صالحة').required("مطلوب"),
+    Priority: Yup.number().required("مطلوب")
 });
 
 interface TaskFormProps {
@@ -39,15 +39,15 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
     });
 
     return (
-        <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Create New Task</DialogTitle>
+        <Dialog open={open} onClose={onClose} dir="rtl">
+            <DialogTitle>إنشاء مهمة جديدة</DialogTitle>
             <DialogContent>
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
                         fullWidth
                         id="TaskName"
                         name="TaskName"
-                        label="Task Name"
+                        label="اسم المهمة"
                         value={formik.values.TaskName}
                         onChange={formik.handleChange}
                         error={formik.touched.TaskName && Boolean(formik.errors.TaskName)}
@@ -57,7 +57,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         fullWidth
                         id="Description"
                         name="Description"
-                        label="Description"
+                        label="الوصف"
                         value={formik.values.Description}
                         onChange={formik.handleChange}
                         error={formik.touched.Description && Boolean(formik.errors.Description)}
@@ -67,7 +67,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         fullWidth
                         id="DueDate"
                         name="DueDate"
-                        label="Due Date"
+                        label="تاريخ الاستحقاق"
                         type="date"
                         InputLabelProps={{
                             shrink: true,
@@ -77,7 +77,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         error={formik.touched.DueDate && Boolean(formik.errors.DueDate)}
                         helperText={formik.touched.DueDate && formik.errors.DueDate}
                     />
-                    <InputLabel id="TaskStatus-label">Status</InputLabel>
+                    <InputLabel id="TaskStatus-label">الحالة</InputLabel>
                     <Select
                         labelId="TaskStatus-label"
                         id="TaskStatus"
@@ -86,17 +86,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         onChange={formik.handleChange}
                         error={formik.touched.TaskStatus && Boolean(formik.errors.TaskStatus)}
                     >
-                        <MenuItem value="Not Started">Not Started</MenuItem>
-                        <MenuItem value="Pending">Pending</MenuItem>
-                        <MenuItem value="In Progress">In Progress</MenuItem>
-                        <MenuItem value="Completed">Completed</MenuItem>
+                        <MenuItem value="لم يبدأ">لم يبدأ</MenuItem>
+                        <MenuItem value="قيد الانتظار">قيد الانتظار</MenuItem>
+                        <MenuItem value="قيد التنفيذ">قيد التنفيذ</MenuItem>
+                        <MenuItem value="مكتمل">مكتمل</MenuItem>
                     </Select>
                     {formik.touched.TaskStatus && formik.errors.TaskStatus &&
                         <FormHelperText>{formik.errors.TaskStatus}</FormHelperText>
                     }
 
                     <FormControl fullWidth>
-                        <InputLabel id="Priority-label">Priority</InputLabel>
+                        <InputLabel id="Priority-label">الأولوية</InputLabel>
                         <Select
                             labelId="Priority-label"
                             id="Priority"
@@ -114,8 +114,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         )}
                     </FormControl>
                     <DialogActions>
-                        <Button onClick={onClose} color="primary">Cancel</Button>
-                        <Button type="submit" color="primary">Save</Button>
+                        <Button onClick={onClose} color="primary">إلغاء</Button>
+                        <Button type="submit" color="primary">حفظ</Button>
                     </DialogActions>
                 </form>
             </DialogContent>

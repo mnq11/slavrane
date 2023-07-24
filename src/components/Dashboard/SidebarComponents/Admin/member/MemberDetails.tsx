@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Member} from "../../../../../hooks/useMember";
 import { Card, CardContent, Grid, IconButton, Typography} from '@material-ui/core';
-import MemberForm from "./ MemberForm";
+import MemberForm from "./MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
 import TaskBox from './Task/TaskBox';
