@@ -63,7 +63,6 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
         return 0;
     });
 
-
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -74,7 +73,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
     };
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} dir="rtl">
             <Table>
                 <TableHead>
                     <TableRow>
@@ -83,28 +82,28 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
                             direction={orderBy === 'Category' ? order : 'asc'}
                             onClick={() => handleSortRequest('Category')}
                         >
-                            Category
+                            الفئة
                         </TableSortLabel></TableCell>
                         <TableCell> <TableSortLabel
                             active={orderBy === 'Amount'}
                             direction={orderBy === 'Amount' ? order : 'asc'}
                             onClick={() => handleSortRequest('Amount')}
                         >
-                            Amount
+                            المبلغ
                         </TableSortLabel></TableCell>
                         <TableCell> <TableSortLabel
                             active={orderBy === 'Date'}
                             direction={orderBy === 'Date' ? order : 'asc'}
                             onClick={() => handleSortRequest('Date')}
                         >
-                            Date
+                            التاريخ
                         </TableSortLabel></TableCell>
                         <TableCell> <TableSortLabel
                             active={orderBy === 'Recurring'}
                             direction={orderBy === 'Recurring' ? order : 'asc'}
                             onClick={() => handleSortRequest('Recurring')}
                         >
-                            Recurring
+                            متكرر
                         </TableSortLabel></TableCell>
                         <TableCell> <TableSortLabel
                             active={orderBy === 'Frequency'}
@@ -112,11 +111,11 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
                             onClick={() => handleSortRequest('Frequency')}
 
                         >
-                            Frequency
+                            التكرار
                         </TableSortLabel></TableCell>
 
 
-                        <TableCell>Actions</TableCell>
+                        <TableCell>الإجراءات</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -125,7 +124,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
                             <TableCell>{expense.Category}</TableCell>
                             <TableCell>{expense.Amount}</TableCell>
                             <TableCell>{expense.Date ? new Date(expense.Date).toISOString().split('T')[0] : ''}</TableCell>
-                            <TableCell>{expense.Recurring ? 'Yes' : 'No'}</TableCell>
+                            <TableCell>{expense.Recurring ? 'نعم' : 'لا'}</TableCell>
                             <TableCell>{expense.Frequency}</TableCell>
                             <TableCell>
                                 <IconButton color="primary" onClick={() => onUpdate(expense)}>
