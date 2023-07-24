@@ -1,25 +1,60 @@
 // controllers/taskController.js
 const Joi = require('joi');
 
+
 const createTaskSchema = Joi.object({
-    Description: Joi.string().required(),
-    DueDate: Joi.date().required(),
-    TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').required(),
-    MemberID: Joi.number().integer().required(),
-    TaskName: Joi.string().required(),
-    Priority: Joi.number().required(),
+    Description: Joi.string().required().messages({
+        'string.empty': 'الوصف مطلوب',
+    }),
+    DueDate: Joi.date().required().messages({
+        'date.base': 'تاريخ الاستحقاق مطلوب',
+        'date.format': 'تنسيق تاريخ الاستحقاق غير صالح',
+    }),
+    TaskStatus: Joi.string().valid('لم يبدأ', 'قيد الانتظار', 'قيد التنفيذ', 'مكتمل').required().messages({
+        'any.only': 'الحالة غير صالحة',
+        'string.empty': 'الحالة مطلوبة',
+    }),
+    MemberID: Joi.number().integer().required().messages({
+        'number.base': 'رقم العضو غير صالح',
+        'number.integer': 'رقم العضو يجب أن يكون صحيحًا',
+        'number.empty': 'رقم العضو مطلوب',
+    }),
+    TaskName: Joi.string().required().messages({
+        'string.empty': 'اسم المهمة مطلوب',
+    }),
+    Priority: Joi.number().required().messages({
+        'number.base': 'الأولوية غير صالحة',
+        'number.empty': 'الأولوية مطلوبة',
+    }),
     // Add validation for other fields as needed
 });
 
 const updateTaskSchema = Joi.object({
-    TaskID: Joi.number().integer().optional(),
-    TaskName: Joi.string().optional(),
-    Description: Joi.string().optional(),
-    MemberID: Joi.number().integer().required(),
-
-    DueDate: Joi.date().optional(),
-    TaskStatus: Joi.string().valid('Not Started','Pending', 'In Progress', 'Completed').optional(),
-    Priority: Joi.number().optional(),
+    TaskID: Joi.number().integer().optional().messages({
+        'number.base': 'رقم المهمة غير صالح',
+        'number.integer': 'رقم المهمة يجب أن يكون صحيحًا',
+    }),
+    TaskName: Joi.string().optional().messages({
+        'string.empty': 'اسم المهمة مطلوب',
+    }),
+    Description: Joi.string().optional().messages({
+        'string.empty': 'الوصف مطلوب',
+    }),
+    MemberID: Joi.number().integer().required().messages({
+        'number.base': 'رقم العضو غير صالح',
+        'number.integer': 'رقم العضو يجب أن يكون صحيحًا',
+        'number.empty': 'رقم العضو مطلوب',
+    }),
+    DueDate: Joi.date().optional().messages({
+        'date.base': 'تاريخ الاستحقاق غير صالح',
+        'date.format': 'تنسيق تاريخ الاستحقاق غير صالح',
+    }),
+    TaskStatus: Joi.string().valid('لم يبدأ', 'قيد الانتظار', 'قيد التنفيذ', 'مكتمل').optional().messages({
+        'any.only': 'الحالة غير صالحة',
+    }),
+    Priority: Joi.number().optional().messages({
+        'number.base': 'الأولوية غير صالحة',
+    }),
     createdAt: Joi.date().optional(),
     updatedAt: Joi.date().optional(),
     // Add validation for other fields as needed

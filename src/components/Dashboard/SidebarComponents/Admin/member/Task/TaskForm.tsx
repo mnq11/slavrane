@@ -39,9 +39,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
     });
 
     return (
-        <Dialog open={open} onClose={onClose} dir="rtl">
+        <Dialog open={open} onClose={onClose}>
             <DialogTitle>إنشاء مهمة جديدة</DialogTitle>
-            <DialogContent>
+            <DialogContent dir="rtl"> {/* تعيين اتجاه الكتابة لليمين إلى اليسار */}
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
                         fullWidth
@@ -52,6 +52,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         onChange={formik.handleChange}
                         error={formik.touched.TaskName && Boolean(formik.errors.TaskName)}
                         helperText={formik.touched.TaskName && formik.errors.TaskName}
+                        dir="rtl"
                     />
                     <TextField
                         fullWidth
@@ -62,6 +63,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         onChange={formik.handleChange}
                         error={formik.touched.Description && Boolean(formik.errors.Description)}
                         helperText={formik.touched.Description && formik.errors.Description}
+                        dir="rtl"
                     />
                     <TextField
                         fullWidth
@@ -85,6 +87,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                         value={formik.values.TaskStatus}
                         onChange={formik.handleChange}
                         error={formik.touched.TaskStatus && Boolean(formik.errors.TaskStatus)}
+                        dir="rtl"
                     >
                         <MenuItem value="لم يبدأ">لم يبدأ</MenuItem>
                         <MenuItem value="قيد الانتظار">قيد الانتظار</MenuItem>
@@ -104,6 +107,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onClose, open, initialVal
                             value={formik.values.Priority}
                             onChange={formik.handleChange}
                             error={formik.touched.Priority && Boolean(formik.errors.Priority)}
+                            dir="rtl"
                         >
                             {Array.from({length: 10}, (_, i) => (
                                 <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>

@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
-import {toast} from 'react-toastify';
+// TaskBox.tsx
+import React, { useState, useEffect } from 'react';
+import { Switch, Grid, Card, CardContent, Typography, Box, IconButton } from '@material-ui/core';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {Member, Tasks} from "../../../../../../hooks/useMember";
+import { Member, Tasks } from "../../../../../../hooks/useMember";
 import TasksTableComponent from "./TasksTableComponent";
-import {getTasksForMember, createTask, deleteTask, updateTask} from "../../../../../../API/api";
+import { getTasksForMember, createTask, deleteTask, updateTask } from "../../../../../../API/api";
 import TaskForm from "./TaskForm";
 import useLoanBoxStyles from "../Lone/LoanBox.styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import {Divider} from "antd";
+import { Divider } from "antd";
 
 interface CheckboxProps {
     label: string;
@@ -17,7 +18,7 @@ interface CheckboxProps {
     member: Member;
 }
 
-const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) => {
+const TaskBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member }) => {
     const [tasks, setTasks] = useState<Tasks[]>([]);
     const [open, setOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Tasks | null>(null);
@@ -28,14 +29,14 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
             getTasksForMember(member.MemberID)
                 .then(tasks => setTasks(tasks))
                 .catch(error => {
-                    toast.error('Failed to fetch tasks: ' + error.message);
+                    toast.error('فشل في جلب المهام: ' + error.message);
                 });
         }
     }, [checked, member.MemberID]);
 
     const handleNewTask = () => {
         setOpen(true);
-        toast.info('Creating a new task');
+        toast.info('إنشاء مهمة جديدة');
     }
 
     const handleSubmit = (values: any) => {
@@ -53,20 +54,20 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                 .then(updatedTask => {
                     setTasks(tasks.map(task => task.TaskID === editingTask?.TaskID ? updatedTask : task));
                     setOpen(false);
-                    toast.success('Task updated successfully');
+                    toast.success('تم تحديث المهمة بنجاح');
                 })
                 .catch(error => {
-                    toast.error('Failed to update task: ' + error.message);
+                    toast.error('فشل في تحديث المهمة: ' + error.message);
                 });
         } else {
             createTask(taskData)
                 .then(newTask => {
                     setTasks([newTask, ...tasks]);
                     setOpen(false);
-                    toast.success('Task created successfully');
+                    toast.success('تم إنشاء المهمة بنجاح');
                 })
                 .catch(error => {
-                    toast.error('Failed to create task: ' + error.message);
+                    toast.error('فشل في إنشاء المهمة: ' + error.message);
                 });
         }
     };
@@ -85,10 +86,10 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                     setOpen(false);
                     setEditingTask(null); // clear the editing income
                 }
-                toast.success('Task deleted successfully');
+                toast.success('تم حذف المهمة بنجاح');
             })
             .catch((error) => {
-                toast.error(`Failed to delete task: ${error.message}`);
+                toast.error(`فشل في حذف المهمة: ${error.message}`);
             });
     };
 
@@ -106,27 +107,25 @@ const TaskBox: React.FC<CheckboxProps> = ({label, checked, onChange, member}) =>
                     </Box>
                     {checked && (
                         <>
-
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <IconButton color="primary" onClick={handleNewTask}>
-                                    <AddCircleOutlineIcon/>
+                                    <AddCircleOutlineIcon />
                                 </IconButton>
                             </Box>
-                            <Divider/>
+                            <Divider />
                             <TaskForm
                                 open={open}
                                 onClose={() => setOpen(false)}
                                 onSubmit={handleSubmit}
                                 initialValues={{
                                     MemberID: member.MemberID || -1,
-                                    TaskName: editingTask?.TaskName || 'Enter new task name',
-                                    Description: editingTask?.Description || 'Enter task description',
-                                    DueDate: editingTask?.DueDate || new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().slice(0,10),
-                                    TaskStatus: editingTask?.TaskStatus ||"Not Started",
+                                    TaskName: editingTask?.TaskName || 'أدخل اسم مهمة جديدة',
+                                    Description: editingTask?.Description || 'أدخل وصف المهمة',
+                                    DueDate: editingTask?.DueDate || new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().slice(0, 10),
+                                    TaskStatus: editingTask?.TaskStatus || "لم يبدأ",
                                     Priority: editingTask?.Priority || 1
                                 }}
                             />
-
                             <TasksTableComponent tasks={tasks} handleUpdateTask={handleUpdateTask} handleDeleteTask={handleDeleteTask} />
                         </>
                     )}
