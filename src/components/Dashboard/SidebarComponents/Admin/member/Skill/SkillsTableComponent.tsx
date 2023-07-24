@@ -10,7 +10,7 @@ import {
     TableSortLabel,
     TablePagination, IconButton
 } from '@material-ui/core';
-import {Skill} from '../../../../../../hooks/useMember';
+import { Skill } from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -19,7 +19,8 @@ interface SkillsTableComponentProps {
     handleDeleteSkill: (skillId: number) => void;
     handleUpdateSkill: (skillId: number, skillData: Skill) => void;
 }
-const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills,handleDeleteSkill,handleUpdateSkill }) => {
+
+const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills, handleDeleteSkill, handleUpdateSkill }) => {
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Skill>('SkillID');
     const [page, setPage] = useState(0);
@@ -65,37 +66,48 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills,hand
     const paginatedSkills = sortedSkills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} dir="rtl"> {/* Add dir="rtl" for RTL support */}
             <Table>
                 <TableHead>
                     <TableRow>
-                       <TableCell>  <TableSortLabel  active={orderBy === 'SkillName'} direction={orderBy === 'SkillName' ? order : 'asc'} onClick={() => handleSortRequest('SkillName')}>
-                            Skill Name
-                        </TableSortLabel></TableCell>
-                        <TableCell>  <TableSortLabel  active={orderBy === 'SkillLevel'} direction={orderBy === 'SkillLevel' ? order : 'asc'} onClick={() => handleSortRequest('SkillLevel')}>
-                            Skill Level
-                        </TableSortLabel></TableCell>
-                        <TableCell>  <TableSortLabel  active={orderBy === 'DateAcquired'} direction={orderBy === 'DateAcquired' ? order : 'asc'} onClick={() => handleSortRequest('DateAcquired')}>
-                            Date Acquired
-                        </TableSortLabel></TableCell>
-                        <TableCell>  <TableSortLabel  active={orderBy === 'Certification'} direction={orderBy === 'Certification' ? order : 'asc'} onClick={() => handleSortRequest('Certification')}>
-                            Certification
-                        </TableSortLabel></TableCell>
-                        <TableCell align="right">Actions</TableCell>
+
+                        <TableCell>
+                            <TableSortLabel active={orderBy === 'SkillName'} direction={orderBy === 'SkillName' ? order : 'asc'} onClick={() => handleSortRequest('SkillName')}>
+                                اسم المهارة
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TableSortLabel active={orderBy === 'SkillLevel'} direction={orderBy === 'SkillLevel' ? order : 'asc'} onClick={() => handleSortRequest('SkillLevel')}>
+                                مستوى المهارة
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TableSortLabel active={orderBy === 'DateAcquired'} direction={orderBy === 'DateAcquired' ? order : 'asc'} onClick={() => handleSortRequest('DateAcquired')}>
+                                تاريخ الحصول على المهارة
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TableSortLabel active={orderBy === 'Certification'} direction={orderBy === 'Certification' ? order : 'asc'} onClick={() => handleSortRequest('Certification')}>
+                                الشهادة
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell align="right">الإجراءات</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {paginatedSkills.map((skill) => (
                         <TableRow key={skill.SkillID}>
+
                             <TableCell>{skill.SkillName}</TableCell>
                             <TableCell>{skill.SkillLevel}</TableCell>
                             <TableCell>{skill.DateAcquired ? new Date(skill.DateAcquired).toISOString().split('T')[0] : ''}</TableCell>
                             <TableCell>{skill.Certification}</TableCell>
                             <TableCell align="right">
-                                <IconButton color={"primary"} onClick={() => handleUpdateSkill(skill.SkillID?? 0, skill)}>
+                                <IconButton color={"primary"} onClick={() => handleUpdateSkill(skill.SkillID ?? 0, skill)}>
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton color={"secondary"} onClick={() => handleDeleteSkill(skill.SkillID?? 0)}>
+                                <IconButton color={"secondary"} onClick={() => handleDeleteSkill(skill.SkillID ?? 0)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </TableCell>

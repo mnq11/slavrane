@@ -1,15 +1,14 @@
-// SkillBox.tsx
-import React, {useState, useEffect} from 'react';
-import {Switch, Grid, Card, CardContent, Typography, Box, IconButton} from '@material-ui/core';
-import {useSnackbar} from 'notistack';
-import {Skill, Member} from '../../../../../../hooks/useMember';
+import React, { useState, useEffect } from 'react';
+import { Switch, Grid, Card, CardContent, Typography, Box, IconButton } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+import { Skill, Member } from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
-import {getSkillsForMember, createSkill, deleteSkill, updateSkill} from '../../../../../../API/api';
-import {toast} from "react-toastify";
-import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
+import { getSkillsForMember, createSkill, deleteSkill, updateSkill } from '../../../../../../API/api';
+import { toast } from "react-toastify";
+import { useLoanBoxStyles } from "../Lone/LoanBox.styles";
 import SkillForm from "./SkillForm";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import {Divider} from "antd";
+import { Divider } from "antd";
 
 interface SkillBoxProps {
     label: string;
@@ -18,12 +17,12 @@ interface SkillBoxProps {
     member: Member;
 }
 
-const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) => {
+const SkillBox: React.FC<SkillBoxProps> = ({ label, checked, onChange, member }) => {
     const [skills, setSkills] = useState<Skill[]>([]);
     const [open, setOpen] = useState(false);
     const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
 
-    const {enqueueSnackbar} = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useLoanBoxStyles();
 
     const onSubmit = (values: any) => {
@@ -36,17 +35,17 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
         };
 
         if (editingSkill) {
-            updateSkill({...skillData, SkillID: editingSkill.SkillID})  // Use editingSkill.SkillID instead of values.SkillID
+            updateSkill({ ...skillData, SkillID: editingSkill.SkillID })
                 .then((updatedSkill) => {
                     setSkills(skills.map(skill => skill.SkillID === updatedSkill.SkillID ? updatedSkill : skill));
                     setOpen(false);
                     setEditingSkill(null);
-                    enqueueSnackbar('Skill updated successfully', {variant: 'success'});
-                    toast.success('Skill updated successfully');
+                    enqueueSnackbar('تم تحديث المهارة بنجاح', { variant: 'success' });
+                    toast.success('تم تحديث المهارة بنجاح');
                 })
                 .catch((error) => {
-                    enqueueSnackbar('Failed to update skill: ' + error.message, {variant: 'error'});
-                    toast.error('Failed to update skill: ' + error.message);
+                    enqueueSnackbar('فشل تحديث المهارة: ' + error.message, { variant: 'error' });
+                    toast.error('فشل تحديث المهارة: ' + error.message);
                 });
         } else {
             createSkill(skillData)
@@ -54,12 +53,12 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
                     setSkills([newSkill, ...skills]);
                     setOpen(false);
                     setEditingSkill(null);
-                    enqueueSnackbar('Skill created successfully', {variant: 'success'});
-                    toast.success('Skill created successfully');
+                    enqueueSnackbar('تم إنشاء المهارة بنجاح', { variant: 'success' });
+                    toast.success('تم إنشاء المهارة بنجاح');
                 })
                 .catch((error) => {
-                    enqueueSnackbar('Failed to create skill: ' + error.message, {variant: 'error'});
-                    toast.error('Failed to create skill: ' + error.message);
+                    enqueueSnackbar('فشل إنشاء المهارة: ' + error.message, { variant: 'error' });
+                    toast.error('فشل إنشاء المهارة: ' + error.message);
                 });
         }
     };
@@ -69,7 +68,7 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
             getSkillsForMember(member.MemberID)
                 .then((skills) => setSkills(skills))
                 .catch((error) => {
-                    enqueueSnackbar('Failed to fetch skills: ' + error.message, {variant: 'error'});
+                    enqueueSnackbar('فشل جلب المهارات: ' + error.message, { variant: 'error' });
                 });
         }
     }, [checked, member.MemberID, enqueueSnackbar]);
@@ -77,7 +76,7 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
     const handleNewSkill = () => {
         setOpen(true);
         setEditingSkill(null);
-        toast.info('Create New Skill');
+        toast.info('إنشاء مهارة جديدة');
     };
 
     const handleUpdateSkill = async (skillID: number, SkillData: Skill) => {
@@ -93,19 +92,19 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
                     setOpen(false);
                     setEditingSkill(null);
                 }
-                toast.success('Skill deleted successfully');
+                toast.success('تم حذف المهارة بنجاح');
             })
             .catch((error) => {
-                toast.error(`Failed to delete skill: ${error.message}`);
+                toast.error(`فشل حذف المهارة: ${error.message}`);
             });
     };
     const initialValues = editingSkill && editingSkill.MemberID !== undefined ? editingSkill : {
         SkillID: 0,
         MemberID: member.MemberID,
-        SkillName: 'Default Skill Name',
+        SkillName: 'اسم المهارة الافتراضي',
         SkillLevel: 1,
         DateAcquired: new Date().toISOString().split('T')[0],
-        Certification: 'Default Certification',
+        Certification: 'الشهادة الافتراضية',
     };
     return (
         <Grid item xs={12}>
@@ -121,20 +120,18 @@ const SkillBox: React.FC<SkillBoxProps> = ({label, checked, onChange, member}) =
                     </Box>
                     {checked && (
                         <>
-
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <IconButton color="primary" onClick={handleNewSkill}>
-                                    <AddCircleOutlineIcon/>
+                                    <AddCircleOutlineIcon />
                                 </IconButton>
                             </Box>
-                            <Divider/>
+                            <Divider />
                             <SkillForm
                                 open={open}
                                 onSubmit={onSubmit}
                                 onClose={() => setOpen(false)}
                                 initialValues={initialValues}
                             />
-
                             <SkillsTableComponent skills={skills} handleUpdateSkill={handleUpdateSkill} handleDeleteSkill={handleDeleteSkill} />
                         </>
                     )}

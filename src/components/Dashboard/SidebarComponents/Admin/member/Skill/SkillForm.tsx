@@ -1,5 +1,17 @@
-// SkillForm.tsx
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@material-ui/core';
+import {
+    TextField,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormHelperText,
+    Box
+} from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import React from 'react';
@@ -13,7 +25,6 @@ interface FormValues {
     Certification: string;
 }
 
-
 interface SkillFormProps {
     open: boolean;
     onSubmit: (values: FormValues) => void;
@@ -21,13 +32,12 @@ interface SkillFormProps {
     initialValues: FormValues;
 }
 
-
-const SkillForm: React.FC<SkillFormProps> = ({open, onSubmit, onClose, initialValues}) => {
+const SkillForm: React.FC<SkillFormProps> = ({ open, onSubmit, onClose, initialValues }) => {
     const validationSchema = Yup.object({
-        SkillName: Yup.string().required('Required'),
-        SkillLevel: Yup.number().min(1, 'Skill level should be at least 1').required('Required'),
-        DateAcquired: Yup.date().required('Required'),
-        Certification: Yup.string().required('Required'),
+        SkillName: Yup.string().required('مطلوب'),
+        SkillLevel: Yup.number().min(1, 'يجب أن يكون مستوى المهارة على الأقل 1').required('مطلوب'),
+        DateAcquired: Yup.date().required('مطلوب'),
+        Certification: Yup.string().required('مطلوب'),
     });
 
     const formik = useFormik<FormValues>({
@@ -38,21 +48,21 @@ const SkillForm: React.FC<SkillFormProps> = ({open, onSubmit, onClose, initialVa
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Create New Skill</DialogTitle>
-            <DialogContent>
+            <DialogTitle  dir="rtl" >إنشاء مهارة جديدة</DialogTitle>
+            <DialogContent dir="rtl">
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
                         fullWidth
                         id="SkillName"
                         name="SkillName"
-                        label="Skill Name"
+                        label="اسم المهارة"
                         value={formik.values.SkillName}
                         onChange={formik.handleChange}
                         error={formik.touched.SkillName && Boolean(formik.errors.SkillName)}
                         helperText={formik.touched.SkillName && formik.errors.SkillName}
                     />
                     <FormControl fullWidth>
-                        <InputLabel id="SkillLevel-label">Skill Level</InputLabel>
+                        <InputLabel id="SkillLevel-label">مستوى المهارة</InputLabel>
                         <Select
                             labelId="SkillLevel-label"
                             id="SkillLevel"
@@ -61,7 +71,7 @@ const SkillForm: React.FC<SkillFormProps> = ({open, onSubmit, onClose, initialVa
                             onChange={formik.handleChange}
                             error={formik.touched.SkillLevel && Boolean(formik.errors.SkillLevel)}
                         >
-                            {Array.from({length: 10}, (_, i) => i + 1).map((value) => (
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((value) => (
                                 <MenuItem value={value} key={value}>{value}</MenuItem>
                             ))}
                         </Select>
@@ -73,7 +83,7 @@ const SkillForm: React.FC<SkillFormProps> = ({open, onSubmit, onClose, initialVa
                         fullWidth
                         id="DateAcquired"
                         name="DateAcquired"
-                        label="Date Acquired"
+                        label="تاريخ الحصول على المهارة"
                         type="date"
                         InputLabelProps={{
                             shrink: true,
@@ -87,20 +97,23 @@ const SkillForm: React.FC<SkillFormProps> = ({open, onSubmit, onClose, initialVa
                         fullWidth
                         id="Certification"
                         name="Certification"
-                        label="Certification"
+                        label="الشهادة"
                         value={formik.values.Certification}
                         onChange={formik.handleChange}
                         error={formik.touched.Certification && Boolean(formik.errors.Certification)}
                         helperText={formik.touched.Certification && formik.errors.Certification}
                     />
-                    <DialogActions>
-                        <Button onClick={onClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button type="submit" color="primary">
-                            Save
-                        </Button>
+                    <DialogActions dir="rtl">
+                        <Box display="flex" justifyContent="flex-end">
+                            <Button onClick={onClose} color="primary">
+                                إلغاء
+                            </Button>
+                            <Button type="submit" color="primary">
+                                حفظ
+                            </Button>
+                        </Box>
                     </DialogActions>
+
                 </form>
             </DialogContent>
         </Dialog>
