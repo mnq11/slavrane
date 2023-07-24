@@ -1,5 +1,3 @@
-// SavingsForm.tsx
-
 import React from 'react';
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, Button,
@@ -14,18 +12,18 @@ interface SavingsDialogProps {
 }
 
 export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, formik, isUpdating }) => {
-    const actionWord = isUpdating ? 'Update' : 'Create';  // Use this to toggle the words in the UI
+    const title = isUpdating ? 'تحديث التوفير' : 'إنشاء توفير'; // Title in Arabic
 
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>{`${actionWord} Savings`}</DialogTitle>
+            <DialogTitle dir="rtl">{title}</DialogTitle>
             <DialogContent>
                 <form onSubmit={formik.handleSubmit}>
                     <FormControl fullWidth error={formik.touched.Amount && Boolean(formik.errors.Amount)}>
                         <TextField
                             id="Amount"
                             name="Amount"
-                            label="Amount"
+                            label="المبلغ"
                             type="number"
                             value={formik.values.Amount}
                             onChange={formik.handleChange}
@@ -39,7 +37,7 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
                         <TextField
                             id="Date"
                             name="Date"
-                            label="Date"
+                            label="التاريخ"
                             type="date"
                             value={formik.values.Date}
                             onChange={formik.handleChange}
@@ -53,7 +51,7 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
                         <TextField
                             id="SavingsGoal"
                             name="SavingsGoal"
-                            label="Savings Goal"
+                            label="هدف التوفير"
                             type="number"
                             value={formik.values.SavingsGoal}
                             onChange={formik.handleChange}
@@ -67,7 +65,7 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
                         <TextField
                             id="TargetDate"
                             name="TargetDate"
-                            label="Target Date"
+                            label="تاريخ الهدف"
                             type="date"
                             value={formik.values.TargetDate}
                             onChange={formik.handleChange}
@@ -79,10 +77,10 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
 
                     <DialogActions>
                         <Button color="primary" type="submit">
-                            Save
+                            حفظ
                         </Button>
                         <Button onClick={handleClose} color="primary">
-                            Cancel
+                            إلغاء
                         </Button>
                     </DialogActions>
                 </form>

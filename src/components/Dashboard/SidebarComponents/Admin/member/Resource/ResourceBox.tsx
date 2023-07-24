@@ -11,6 +11,7 @@ import { useLoanBoxStyles } from '../Lone/LoanBox.styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ResourceForm from './ResourceForm';
 import {Divider} from "antd";
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 interface CheckboxProps {
     label: string;
@@ -29,12 +30,13 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
     const initialValues = {
         FamilyID: member.FamilyID,
         MemberID: member.MemberID,
-        ResourceName: editingResource ? editingResource.ResourceName : 'Default Resource Name',
+        ResourceName: editingResource ? editingResource.ResourceName : 'اسم المورد الافتراضي',
         ResourceValue: editingResource ? editingResource.ResourceValue.toString() : '100',
-        ResourceDescription: editingResource ? editingResource.ResourceDescription : 'Default Resource Description',
+        ResourceDescription: editingResource ? editingResource.ResourceDescription : 'وصف المورد الافتراضي',
         DateAcquired: editingResource
             ? new Date(editingResource.DateAcquired).toISOString().slice(0, 10)
-            : new Date().toISOString().slice(0, 10),    };
+            : new Date().toISOString().slice(0, 10),
+    };
 
     const onSubmit = (values: any) => {
         const resourceData = {
@@ -53,10 +55,10 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                     setResources(resources.map(resource => resource.ResourceID === updatedResource.ResourceID ? updatedResource : resource));
                     setOpen(false);
                     setEditingResource(null);
-                    toast.success('Resource updated successfully');
+                    toast.success('تم تحديث المورد بنجاح');
                 })
                 .catch((error) => {
-                    toast.error(`Failed to update resource: ${error.message}`);
+                    toast.error(`فشل تحديث المورد: ${error.message}`);
                 });
         }
         else {
@@ -64,10 +66,10 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                 .then((newResource) => {
                     setResources([newResource, ...resources]);
                     setOpen(false);
-                    toast.success('Resource created successfully');
+                    toast.success('تم إنشاء المورد بنجاح');
                 })
                 .catch((error) => {
-                    toast.error('Failed to create resource: ' + error.message);
+                    toast.error('فشل إنشاء المورد: ' + error.message);
                 });
         }
     };
@@ -76,7 +78,7 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
         getResourcesForMember(member.MemberID)
             .then((resources) => setResources(resources))
             .catch((error) => {
-                toast.error('Failed to fetch resources: ' + error.message);
+                toast.error('فشل جلب الموارد: ' + error.message);
             });
     }, [member.MemberID]);
 
@@ -96,50 +98,58 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                     setOpen(false);
                     setEditingResource(null);
                 }
-                toast.success('Resource deleted successfully');
+                toast.success('تم حذف المورد بنجاح');
             })
             .catch((error) => {
-                toast.error(`Failed to delete Resource: ${error.message}`);
+                toast.error(`فشل حذف المورد: ${error.message}`);
             });
     };
 
+    const theme = createMuiTheme({
+        direction: 'rtl',
+    });
+
     return (
-        <Grid item xs={12}>
-            <Card className={classes.card}>
-                <CardContent>
-                    <Box className={classes.switchBox}>
-                        <Typography variant="h5">{label}</Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={onChange}
-                            color="primary"
-                        />
-                    </Box>
-                    {checked && (
-                        <>
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
+        <ThemeProvider theme={theme}>
+            <Grid item xs={12}>
+                <Card className={classes.card}>
+                    <CardContent>
+                        <Box className={classes.switchBox}>
+                            <Typography variant="h5">{label}</Typography>
+                            <Switch
+                                checked={checked}
+                                onChange={onChange}
+                                color="primary"
+                            />
+                        </Box>
+                        {checked && (
+                            <>
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
                                     <Button variant="contained"  onClick={() => setOpen(true)} >
                                         <AddCircleIcon />
                                     </Button>
-                            </Box>
-                            <Divider />
-                            <Dialog open={open} onClose={() => setOpen(false)}>
-                                <DialogTitle>{editingResource ? 'Update Resource' : 'Create New Resource'}</DialogTitle>
-                                <DialogContent>
-                                    <ResourceForm
-                                        member={member}
-                                        onSubmit={onSubmit}
-                                        onClose={() => setOpen(false)}
-                                        initialValues={initialValues}
-                                    />
-                                </DialogContent>
-                            </Dialog>
-                            <ResourcesTableComponent resources={resources} handleUpdateResources={handleUpdateResources} handleDeleteResources={handleDeleteResources}/>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
-        </Grid>
+                                </Box>
+                                <Divider />
+                                <Dialog open={open} onClose={() => setOpen(false)}>
+                                    <DialogTitle dir="rtl">
+                                        {editingResource ? 'تحديث المورد' : 'إنشاء مورد جديد'}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <ResourceForm
+                                            member={member}
+                                            onSubmit={onSubmit}
+                                            onClose={() => setOpen(false)}
+                                            initialValues={initialValues}
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                                <ResourcesTableComponent resources={resources} handleUpdateResources={handleUpdateResources} handleDeleteResources={handleDeleteResources}/>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+            </Grid>
+        </ThemeProvider>
     );
 };
 

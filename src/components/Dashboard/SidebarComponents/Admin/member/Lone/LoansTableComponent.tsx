@@ -67,7 +67,7 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({loans, handleU
             return (aVal < bVal ? -1 : 1) * (order === 'asc' ? 1 : -1);
         }
     });
-    const formatNumber = (num: number) => {
+     const formatNumber = (num: number) => {
         if (num > 999 && num <= 999999) {
             return (num / 1000).toFixed(1) + 'الف';
         } else if (num > 999999 && num <= 999999999) {

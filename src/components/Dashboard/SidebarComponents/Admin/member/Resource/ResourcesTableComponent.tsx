@@ -7,11 +7,12 @@ import {
     TableHead,
     TableRow,
     Paper,
-    TablePagination, IconButton
+    TablePagination, IconButton, ThemeProvider
 } from '@material-ui/core';
 import { Resource} from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {createMuiTheme} from "@material-ui/core/styles";
 
 interface ResourcesTableComponentProps {
     resources: Resource[];
@@ -63,57 +64,69 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
         setPage(0);
     };
 
-    const paginatedResources = sortedResources.slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-    );
-
+    const paginatedResources = sortedResources.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const formatNumber = (num: number) => {
+        if (num > 999 && num <= 999999) {
+            return (num / 1000).toFixed(1) + 'الف';
+        } else if (num > 999999 && num <= 999999999) {
+            return (num / 1000000).toFixed(1) + 'مليون';
+        } else if (num > 999999999) {
+            return (num / 1000000000).toFixed(1) + 'مليار';
+        } else {
+            return num.toString();
+        }
+    };
+    const theme = createMuiTheme({
+        direction: 'rtl',
+    });
     return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell onClick={() => handleSortRequest('ResourceName')}>Resource Name</TableCell>
-                        <TableCell onClick={() => handleSortRequest('ResourceValue')}>Resource Value</TableCell>
-                        <TableCell onClick={() => handleSortRequest('ResourceDescription')}>Resource Description</TableCell>
-                        <TableCell onClick={() => handleSortRequest('DateAcquired')}>Date Acquired</TableCell>
-                        <TableCell align="right">Actions</TableCell>
-
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {paginatedResources.map((resource) => (
-                        <TableRow key={resource.ResourceID}>
-                            <TableCell>{resource.ResourceName}</TableCell>
-                            <TableCell>{resource.ResourceValue}</TableCell>
-                            <TableCell>{resource.ResourceDescription}</TableCell>
-                            <TableCell>
-                                {resource.DateAcquired
-                                    ? new Date(resource.DateAcquired).toLocaleDateString()
-                                    : ''}
-                            </TableCell>
-                            <TableCell align="right">
-                                <IconButton color={"primary"} onClick={() => handleUpdateResources(resource.ResourceID?? 0, resource)}>
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton color={"secondary"} onClick={() => handleDeleteResources(resource.ResourceID?? 0)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </TableCell>
+        <ThemeProvider theme={theme}>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="right">الإجراءات</TableCell>
+                            <TableCell onClick={() => handleSortRequest('ResourceName')}>اسم المورد</TableCell>
+                            <TableCell onClick={() => handleSortRequest('ResourceValue')}>قيمة المورد</TableCell>
+                            <TableCell onClick={() => handleSortRequest('ResourceDescription')}>وصف المورد</TableCell>
+                            <TableCell onClick={() => handleSortRequest('DateAcquired')}>تاريخ الحصول</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={sortedResources.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {paginatedResources.map((resource) => (
+                            <TableRow key={resource.ResourceID}>
+                                <TableCell align="right">
+                                    <IconButton color="primary" onClick={() => handleUpdateResources(resource.ResourceID ?? 0, resource)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton color="secondary" onClick={() => handleDeleteResources(resource.ResourceID ?? 0)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell>{resource.ResourceName}</TableCell>
+                                <TableCell>{formatNumber(resource.ResourceValue)}</TableCell>
+                                <TableCell>{resource.ResourceDescription}</TableCell>
+                                <TableCell>
+                                    {resource.DateAcquired
+                                        ? new Date(resource.DateAcquired).toLocaleDateString()
+                                        : ''}
+                                </TableCell>
+
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={sortedResources.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
+        </ThemeProvider>
     );
 };
 
