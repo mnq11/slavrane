@@ -2,9 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {
     Dialog, DialogTitle,
     DialogContent, Switch,
-    Grid, Box, IconButton, Card, CardContent, Typography
+    Grid, Box, IconButton, Card, CardContent, Typography, ThemeProvider
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {toast} from 'react-toastify';
@@ -13,9 +12,9 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import {Member, Income} from "../../../../../../hooks/useMember";
 import IncomesTableComponent from "./IncomesTableComponent";
 import {getIncomesForMember, createIncome, deleteIncome, updateIncome} from "../../../../../../API/api";
-import {Divider} from "antd";
+import {Divider, theme} from "antd";
 import IncomeForm from "./IncomeForm";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import useLoanBoxStyles from "../Lone/LoanBox.styles";
 
 interface SwitchProps {
     label: string;
@@ -24,40 +23,12 @@ interface SwitchProps {
     member: Member;
 }
 
-const theme = createMuiTheme({
-    direction: 'rtl',
-});
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    card: {
-        padding: theme.spacing(2),
-        color: theme.palette.text.secondary,
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: '1.5rem',
-        marginBottom: theme.spacing(2),
-    },
-    switchBox: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing(2),
-    },
-    dialogAction: {
-        justifyContent: 'space-around',
-    },
-}));
-
 const sources = ['المصدر 1', 'المصدر 2', 'المصدر 3', 'المصدر 4', 'المصدر 5'];
 
 const IncomeBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [open, setOpen] = useState(false);
-    const classes = useStyles();
+    const classes = useLoanBoxStyles();
     const [mode, setMode] = useState<'create' | 'update'>('create');
     const [updatingIncome, setUpdatingIncome] = useState<Income | null>(null);
 

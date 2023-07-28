@@ -1,8 +1,7 @@
 import React from 'react';
 import {
     Checkbox, FormControlLabel, TextField, Button, Select, MenuItem,
-    DialogActions, Grid, FormControl, InputLabel, Typography,
-    Card, CardContent, Box, IconButton, Tooltip, FormHelperText
+    DialogActions, Grid, FormControl, InputLabel, Card, CardContent, Box, IconButton, Tooltip, FormHelperText, ThemeProvider
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import CategoryIcon from '@material-ui/icons/Category';
@@ -11,6 +10,7 @@ import MoneyIcon from '@material-ui/icons/Money';
 import RepeatIcon from '@material-ui/icons/Repeat';
 import InfoIcon from '@material-ui/icons/Info';
 import {makeStyles} from "@material-ui/core/styles";
+import {theme} from "antd";
 
 interface ExpenseFormProps {
     formik: any;
@@ -85,21 +85,14 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
     } = formik;
 
     return (
+        <ThemeProvider theme={theme}>
+
         <form onSubmit={handleSubmit} dir="rtl">
-            <DialogActions className={classes.dialogAction}>
-                <Button
-                    onClick={handleCloseDialog}
-                    startIcon={<CloseIcon className={classes.buttonIcon}/>}
-                    variant="contained"
-                    className={`${classes.button} ${classes.cancelButton}`}
-                >إلغاء</Button>
-            </DialogActions>
+
             <Card className={classes.card}>
                 <CardContent>
                     <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <Typography variant="h6">نموذج النفقات</Typography>
-                        </Grid>
+
                         <Grid item xs={12}>
                             <FormControl className={classes.formControl} fullWidth
                                          error={touched.Category && Boolean(errors.Category)}>
@@ -194,11 +187,11 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 >
-                                    <MenuItem value={'One-time'}>مرة واحدة</MenuItem>
-                                    <MenuItem value={'Daily'}>يوميا</MenuItem>
-                                    <MenuItem value={'Weekly'}>أسبوعي</MenuItem>
-                                    <MenuItem value={'Monthly'}>شهريا</MenuItem>
-                                    <MenuItem value={'Annual'}>سنويا</MenuItem>
+                                    <MenuItem value={'مرة واحدة'}>مرة واحدة</MenuItem>
+                                    <MenuItem value={'يوميا'}>يوميا</MenuItem>
+                                    <MenuItem value={'أسبوعي'}>أسبوعي</MenuItem>
+                                    <MenuItem value={'شهريا'}>شهريا</MenuItem>
+                                    <MenuItem value={'سنويا'}>سنويا</MenuItem>
                                 </Select>
 
                                 {touched.Frequency && errors.Frequency && (
@@ -218,9 +211,18 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({formik, categories, mode, hand
                             {mode === 'create' ? 'إنشاء' : 'تحديث'}
                         </Button>
                     </DialogActions>
+                    <DialogActions className={classes.dialogAction}>
+                        <Button
+                            onClick={handleCloseDialog}
+                            startIcon={<CloseIcon className={classes.buttonIcon}/>}
+                            variant="contained"
+                            className={`${classes.button} ${classes.cancelButton}`}
+                        >إلغاء</Button>
+                    </DialogActions>
                 </CardContent>
             </Card>
         </form>
+        </ThemeProvider>
     );
 }
 

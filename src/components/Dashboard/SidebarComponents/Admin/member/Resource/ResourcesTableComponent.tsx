@@ -12,7 +12,7 @@ import {
 import { Resource} from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {createMuiTheme} from "@material-ui/core/styles";
+import {theme} from "antd";
 
 interface ResourcesTableComponentProps {
     resources: Resource[];
@@ -76,9 +76,7 @@ const ResourcesTableComponent: React.FC<ResourcesTableComponentProps> = ({ resou
             return num.toString();
         }
     };
-    const theme = createMuiTheme({
-        direction: 'rtl',
-    });
+
     return (
         <ThemeProvider theme={theme}>
             <TableContainer component={Paper}>

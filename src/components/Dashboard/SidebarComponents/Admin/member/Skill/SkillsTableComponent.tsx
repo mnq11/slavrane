@@ -8,11 +8,12 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination, IconButton
+    TablePagination, IconButton, ThemeProvider
 } from '@material-ui/core';
 import { Skill } from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {theme} from "antd";
 
 interface SkillsTableComponentProps {
     skills: Skill[];
@@ -66,6 +67,8 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills, han
     const paginatedSkills = sortedSkills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return (
+        <ThemeProvider theme={theme}>
+
         <TableContainer component={Paper} dir="rtl"> {/* Add dir="rtl" for RTL support */}
             <Table>
                 <TableHead>
@@ -125,6 +128,7 @@ const SkillsTableComponent: React.FC<SkillsTableComponentProps> = ({ skills, han
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </TableContainer>
+        </ThemeProvider>
     );
 };
 

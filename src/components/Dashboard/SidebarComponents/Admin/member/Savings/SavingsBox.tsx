@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Switch, CardContent, Card, Grid, Typography, Box, IconButton} from '@material-ui/core';
+import {Switch, CardContent, Card, Grid, Typography, Box, IconButton, ThemeProvider} from '@material-ui/core';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {Member, Savings} from '../../../../../../hooks/useMember';
@@ -9,7 +9,7 @@ import {toast} from "react-toastify";
 import {useLoanBoxStyles} from "../Lone/LoanBox.styles";
 import SavingsForm from "./SavingsForm";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import {Divider} from "antd";
+import {Divider, theme} from "antd";
 
 interface SavingsBoxProps {
     label: string;
@@ -58,7 +58,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
                 TargetDate: values.TargetDate,
             };
 
-            if(editingSaving) {
+            if (editingSaving) {
                 const updatedSavingsData = {...savingsData, SavingsID: editingSaving.SavingsID};
 
                 updateSaving(updatedSavingsData)
@@ -97,7 +97,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
 
     const handleUpdateSavings = async (savingId: number) => {
         const savingsData = savings.find(saving => saving.SavingsID === savingId);
-        if(savingsData){
+        if (savingsData) {
             setEditingSaving(savingsData);
             setOpen(true);
         }
@@ -107,7 +107,7 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
         deleteSaving(savingsID)
             .then(() => {
                 setSavings(savings.filter(saving => saving.SavingsID !== savingsID));
-                if(editingSaving && editingSaving.SavingsID === savingsID){
+                if (editingSaving && editingSaving.SavingsID === savingsID) {
                     setOpen(false);
                     setEditingSaving(null);
                 }
@@ -119,38 +119,41 @@ const SavingsBox: React.FC<SavingsBoxProps> = ({label, checked, onChange, member
     };
 
     return (
-        <Grid item xs={12}>
-            <Card className={classes.card}>
-                <CardContent>
-                    <Box className={classes.switchBox}>
-                        <Typography variant="h5">{label}</Typography>
-                        <Switch
-                            checked={checked}
-                            onChange={onChange}
-                            color="primary"
-                        />
-                    </Box>
-                    {checked && (
-                        <>
-                            <Box display="flex" justifyContent="space-between" alignItems="center">
-                                <IconButton color="primary" onClick={() => setOpen(true)}>
-                                    <AddCircleOutlineIcon/>
-                                </IconButton>
-                            </Box>
-                            <Divider/>
-
-                            <SavingsForm
-                                open={open}
-                                handleClose={() => setOpen(false)}
-                                formik={formik}
-                                isUpdating={Boolean(editingSaving)}
+        <ThemeProvider theme={theme}>
+            <Grid item xs={12}>
+                <Card className={classes.card}>
+                    <CardContent>
+                        <Box className={classes.switchBox}>
+                            <Typography variant="h5">{label}</Typography>
+                            <Switch
+                                checked={checked}
+                                onChange={onChange}
+                                color="primary"
                             />
-                            <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings} handleDeleteSavings={handleDeleteSavings}/>
-                        </>
-                    )}
-                </CardContent>
-            </Card>
-        </Grid>
+                        </Box>
+                        {checked && (
+                            <>
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
+                                    <IconButton color="primary" onClick={() => setOpen(true)}>
+                                        <AddCircleOutlineIcon/>
+                                    </IconButton>
+                                </Box>
+                                <Divider/>
+
+                                <SavingsForm
+                                    open={open}
+                                    handleClose={() => setOpen(false)}
+                                    formik={formik}
+                                    isUpdating={Boolean(editingSaving)}
+                                />
+                                <SavingsTableComponent savings={savings} handleUpdateSavings={handleUpdateSavings}
+                                                       handleDeleteSavings={handleDeleteSavings}/>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
+            </Grid>
+        </ThemeProvider>
     );
 };
 

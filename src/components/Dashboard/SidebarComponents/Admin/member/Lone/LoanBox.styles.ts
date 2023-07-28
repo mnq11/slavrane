@@ -23,6 +23,9 @@ export const useLoanBoxStyles = makeStyles((theme) => ({
     dialogAction: {
         justifyContent: 'space-around',
     },
+    dialogTitle: {
+        textAlign: 'center',
+    },
 }));
 
 export default useLoanBoxStyles;

@@ -10,11 +10,12 @@ import {
     TableSortLabel,
     TableFooter,
     TablePagination,
-    IconButton
+    IconButton, ThemeProvider
 } from '@material-ui/core';
 import { Savings } from '../../../../../../hooks/useMember';
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {theme} from "antd";
 
 interface SavingsTableComponentProps {
     savings: Savings[];
@@ -73,6 +74,8 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({
     });
 
     return (
+        <ThemeProvider theme={theme}>
+
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
@@ -151,6 +154,7 @@ const SavingsTableComponent: React.FC<SavingsTableComponentProps> = ({
                 </TableFooter>
             </Table>
         </TableContainer>
+        </ThemeProvider>
     );
 };
 

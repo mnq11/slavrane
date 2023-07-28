@@ -11,8 +11,9 @@ import {
     Checkbox,
     FormControlLabel
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import { FormikProps } from 'formik';
+import {theme} from "antd";
 
 interface IncomeFormProps {
     formik: FormikProps<any>;
@@ -32,6 +33,8 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
     const frequencies = ['مرة واحدة', 'أسبوعي', 'شهري', 'سنوي'];
 
     return (
+        <ThemeProvider theme={theme}>
+
         <form onSubmit={formik.handleSubmit} className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -118,6 +121,7 @@ const IncomeForm: React.FC<IncomeFormProps> = ({ formik, mode, handleCloseDialog
                 <Button color="primary" type="submit">{mode === 'create' ? 'إنشاء' : 'تحديث'}</Button>
             </DialogActions>
         </form>
+        </ThemeProvider>
     );
 }
 

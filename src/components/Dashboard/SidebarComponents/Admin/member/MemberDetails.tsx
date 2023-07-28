@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Member} from "../../../../../hooks/useMember";
-import { Card, CardContent, Grid, IconButton, Typography} from '@material-ui/core';
+import {Card, CardContent, Grid, IconButton, Typography} from '@material-ui/core';
 import MemberForm from "./MemberForm";
 import {deleteMember, updateMember} from "../../../../../API/api";
 import {toast} from "react-toastify";
@@ -74,7 +74,7 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <Typography variant="h5" dir="rtl">اسم العضو: {member.MemberName}</Typography>
-                            <Typography variant="body2"  dir="rtl">البريد الالكتروني: {member.Email}</Typography>
+                            <Typography variant="body2" dir="rtl">البريد الالكتروني: {member.Email}</Typography>
                             <Typography variant="body2" dir="rtl">رقم الاتصال: {member.ContactNumber}</Typography>
                             <Typography variant="body2" dir="rtl">تاريخ الميلاد: {member.DateOfBirth}</Typography>
                             <Typography variant="body2" dir="rtl">النقاط: {member.score}</Typography>
@@ -82,13 +82,14 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                         </Grid>
                         <Grid item xs={12}>
                             <IconButton className={classes.backButton} dir="rtl" onClick={onBackToFamilyDetails}>
-                                <ArrowBackIcon fontSize="large" />
+                                <ArrowBackIcon fontSize="large"/>
                             </IconButton>
-                            <IconButton className={classes.updateButton} dir="rtl" onClick={() => setUpdateDialogOpen(true)}>
-                                <EditIcon fontSize="large" />
+                            <IconButton className={classes.updateButton} dir="rtl"
+                                        onClick={() => setUpdateDialogOpen(true)}>
+                                <EditIcon fontSize="large"/>
                             </IconButton>
                             <IconButton className={classes.deleteButton} dir="rtl" onClick={handleDelete}>
-                                <DeleteIcon fontSize="large" />
+                                <DeleteIcon fontSize="large"/>
                             </IconButton>
                         </Grid>
                     </Grid>
@@ -102,48 +103,50 @@ const MemberDetails: React.FC<MemberDetailsProps> = ({
                     />
                 )}
             </Card>
-            <ExpenseBox
-                label="النفقات"
-                checked={activeBox === BOXES.EXPENSE}
-                onChange={() => handleCheckboxChange(BOXES.EXPENSE)}
-                member={member}
-            />
-            <IncomeBox
-                label="الدخل"
-                checked={activeBox === BOXES.INCOME}
-                onChange={() => handleCheckboxChange(BOXES.INCOME)}
-                member={member}
-            />
-            <SkillBox
-                label="المهارات"
-                checked={activeBox === BOXES.SKILL}
-                onChange={() => handleCheckboxChange(BOXES.SKILL)}
-                member={member}
-            />
-            <TaskBox
-                label="المهام"
-                checked={activeBox === BOXES.TASK}
-                onChange={() => handleCheckboxChange(BOXES.TASK)}
-                member={member}
-            />
-            <ResourceBox
-                label="الموارد"
-                checked={activeBox === BOXES.RESOURCE}
-                onChange={() => handleCheckboxChange(BOXES.RESOURCE)}
-                member={member}
-            />
-            <SavingsBox
-                label="الادخار"
-                checked={activeBox === BOXES.SAVINGS}
-                onChange={() => handleCheckboxChange(BOXES.SAVINGS)}
-                member={member}
-            />
-            <LoanBox
-                label="القروض"
-                checked={activeBox === BOXES.LOAN}
-                onChange={() => handleCheckboxChange(BOXES.LOAN)}
-                member={member}
-            />
+            <Card className={classes.card} dir="rtl">
+                <ExpenseBox
+                    label="النفقات"
+                    checked={activeBox === BOXES.EXPENSE}
+                    onChange={() => handleCheckboxChange(BOXES.EXPENSE)}
+                    member={member}
+                />
+                <IncomeBox
+                    label="الدخل"
+                    checked={activeBox === BOXES.INCOME}
+                    onChange={() => handleCheckboxChange(BOXES.INCOME)}
+                    member={member}
+                />
+                <SkillBox
+                    label="المهارات"
+                    checked={activeBox === BOXES.SKILL}
+                    onChange={() => handleCheckboxChange(BOXES.SKILL)}
+                    member={member}
+                />
+                <TaskBox
+                    label="المهام"
+                    checked={activeBox === BOXES.TASK}
+                    onChange={() => handleCheckboxChange(BOXES.TASK)}
+                    member={member}
+                />
+                <ResourceBox
+                    label="الموارد"
+                    checked={activeBox === BOXES.RESOURCE}
+                    onChange={() => handleCheckboxChange(BOXES.RESOURCE)}
+                    member={member}
+                />
+                <SavingsBox
+                    label="الادخار"
+                    checked={activeBox === BOXES.SAVINGS}
+                    onChange={() => handleCheckboxChange(BOXES.SAVINGS)}
+                    member={member}
+                />
+                <LoanBox
+                    label="القروض"
+                    checked={activeBox === BOXES.LOAN}
+                    onChange={() => handleCheckboxChange(BOXES.LOAN)}
+                    member={member}
+                />
+            </Card>
         </div>
     );
 };

@@ -13,7 +13,7 @@ import {
 import {Loan} from '../../../../../../hooks/useMember';
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import {createMuiTheme} from "@material-ui/core/styles";
+import {theme} from "antd";
 
 interface LoansTableComponentProps {
     loans: Loan[];
@@ -96,10 +96,9 @@ const LoansTableComponent: React.FC<LoansTableComponentProps> = ({loans, handleU
         }
     };
     return (
-        <ThemeProvider theme={createMuiTheme({
-            direction: 'rtl',
-        })}>
-            <Paper>
+        <ThemeProvider theme={theme}>
+
+        <Paper>
                 <TableContainer >
                     <Table >
                         <TableHead>

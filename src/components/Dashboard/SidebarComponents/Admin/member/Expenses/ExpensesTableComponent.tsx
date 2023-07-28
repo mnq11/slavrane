@@ -8,11 +8,12 @@ import {
     TableRow,
     Paper,
     TableSortLabel,
-    TablePagination, IconButton
+    TablePagination, IconButton, ThemeProvider
 } from '@material-ui/core';
 import {Expense} from "../../../../../../hooks/useMember";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import {theme} from "antd";
 
 interface TableComponentProps {
     expenses: Expense[];
@@ -73,6 +74,8 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
     };
 
     return (
+        <ThemeProvider theme={theme}>
+
         <TableContainer component={Paper} dir="rtl">
             <Table>
                 <TableHead>
@@ -148,6 +151,7 @@ const ExpensesTableComponent: React.FC<TableComponentProps> = ({expenses, onUpda
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </TableContainer>
+        </ThemeProvider>
     );
 };
 

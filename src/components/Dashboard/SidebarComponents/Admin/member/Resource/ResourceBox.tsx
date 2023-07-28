@@ -10,8 +10,8 @@ import { toast } from 'react-toastify';
 import { useLoanBoxStyles } from '../Lone/LoanBox.styles';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ResourceForm from './ResourceForm';
-import {Divider} from "antd";
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import {Divider, theme} from "antd";
+import { ThemeProvider } from '@material-ui/core/styles';
 
 interface CheckboxProps {
     label: string;
@@ -105,12 +105,11 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
             });
     };
 
-    const theme = createMuiTheme({
-        direction: 'rtl',
-    });
+
 
     return (
         <ThemeProvider theme={theme}>
+            <div className={classes.root}>
             <Grid item xs={12}>
                 <Card className={classes.card}>
                     <CardContent>
@@ -149,6 +148,7 @@ const ResourceBox: React.FC<CheckboxProps> = ({ label, checked, onChange, member
                     </CardContent>
                 </Card>
             </Grid>
+            </div>
         </ThemeProvider>
     );
 };

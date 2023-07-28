@@ -10,11 +10,12 @@ import {
     Select,
     MenuItem,
     FormHelperText,
-    Box
+    Box, ThemeProvider
 } from '@material-ui/core';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import React from 'react';
+import {theme} from "antd";
 
 interface FormValues {
     SkillID: number;
@@ -47,6 +48,8 @@ const SkillForm: React.FC<SkillFormProps> = ({ open, onSubmit, onClose, initialV
     });
 
     return (
+        <ThemeProvider theme={theme}>
+
         <Dialog open={open} onClose={onClose}>
             <DialogTitle  dir="rtl" >إنشاء مهارة جديدة</DialogTitle>
             <DialogContent dir="rtl">
@@ -117,6 +120,7 @@ const SkillForm: React.FC<SkillFormProps> = ({ open, onSubmit, onClose, initialV
                 </form>
             </DialogContent>
         </Dialog>
+        </ThemeProvider>
     );
 };
 

@@ -4,7 +4,6 @@ import {
     DialogContent, Switch,
     Grid, Box, IconButton, Card, CardContent, Typography
 } from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import {toast} from 'react-toastify';
@@ -15,6 +14,7 @@ import ExpensesTableComponent from "./ExpensesTableComponent";
 import {getExpensesForMember, createExpense, deleteExpense, updateExpense} from "../../../../../../API/api";
 import {Divider} from "antd";
 import ExpenseForm from "./ExpenseForm";
+import useLoanBoxStyles from "../Lone/LoanBox.styles";
 
 interface SwitchProps {
     label: string;
@@ -23,29 +23,6 @@ interface SwitchProps {
     member: Member;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    card: {
-        padding: theme.spacing(2),
-        color: theme.palette.text.secondary,
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: '1.5rem',
-        marginBottom: theme.spacing(2),
-    },
-    switchBox: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: theme.spacing(2),
-    },
-    dialogAction: {
-        justifyContent: 'space-around',
-    },
-}));
 const categories = [
     'الطعام والبقالة', // Food and Groceries
     'فواتير الخدمات (كهرباء, ماء, غاز)', // Utility Bills (Electricity, Water, Gas)
@@ -72,9 +49,9 @@ const categories = [
 const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [open, setOpen] = useState(false);
-    const classes = useStyles();
     const [mode, setMode] = useState<'create' | 'update'>('create');
     const [updatingExpense, setUpdatingExpense] = useState<Expense | null>(null);
+    const classes = useLoanBoxStyles();
 
     const validationSchema = Yup.object({
         Category: Yup.string().required('مطلوب'), // Required
@@ -225,7 +202,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                                     <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense}
                                                             onDelete={handleDeleteExpense}/>
                                     <Dialog open={open} onClose={handleNewExpense}>
-                                        <DialogTitle>{mode === 'create' ? 'أنشئ نفقة جديدة' : 'تحديث النفقات'}</DialogTitle>
+                                        <DialogTitle className={classes.dialogTitle}>{mode === 'create' ? 'أنشئ نفقة جديدة' : 'تحديث النفقات'}</DialogTitle>
                                         <DialogContent>
                                             <ExpenseForm
                                                 formik={formik}

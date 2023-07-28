@@ -1,8 +1,9 @@
 import React from 'react';
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, Button,
-    FormControl, FormHelperText, TextField
+    FormControl, FormHelperText, TextField, ThemeProvider
 } from '@material-ui/core';
+import {theme} from "antd";
 
 interface SavingsDialogProps {
     open: boolean;
@@ -15,6 +16,8 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
     const title = isUpdating ? 'تحديث التوفير' : 'إنشاء توفير'; // Title in Arabic
 
     return (
+        <ThemeProvider theme={theme}>
+
         <Dialog open={open} onClose={handleClose}>
             <DialogTitle dir="rtl">{title}</DialogTitle>
             <DialogContent>
@@ -86,6 +89,7 @@ export const SavingsForm: React.FC<SavingsDialogProps> = ({ open, handleClose, f
                 </form>
             </DialogContent>
         </Dialog>
+        </ThemeProvider>
     );
 }
 

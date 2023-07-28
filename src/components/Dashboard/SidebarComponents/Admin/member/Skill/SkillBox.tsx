@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Grid, Card, CardContent, Typography, Box, IconButton } from '@material-ui/core';
+import {Switch, Grid, Card, CardContent, Typography, Box, IconButton, ThemeProvider} from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { Skill, Member } from '../../../../../../hooks/useMember';
 import SkillsTableComponent from './SkillsTableComponent';
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useLoanBoxStyles } from "../Lone/LoanBox.styles";
 import SkillForm from "./SkillForm";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { Divider } from "antd";
+import {Divider, theme} from "antd";
 
 interface SkillBoxProps {
     label: string;
@@ -107,6 +107,8 @@ const SkillBox: React.FC<SkillBoxProps> = ({ label, checked, onChange, member })
         Certification: 'الشهادة الافتراضية',
     };
     return (
+        <ThemeProvider theme={theme}>
+
         <Grid item xs={12}>
             <Card className={classes.card}>
                 <CardContent>
@@ -138,6 +140,7 @@ const SkillBox: React.FC<SkillBoxProps> = ({ label, checked, onChange, member })
                 </CardContent>
             </Card>
         </Grid>
+        </ThemeProvider>
     );
 };
 
