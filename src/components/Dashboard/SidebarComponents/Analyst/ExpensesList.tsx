@@ -41,8 +41,6 @@ const CustomTooltip = ({active, payload}: TooltipProps<number, string>) => {
     return null;
 };
 
-
-
 const ExpensesList: React.FC<{ expenses: Expense[] }> = ({expenses}) => {
     const stats = expenses.reduce((acc, expense) => {
         acc.totalAmount += Number(expense.Amount);
@@ -86,26 +84,22 @@ const ExpensesList: React.FC<{ expenses: Expense[] }> = ({expenses}) => {
 
     return (
         <>
-            <h2>Family Expenses:</h2>
-            <p>Total Amount: {formatLargeNumber(stats.totalAmount)}</p>
-            <div className="chart-container">
-                <h3>Category breakdown:</h3>
+
+            <div className="chart-container" >
+                <div dir="rtl" style={{ textAlign: 'center' }}><h2>نفقات الأسرة</h2></div>
+                <div dir="rtl" style={{ textAlign: 'center' }}><p>المبلغ الإجمالي {formatLargeNumber(stats.totalAmount)}</p></div>
                 <BarChart width={600} height={300} data={categoryData}>
                     <XAxis dataKey="category"/>
                     <YAxis tickFormatter={formatLargeNumber}/>
                     <Tooltip content={<CustomTooltip/>}/>
                     <CartesianGrid stroke="#f5f5f5"/>
-                    <Bar dataKey="Amount" name="Amount">
+                    <Bar dataKey="Amount" name="المبلغ">
                         {categoryData.map((entry, index) => (
                             <Cell key={entry.category} fill={entry.fill}/>
                         ))}
                     </Bar>
                     <Legend/>
                 </BarChart>
-            </div>
-
-            <div className="chart-container">
-                <h3>Expenses line breakdown:</h3>
                 <LineChart width={600} height={300} data={dateData}>
                     <XAxis dataKey={(data) => `${data.year}-${data.month}`}/>
                     <YAxis tickFormatter={formatLargeNumber}/>
@@ -116,12 +110,8 @@ const ExpensesList: React.FC<{ expenses: Expense[] }> = ({expenses}) => {
                               stroke={COLORS[index % COLORS.length]}/>
                     ))}
                 </LineChart>
-            </div>
-
-
-            <div className="chart-container">
-                <h3>Frequency breakdown:</h3>
-                <PieChart width={400} height={400}>
+                <div dir="rtl" style={{ textAlign: 'center' }}><h3>إحصائيات حسب التكرار</h3></div>
+                <PieChart width={400} height={400} >
                     <Pie
                         dataKey="value"
                         isAnimationActive={false}
@@ -141,6 +131,7 @@ const ExpensesList: React.FC<{ expenses: Expense[] }> = ({expenses}) => {
                 </PieChart>
 
             </div>
+
         </>
     );
 };
