@@ -15,6 +15,7 @@ import {getExpensesForMember, createExpense, deleteExpense, updateExpense} from 
 import {Divider} from "antd";
 import ExpenseForm from "./ExpenseForm";
 import useLoanBoxStyles from "../Lone/LoanBox.styles";
+import {format} from "date-fns-tz";
 
 interface SwitchProps {
     label: string;
@@ -64,15 +65,17 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
     });
 
     const formik = useFormik({
-        initialValues: {
+        initialValues: updatingExpense || {
+            ExpenseID: 0,
             FamilyID: member.FamilyID,
             MemberID: member.MemberID,
             Category: categories[0],
-            Date: new Date().toISOString().split('T')[0],
+            Date: format(new Date(), 'yyyy-MM-dd'),
             Amount: 0,
             Recurring: false,
             Frequency: 'مرة واحدة',
         },
+        enableReinitialize: true, // This is the important bit
         validationSchema,
         onSubmit: (values) => {
             const expenseData: Expense = {
@@ -132,6 +135,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
 
     const handleNewExpense = () => {
         setMode('create');
+        setUpdatingExpense(null); // Add this line
         setOpen(true);
         formik.resetForm();
         toast.info('إنشاء نفقة جديدة');
@@ -140,18 +144,9 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
     const handleUpdateExpense = (expense: Expense) => {
         setOpen(true);
         setMode('update');
-        setUpdatingExpense(expense);
-
-        formik.setValues({
-            FamilyID: member?.FamilyID || 0,
-            MemberID: member?.MemberID || 0,
-            Category: expense.Category,
-            Date: expense.Date,
-            Amount: expense.Amount,
-            Recurring: expense.Recurring,
-            Frequency: expense.Frequency,
-        });
+        setUpdatingExpense({...expense, Date: format(new Date(expense.Date), 'yyyy-MM-dd')});
     };
+
     const handleCloseDialog = () => {
         setOpen(false);
         toast.info('إغلاق النافذة');
@@ -201,7 +196,7 @@ const ExpenseBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) =
                                     <Divider/>
                                     <ExpensesTableComponent expenses={expenses} onUpdate={handleUpdateExpense}
                                                             onDelete={handleDeleteExpense}/>
-                                    <Dialog open={open} onClose={handleNewExpense}>
+                                    <Dialog open={open} onClose={handleCloseDialog}>
                                         <DialogTitle className={classes.dialogTitle}>{mode === 'create' ? 'أنشئ نفقة جديدة' : 'تحديث النفقات'}</DialogTitle>
                                         <DialogContent>
                                             <ExpenseForm
