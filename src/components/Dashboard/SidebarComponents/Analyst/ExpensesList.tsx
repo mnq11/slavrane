@@ -18,12 +18,12 @@ import {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF1493', '#8B4513', '#2E8B57', '#DB7093', '#9ACD32', '#FFD700'];
 
-const formatLargeNumber = (value: number) => {
+export const formatLargeNumber = (value: number) => {
     if (value >= 1e6) {
-        return (value / 1e6).toFixed(2) + 'M';
+        return (value / 1e6).toFixed(2) + ' مليون';
     }
     if (value >= 1e3) {
-        return (value / 1e3).toFixed(2) + 'K';
+        return (value / 1e3).toFixed(2) + ' الف';
     }
     return value.toString();
 };
