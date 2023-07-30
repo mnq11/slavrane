@@ -1,6 +1,6 @@
 import React from 'react';
 import { Loan } from "../../../../hooks/useMember";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, XAxis, YAxis, CartesianGrid, Bar, Label, LabelList } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend, BarChart, XAxis, YAxis, CartesianGrid, Bar, LabelList } from 'recharts';
 import './chartsStyling.css';
 import {formatLargeNumber} from "./ExpensesList";
 
@@ -15,8 +15,8 @@ const CustomizedLabel = (props: any) => {
 };
 
 const LoansList: React.FC<LoansListProps> = ({ loans }) => {
-    let data = loans.map((loan, index) => ({
-        name: loan.Lender,
+    let data = loans.map((loan) => ({
+        name: loan.LoanPurpose,
         value: Number(loan.Amount),
         color: `#${Math.floor(Math.random()*16777215).toString(16)}`, // Generate random color for each sector
     }));
@@ -28,7 +28,7 @@ const LoansList: React.FC<LoansListProps> = ({ loans }) => {
         <div>
             <div className="chart-container">
                 <div dir="rtl" style={{ textAlign: 'center' }}>
-                    <h2>قروض حسب الجهات المستدينة(بالنسبة)</h2>
+                    <h2>قروض حسب الهدف </h2>
                 </div>
 
                 <ResponsiveContainer width="100%" height={400}>
@@ -58,16 +58,14 @@ const LoansList: React.FC<LoansListProps> = ({ loans }) => {
                     </PieChart>
                 </ResponsiveContainer>
                 <div dir="rtl" style={{ textAlign: 'center' }}>
-                    <h2>قروض حسب الجهات المستدينة</h2>
+                    <h2>قروض حسب الجهات </h2>
                 </div>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" >
-                            <Label value="المقرضين" offset={-5} position="insideBottom" />
                         </XAxis>
                         <YAxis tickFormatter={(value) => formatLargeNumber(value)}>
-                            <Label value="المبلغ" angle={-90} position="insideLeft" />
                         </YAxis>
                         <Tooltip
                             contentStyle={{ textAlign: 'left' }}

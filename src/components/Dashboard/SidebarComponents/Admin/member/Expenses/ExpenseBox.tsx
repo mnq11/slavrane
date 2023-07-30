@@ -24,7 +24,7 @@ interface SwitchProps {
     member: Member;
 }
 
-const categories = [
+export const categories = [
     'الطعام والبقالة', // Food and Groceries
     'فواتير الخدمات (كهرباء, ماء, غاز)', // Utility Bills (Electricity, Water, Gas)
     'الإيجار أو نفقات الإسكان', // Rent or Housing Expenses

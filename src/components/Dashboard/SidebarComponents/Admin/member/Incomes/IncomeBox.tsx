@@ -23,7 +23,18 @@ interface SwitchProps {
     member: Member;
 }
 
-const sources = ['المصدر 1', 'المصدر 2', 'المصدر 3', 'المصدر 4', 'المصدر 5'];
+const sources = [
+    'الراتب الشهري', // Monthly Salary
+    'العمل الحر', // Freelance Work
+    'الممتلكات العقارية', // Real Estate Properties
+    'الاستثمارات المالية', // Financial Investments
+    'المشاريع الصغيرة', // Small Businesses
+    'الأرباح السنوية', // Annual Profits
+    'المعاش التقاعدي', // Pension
+    'الدعم الحكومي', // Government Support
+    'المساعدات الخارجية', // Foreign Aids
+    'الإيرادات الأخرى' // Other Incomes
+];
 
 const IncomeBox: React.FC<SwitchProps> = ({label, checked, onChange, member}) => {
     const [incomes, setIncomes] = useState<Income[]>([]);

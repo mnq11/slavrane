@@ -77,7 +77,9 @@ const Analyst: React.FC<AnalystProps> = ({member}) => {
 
     return (
         <div>
-            <h2>Family Overview:</h2>
+            <div dir="rtl" style={{ textAlign: 'center' }}>
+                <h2>نظرة عامة على الأسرة</h2>
+            </div>
             {/* Conditional rendering based on loading and error states */}
             {error ? <p>Error: {error}</p> : isLoading ? <p>Loading...</p> : <>
 
