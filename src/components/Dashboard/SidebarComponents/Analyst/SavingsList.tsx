@@ -1,91 +1,108 @@
-import React, { useMemo } from 'react';
-import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from 'recharts';
-import { Savings } from "../../../../hooks/useMember";
-import { TooltipProps } from 'recharts';
-import { formatLargeNumber } from "./ExpensesList";
+import React from 'react';
+import {
+    PieChart,
+    Pie,
+    Cell,
+    Tooltip,
+    ResponsiveContainer,
+    Legend,
+    BarChart,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Bar,
+    Label,
+    LabelList
+} from 'recharts';
 import './chartsStyling.css';
+import {formatLargeNumber} from "./ExpensesList";
+import {Savings} from "../../../../hooks/useMember";
 
 interface SavingsListProps {
     savings: Savings[];
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const CustomizedLabel = (props: any) => {
+    const {x, y, stroke, value} = props;
 
-const CustomTooltip = ({active, payload}: TooltipProps<any, string>) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="custom-tooltip" style={{backgroundColor: payload[0].payload.fill}}>
-                <p>{`${payload[0].name} : ${formatLargeNumber(payload[0].value)}`}</p>
-            </div>
-        );
-    }
-    return null;
+    return <text x={x} y={y} dy={-4} fill={stroke} fontSize={10} textAnchor="middle">{formatLargeNumber(value)}</text>
 };
 
-const ChartContainer = ({title, children}: {title: string, children: React.ReactNode}) => (
-    <div className="chart-container">
-        <h3>{title}</h3>
-        <div className="tooltip-container" >
-            {children}
-        </div>
-    </div>
-);
+const SavingsList: React.FC<SavingsListProps> = ({savings}) => {
+    let data = savings.map((saving, index) => ({
+        name: saving.SavingsGoal,
+        value: Number(saving.Amount),
+        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Generate random color for each sector
+    }));
 
-const SavingsList: React.FC<SavingsListProps> = ({ savings }) => {
-    const totalSavings = useMemo(() =>
-        savings.reduce((sum, saving) => sum + Number(saving.Amount), 0), [savings]
-    );
-
-    const pieChartData = useMemo(() =>
-            savings.map((saving, index) => ({
-                name: `الهدف ${formatLargeNumber(Number(saving.SavingsGoal))}`,
-                value: Number(saving.Amount),
-                fill: COLORS[index % COLORS.length],
-            })),
-        [savings]
-    );
-
-    const barChartData = useMemo(() =>
-            savings.map(saving => ({
-                name: `الهدف: ${formatLargeNumber(Number(saving.SavingsGoal))}`,
-                Amount: Number(saving.Amount)
-            })),
-        [savings]
-    );
+    // Sorting data in descending order of values
+    data.sort((a, b) => b.value - a.value);
 
     return (
-        <div className="savings-list">
-            <h2>قائمة الادخار:</h2>
-            <h3>إحصائيات:</h3>
-            <p>إجمالي مبلغ الادخار: {formatLargeNumber(totalSavings)}</p>
-            <ChartContainer title='مخطط دائري - مبلغ الادخار حسب الهدف:'>
-                <PieChart width={400} height={400}>
-                    <Pie
-                        dataKey="value"
-                        data={pieChartData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        label={({name, value}) => ` ${(Number(value) / totalSavings * 100).toFixed(2)}%`}
-                    >
-                        {pieChartData.map((entry, index) => (
-                            <Cell key={index} fill={entry.fill} />
-                        ))}
-                    </Pie>
-                    <Tooltip content={CustomTooltip}/>
-                </PieChart>
-            </ChartContainer>
+        <div>
+            <div className="chart-container">
+                <div dir="rtl" style={{textAlign: 'center'}}>
+                    <h2>الادخار حسب المبالغ المستهدفة </h2>
+                </div>
 
-            <ChartContainer title='مخطط الشريط - مبلغ حسب الهدف الادخار:'>
-                <BarChart width={600} height={300} data={barChartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(tickItem) => formatLargeNumber(tickItem)} />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Tooltip content={CustomTooltip}/>
-                    <Bar dataKey="Amount" fill="#8884d8" />
-                </BarChart>
-            </ChartContainer>
+                <ResponsiveContainer width="100%" height={400}>
+                    <PieChart>
+                        <Pie
+                            data={data}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={100}
+                            fill="#8884d8"
+                            label={({
+                                        name,
+                                        value,
+                                        percent
+                                    }) => `${name}: ${formatLargeNumber(value)} (${(percent * 100).toFixed(0)}%)`}
+                        >
+                            {
+                                data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color}/>)
+                            }
+                        </Pie>
+                        <Tooltip
+                            wrapperClassName="custom-tooltip"
+                            itemStyle={{color: '#000'}}
+                            cursor={false}
+                            formatter={(value) => formatLargeNumber(Number(value))}
+                        />
+
+                        <Legend wrapperStyle={{bottom: 0}}/>
+                    </PieChart>
+                </ResponsiveContainer>
+                <div dir="rtl" style={{textAlign: 'center'}}>
+                    <h2>الادخار حسب المبالغ المستهدفة</h2>
+                </div>
+                <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={data}>
+                        <CartesianGrid strokeDasharray="3 3"/>
+                        <XAxis dataKey="name">
+                            <Label value="الهدف" offset={-5} position="insideBottom"/>
+                        </XAxis>
+                        <YAxis tickFormatter={(value) => formatLargeNumber(value)}>
+                            <Label value="المبلغ" angle={-90} position="insideLeft"/>
+                        </YAxis>
+                        <Tooltip
+                            contentStyle={{textAlign: 'left'}}
+                            wrapperClassName="custom-tooltip"
+                            itemStyle={{color: '#000'}}
+                            cursor={false}
+                            formatter={(value) => formatLargeNumber(Number(value))}
+                        />
+                        <Bar dataKey="value" fill="#8884d8">
+                            <LabelList dataKey="value" content={CustomizedLabel}/>
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
         </div>
+
+
     );
 };
 

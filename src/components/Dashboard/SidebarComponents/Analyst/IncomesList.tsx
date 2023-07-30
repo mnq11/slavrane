@@ -40,7 +40,7 @@ const IncomesList: React.FC<IncomesListProps> = ({incomes}) => {
 
     return (
         <div className="chart-container">
-            <div dir="rtl" style={{ textAlign: 'center' }}><h2>الدخل حسب المصادر (الرسم البياني للفطيرة)</h2></div>
+            <div dir="rtl" style={{ textAlign: 'center' }}><h2>الدخل حسب المصادر </h2></div>
             <ResponsiveContainer width="100%" height={400}>
                 <PieChart>
                     <Pie
@@ -67,7 +67,7 @@ const IncomesList: React.FC<IncomesListProps> = ({incomes}) => {
                 </PieChart>
             </ResponsiveContainer>
 
-            <div dir="rtl" style={{ textAlign: 'center' }}><h2>الدخل حسب المصادر (الرسم البياني)</h2></div>
+            <div dir="rtl" style={{ textAlign: 'center' }}><h2>الدخل حسب المصادر </h2></div>
             <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={data}>
                     <CartesianGrid strokeDasharray="3 3"/>

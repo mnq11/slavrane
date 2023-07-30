@@ -27,7 +27,10 @@ const LoansList: React.FC<LoansListProps> = ({ loans }) => {
     return (
         <div>
             <div className="chart-container">
-                <h2>قروض حسب الجهات المانحة (رسم بياني دائري):</h2>
+                <div dir="rtl" style={{ textAlign: 'center' }}>
+                    <h2>قروض حسب الجهات المستدينة(بالنسبة)</h2>
+                </div>
+
                 <ResponsiveContainer width="100%" height={400}>
                     <PieChart>
                         <Pie
@@ -54,10 +57,9 @@ const LoansList: React.FC<LoansListProps> = ({ loans }) => {
                         <Legend wrapperStyle={{ bottom: 0 }} />
                     </PieChart>
                 </ResponsiveContainer>
-            </div>
-
-            <div className="chart-container">
-                <h2>قروض حسب الجهات المانحة (رسم بياني شريطي):</h2>
+                <div dir="rtl" style={{ textAlign: 'center' }}>
+                    <h2>قروض حسب الجهات المستدينة</h2>
+                </div>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -80,7 +82,9 @@ const LoansList: React.FC<LoansListProps> = ({ loans }) => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-        </div>
+            </div>
+
+
     );
 };
 

@@ -100,6 +100,8 @@ const ExpensesList: React.FC<{ expenses: Expense[] }> = ({expenses}) => {
                     </Bar>
                     <Legend/>
                 </BarChart>
+                <div dir="rtl" style={{ textAlign: 'center' }}><h3>إحصائيات حسب بالتاريخ</h3></div>
+
                 <LineChart width={600} height={300} data={dateData}>
                     <XAxis dataKey={(data) => `${data.year}-${data.month}`}/>
                     <YAxis tickFormatter={formatLargeNumber}/>
