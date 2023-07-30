@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Expense, Income, Loan, Member, Savings} from "../../../../hooks/useMember";
 import {
-    getFamilyMembers,
     getIncomesForFamily,
     getTotalExpense,
     getTotalLoan,
@@ -12,14 +11,12 @@ import IncomesList from './IncomesList';
 import ExpensesList from './ExpensesList';
 import SavingsList from './SavingsList';
 import LoansList from './LoansList';
-import MembersList from './MembersList';
 
 interface AnalystProps {
     member: Member;
 }
 
 const Analyst: React.FC<AnalystProps> = ({member}) => {
-    const [members, setMembers] = useState<Member[]>([]);
     const [incomes, setIncomes] = useState<Income[]>([]);
     const [expenses, setExpenses] = useState<Expense[]>([]);
     const [savings, setSavings] = useState<Savings[]>([]);
@@ -30,18 +27,6 @@ const Analyst: React.FC<AnalystProps> = ({member}) => {
     useEffect(() => {
         if (member.FamilyID) {
             setIsLoading(true);
-
-            getFamilyMembers(member.FamilyID)
-                .then((res) => {
-                    if (Array.isArray(res)) {
-                        setMembers(res);
-                    } else {
-                        throw new Error('Unexpected data format from server');
-                    }
-                })
-                .catch((err) => {
-                    setError(err.message);
-                });
 
             getIncomesForFamily(member.FamilyID)
                 .then((res) => {
@@ -100,7 +85,6 @@ const Analyst: React.FC<AnalystProps> = ({member}) => {
                 <IncomesList incomes={incomes}/>
                 <SavingsList savings={savings}/>
                 <LoansList loans={loans}/>
-                <MembersList members={members}/>
             </>}
         </div>
     );
